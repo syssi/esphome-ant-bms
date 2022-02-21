@@ -50,6 +50,8 @@ sensor:
       name: "${name} soc"
     total_voltage:
       name: "${name} total voltage"
+    average_cell_voltage:
+      name: "${name} average cell voltage"
     min_cell_voltage:
       name: "${name} min cell voltage"
     max_cell_voltage:
