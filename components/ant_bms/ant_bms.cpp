@@ -85,7 +85,8 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->max_cell_voltage_sensor_, (float) ant_get_16bit(119) * 0.001f);
   //  121   0x10 0x28: Average cell voltage            4136 * 0.001 = 4.136V          0.001 V
   this->publish_state_(this->average_cell_voltage_sensor_, (float) ant_get_16bit(121) * 0.001f);
-  //  123   0x0D: Cell count                           13
+  //  123   0x0D: Battery strings                      13
+  this->publish_state_(this->battery_strings_sensor_, (float) data[123]);
   //  124   0x00 0x00: Discharge MOSFET, voltage between D-S                          0.1 V
   //  126   0x00 0x73: Drive voltage (discharge MOSFET)                               0.1 V
   //  128   0x00 0x6F: Drive voltage (charge MOSFET)                                  0.1 V
@@ -163,6 +164,7 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   ESP_LOGCONFIG(TAG, "AntBms:");
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
 
+  LOG_SENSOR("", "Battery Strings", this->battery_strings_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "SoC", this->soc_sensor_);
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);

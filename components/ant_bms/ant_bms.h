@@ -9,6 +9,9 @@ namespace ant_bms {
 
 class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
  public:
+  void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
+    battery_strings_sensor_ = battery_strings_sensor;
+  }
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
@@ -38,6 +41,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void update() override;
 
  protected:
+  sensor::Sensor *battery_strings_sensor_;
   sensor::Sensor *capacity_remaining_sensor_;
   sensor::Sensor *soc_sensor_;
   sensor::Sensor *total_voltage_sensor_;

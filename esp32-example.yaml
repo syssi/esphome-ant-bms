@@ -44,6 +44,8 @@ ant_bms:
 
 sensor:
   - platform: ant_bms
+    battery_strings:
+      name: "${name} battery strings"
     capacity_remaining:
       name: "${name} capacity remaining"
     soc:

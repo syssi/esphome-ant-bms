@@ -8,6 +8,7 @@ from esphome.const import (
     ICON_EMPTY,
     STATE_CLASS_MEASUREMENT,
     UNIT_CELSIUS,
+    UNIT_EMPTY,
     UNIT_PERCENT,
     UNIT_VOLT,
 )
@@ -18,6 +19,7 @@ DEPENDENCIES = ["ant_bms"]
 
 CODEOWNERS = ["@syssi"]
 
+CONF_BATTERY_STRINGS = "battery_strings"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_SOC = "soc"
 CONF_TOTAL_VOLTAGE = "total_voltage"
@@ -66,6 +68,7 @@ CONF_CELL_VOLTAGE_30 = "cell_voltage_30"
 CONF_CELL_VOLTAGE_31 = "cell_voltage_31"
 CONF_CELL_VOLTAGE_32 = "cell_voltage_32"
 
+ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_SOC = "mdi:battery-50"
 
@@ -116,6 +119,7 @@ TEMPERATURES = [
 ]
 
 SENSORS = [
+    CONF_BATTERY_STRINGS,
     CONF_CAPACITY_REMAINING,
     CONF_SOC,
     CONF_TOTAL_VOLTAGE,
@@ -128,6 +132,13 @@ SENSORS = [
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_ANT_BMS_ID): cv.use_id(AntBms),
+        cv.Optional(CONF_BATTERY_STRINGS): sensor.sensor_schema(
+            UNIT_EMPTY,
+            ICON_BATTERY_STRINGS,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
             UNIT_AMPERE_HOURS,
             ICON_CAPACITY_REMAINING,
