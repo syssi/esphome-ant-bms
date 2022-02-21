@@ -3,9 +3,11 @@ import esphome.config_validation as cv
 from esphome.components import sensor
 from esphome.const import (
     DEVICE_CLASS_EMPTY,
+    DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     STATE_CLASS_MEASUREMENT,
     ICON_EMPTY,
+    UNIT_CELSIUS,
     UNIT_PERCENT,
     UNIT_VOLT,
 )
@@ -19,6 +21,13 @@ CODEOWNERS = ["@syssi"]
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_SOC = "soc"
 CONF_TOTAL_VOLTAGE = "total_voltage"
+
+CONF_TEMPERATURE_1 = "temperature_1"
+CONF_TEMPERATURE_2 = "temperature_2"
+CONF_TEMPERATURE_3 = "temperature_3"
+CONF_TEMPERATURE_4 = "temperature_4"
+CONF_TEMPERATURE_5 = "temperature_5"
+CONF_TEMPERATURE_6 = "temperature_6"
 
 CONF_CELL_VOLTAGE_1 = "cell_voltage_1"
 CONF_CELL_VOLTAGE_2 = "cell_voltage_2"
@@ -93,6 +102,15 @@ CELLS = [
     CONF_CELL_VOLTAGE_32,
 ]
 
+TEMPERATURES = [
+    CONF_TEMPERATURE_1,
+    CONF_TEMPERATURE_2,
+    CONF_TEMPERATURE_3,
+    CONF_TEMPERATURE_4,
+    CONF_TEMPERATURE_5,
+    CONF_TEMPERATURE_6,
+]
+
 SENSORS = [
     CONF_CAPACITY_REMAINING,
     CONF_SOC,
@@ -119,6 +137,48 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_TOTAL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_TEMPERATURE_1): sensor.sensor_schema(
+            UNIT_CELSIUS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_2): sensor.sensor_schema(
+            UNIT_CELSIUS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_3): sensor.sensor_schema(
+            UNIT_CELSIUS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_4): sensor.sensor_schema(
+            UNIT_CELSIUS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_5): sensor.sensor_schema(
+            UNIT_CELSIUS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE_6): sensor.sensor_schema(
+            UNIT_CELSIUS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_CELL_VOLTAGE_1): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
@@ -222,6 +282,11 @@ CONFIG_SCHEMA = cv.Schema(
 
 def to_code(config):
     hub = yield cg.get_variable(config[CONF_ANT_BMS_ID])
+    for i, key in enumerate(TEMPERATURES):
+        if key in config:
+            conf = config[key]
+            sens = yield sensor.new_sensor(conf)
+            cg.add(hub.set_temperature_sensor(i, sens))
     for i, key in enumerate(CELLS):
         if key in config:
             conf = config[key]

@@ -44,32 +44,8 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //   8    0x10 0x2A: Cell voltage 2                4138 * 0.001 = 4.138V            0.001 V
   //  10    0x10 0x27: Cell voltage 3                4135 * 0.001 = 4.135V            0.001 V
   //  12    0x10 0x2A: Cell voltage 4                                                 0.001 V
-  //  14    0x10 0x2A: Cell voltage 5                                                 0.001 V
-  //  16    0x10 0x28: Cell voltage 6                                                 0.001 V
-  //  18    0x10 0x28: Cell voltage 7                                                 0.001 V
-  //  20    0x10 0x28: Cell voltage 8                                                 0.001 V
-  //  22    0x10 0x26: Cell voltage 9                                                 0.001 V
-  //  24    0x10 0x29: Cell voltage 10                                                0.001 V
-  //  26    0x10 0x28: Cell voltage 11                                                0.001 V
-  //  28    0x10 0x29: Cell voltage 12                                                0.001 V
-  //  30    0x10 0x2C: Cell voltage 13                                                0.001 V
-  //  32    0x00 0x00: Cell voltage 14                                                0.001 V
-  //  34    0x00 0x00: Cell voltage 15                                                0.001 V
-  //  36    0x00 0x00: Cell voltage 16                                                0.001 V
-  //  38    0x00 0x00: Cell voltage 17                                                0.001 V
-  //  40    0x00 0x00: Cell voltage 18                                                0.001 V
-  //  42    0x00 0x00: Cell voltage 19                                                0.001 V
-  //  44    0x00 0x00: Cell voltage 20                                                0.001 V
-  //  46    0x00 0x00: Cell voltage 21                                                0.001 V
-  //  48    0x00 0x00: Cell voltage 22                                                0.001 V
-  //  50    0x00 0x00: Cell voltage 23                                                0.001 V
-  //  52    0x00 0x00: Cell voltage 24                                                0.001 V
-  //  54    0x00 0x00: Cell voltage 25                                                0.001 V
-  //  56    0x00 0x00: Cell voltage 26                                                0.001 V
-  //  58    0x00 0x00: Cell voltage 27                                                0.001 V
-  //  60    0x00 0x00: Cell voltage 28                                                0.001 V
-  //  62    0x00 0x00: Cell voltage 29                                                0.001 V
-  //  64    0x00 0x00: Cell voltage 30                                                0.001 V
+  //  ...
+  //  ...
   //  66    0x00 0x00: Cell voltage 31                                                0.001 V
   //  68    0x00 0x00: Cell voltage 32                                                0.001 V
   uint8_t cells = data[123];
@@ -90,6 +66,10 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  97    0x00 0x14: Temperature 4                   20°C                           1.0 °C
   //  99    0x00 0x14: Temperature 5                   20°C                           1.0 °C
   //  101   0x00 0x14: Temperature 6                   20°C                           1.0 °C
+  for (uint8_t i = 0; i < 6; i++) {
+    this->publish_state_(this->temperatures_[i].temperature_sensor_, (float) ant_get_16bit(i * 2 + 91));
+  }
+
   //  103   0x01: Charge MOSFET Status
   //  104   0x01: Discharge MOSFET Status
   //  105   0x00: Balancer Status
@@ -183,6 +163,46 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "SoC", this->soc_sensor_);
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
+
+  LOG_SENSOR("", "Temperature 1", this->temperatures_[0].temperature_sensor_);
+  LOG_SENSOR("", "Temperature 2", this->temperatures_[1].temperature_sensor_);
+  LOG_SENSOR("", "Temperature 3", this->temperatures_[2].temperature_sensor_);
+  LOG_SENSOR("", "Temperature 4", this->temperatures_[3].temperature_sensor_);
+  LOG_SENSOR("", "Temperature 5", this->temperatures_[4].temperature_sensor_);
+  LOG_SENSOR("", "Temperature 6", this->temperatures_[5].temperature_sensor_);
+
+  LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 2", this->cells_[1].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 3", this->cells_[2].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 4", this->cells_[3].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 5", this->cells_[4].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 6", this->cells_[5].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 7", this->cells_[6].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 8", this->cells_[7].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 9", this->cells_[8].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 10", this->cells_[9].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 11", this->cells_[10].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 12", this->cells_[11].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 13", this->cells_[12].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 14", this->cells_[13].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 15", this->cells_[14].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 16", this->cells_[15].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 17", this->cells_[16].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 18", this->cells_[17].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 19", this->cells_[18].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 20", this->cells_[19].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 21", this->cells_[20].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 22", this->cells_[21].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 23", this->cells_[22].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 24", this->cells_[23].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 25", this->cells_[24].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 26", this->cells_[25].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 27", this->cells_[26].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 28", this->cells_[27].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 29", this->cells_[28].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 30", this->cells_[29].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 31", this->cells_[30].cell_voltage_sensor_);
+  LOG_SENSOR("", "Cell Voltage 32", this->cells_[31].cell_voltage_sensor_);
 }
 
 }  // namespace ant_bms

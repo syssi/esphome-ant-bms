@@ -17,6 +17,9 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_cell_voltage_sensor(uint8_t cell, sensor::Sensor *cell_voltage_sensor) {
     this->cells_[cell].cell_voltage_sensor_ = cell_voltage_sensor;
   }
+  void set_temperature_sensor(uint8_t temperature, sensor::Sensor *temperature_sensor) {
+    this->temperatures_[temperature].temperature_sensor_ = temperature_sensor;
+  }
 
   void dump_config() override;
 
@@ -32,6 +35,10 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
   } cells_[32];
+
+  struct Temperature {
+    sensor::Sensor *temperature_sensor_{nullptr};
+  } temperatures_[6];
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
