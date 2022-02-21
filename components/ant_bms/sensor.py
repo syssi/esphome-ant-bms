@@ -31,10 +31,10 @@ SENSORS = [
     CONF_TOTAL_VOLTAGE,
 ]
 
+# pylint: disable=too-many-function-args
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_ANT_BMS_ID): cv.use_id(AntBms),
-        # pylint: disable=too-many-function-args
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
             UNIT_AMPERE_HOURS,
             ICON_CAPACITY_REMAINING,
