@@ -15,7 +15,8 @@ TBD.
 
 ## Untested devices
 
-TBD.
+* ANT H-24S 180A
+* ANT 32S 300A
 
 ## Requirements
 
@@ -172,6 +173,7 @@ uart:
 
 ## References
 
+* https://github.com/klotztech/VBMS/wiki/Serial-protocol
 * https://github.com/esphome/feature-requests/issues/1396
 * https://github.com/imval/AntBMS/blob/main/AntBMS.cpp
 * https://diysolarforum.com/threads/for-those-of-you-looking-to-monitor-your-ant-bms-with-pi3-via-bluetooth.6726/

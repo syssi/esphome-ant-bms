@@ -31,7 +31,7 @@ void AntModbus::loop() {
 
 uint16_t chksum(const uint8_t data[], const uint16_t len) {
   uint16_t checksum = 0;
-  for (uint16_t i = 0; i < len; i++) {
+  for (uint16_t i = 4; i < len; i++) {
     checksum = checksum + data[i];
   }
   return checksum;
@@ -68,12 +68,12 @@ bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
 
   uint8_t function = raw[3];
 
-  //  uint16_t computed_crc = chksum(raw, data_len);
-  //  uint16_t remote_crc = uint16_t(raw[data_len]) << 8 | (uint16_t(raw[data_len + 1]) << 0);
-  //  if (computed_crc != remote_crc) {
-  //    ESP_LOGW(TAG, "AntModbus CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
-  //    return false;
-  //  }
+  uint16_t computed_crc = chksum(raw, frame_len - 2);
+  uint16_t remote_crc = uint16_t(raw[frame_len - 2]) << 8 | (uint16_t(raw[frame_len - 1]) << 0);
+  if (computed_crc != remote_crc) {
+    ESP_LOGW(TAG, "AntModbus CRC Check failed! %04X != %04X", computed_crc, remote_crc);
+    return false;
+  }
 
   ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());
   ESP_LOGVV(TAG, "CRC: 0x%02X 0x%02X", raw[138], raw[139]);
