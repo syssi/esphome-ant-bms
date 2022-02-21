@@ -50,7 +50,10 @@ sensor:
       name: "${name} soc"
     total_voltage:
       name: "${name} total voltage"
-
+    min_cell_voltage:
+      name: "${name} min cell voltage"
+    max_cell_voltage:
+      name: "${name} max cell voltage"
     temperature_1:
       name: "${name} temperature 1"
     temperature_2:

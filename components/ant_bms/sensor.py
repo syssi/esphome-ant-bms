@@ -21,6 +21,8 @@ CODEOWNERS = ["@syssi"]
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_SOC = "soc"
 CONF_TOTAL_VOLTAGE = "total_voltage"
+CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
+CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
 
 CONF_TEMPERATURE_1 = "temperature_1"
 CONF_TEMPERATURE_2 = "temperature_2"
@@ -115,6 +117,8 @@ SENSORS = [
     CONF_CAPACITY_REMAINING,
     CONF_SOC,
     CONF_TOTAL_VOLTAGE,
+    CONF_MIN_CELL_VOLTAGE,
+    CONF_MAX_CELL_VOLTAGE,
 ]
 
 # pylint: disable=too-many-function-args
@@ -137,6 +141,12 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_TOTAL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_MAX_CELL_VOLTAGE): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_TEMPERATURE_1): sensor.sensor_schema(
             UNIT_CELSIUS,
