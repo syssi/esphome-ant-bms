@@ -7,7 +7,7 @@ namespace ant_bms {
 
 static const char *const TAG = "ant_bms";
 
-static const uint8_t FUNCTION_READ_ALL = 0x06;
+static const uint8_t FUNCTION_READ_ALL = 0xFF;
 
 void AntBms::on_ant_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) {
   if (data.size() == 140) {
