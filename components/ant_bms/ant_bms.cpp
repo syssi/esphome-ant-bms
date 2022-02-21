@@ -41,7 +41,6 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //   4    0x02 0x1D: Total voltage         541 * 0.1 = 54.1V                        0.1 V
   this->publish_state_(this->total_voltage_sensor_, (float) ant_get_16bit(4) * 0.1f);
   //   6    0x10 0x2A: Cell voltage 1        4138 * 0.001 = 4.138V                    0.001 V
-  ESP_LOGD(TAG, "Cell voltage 1: %f V", (float) ant_get_16bit(6) * 0.001f);
   //   8    0x10 0x2A: Cell voltage 2                4138 * 0.001 = 4.138V            0.001 V
   //  10    0x10 0x27: Cell voltage 3                4135 * 0.001 = 4.135V            0.001 V
   //  12    0x10 0x2A: Cell voltage 4                                                 0.001 V
@@ -73,6 +72,10 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  64    0x00 0x00: Cell voltage 30                                                0.001 V
   //  66    0x00 0x00: Cell voltage 31                                                0.001 V
   //  68    0x00 0x00: Cell voltage 32                                                0.001 V
+  uint8_t cells = data[123];
+  for (uint8_t i = 0; i < cells; i++) {
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, (float) ant_get_16bit(i * 2 + 6) * 0.001f);
+  }
   //  70    0x00 0x00 0x00 0x00: Current               0.0 A                          0.1 A
   //  74    0x64: SOC                                  100 %                          1.0 %
   this->publish_state_(this->soc_sensor_, (float) data[74]);

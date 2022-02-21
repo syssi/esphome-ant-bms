@@ -20,10 +20,78 @@ CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_SOC = "soc"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 
+CONF_CELL_VOLTAGE_1 = "cell_voltage_1"
+CONF_CELL_VOLTAGE_2 = "cell_voltage_2"
+CONF_CELL_VOLTAGE_3 = "cell_voltage_3"
+CONF_CELL_VOLTAGE_4 = "cell_voltage_4"
+CONF_CELL_VOLTAGE_5 = "cell_voltage_5"
+CONF_CELL_VOLTAGE_6 = "cell_voltage_6"
+CONF_CELL_VOLTAGE_7 = "cell_voltage_7"
+CONF_CELL_VOLTAGE_8 = "cell_voltage_8"
+CONF_CELL_VOLTAGE_9 = "cell_voltage_9"
+CONF_CELL_VOLTAGE_10 = "cell_voltage_10"
+CONF_CELL_VOLTAGE_11 = "cell_voltage_11"
+CONF_CELL_VOLTAGE_12 = "cell_voltage_12"
+CONF_CELL_VOLTAGE_13 = "cell_voltage_13"
+CONF_CELL_VOLTAGE_14 = "cell_voltage_14"
+CONF_CELL_VOLTAGE_15 = "cell_voltage_15"
+CONF_CELL_VOLTAGE_16 = "cell_voltage_16"
+CONF_CELL_VOLTAGE_17 = "cell_voltage_17"
+CONF_CELL_VOLTAGE_18 = "cell_voltage_18"
+CONF_CELL_VOLTAGE_19 = "cell_voltage_19"
+CONF_CELL_VOLTAGE_20 = "cell_voltage_20"
+CONF_CELL_VOLTAGE_21 = "cell_voltage_21"
+CONF_CELL_VOLTAGE_22 = "cell_voltage_22"
+CONF_CELL_VOLTAGE_23 = "cell_voltage_23"
+CONF_CELL_VOLTAGE_24 = "cell_voltage_24"
+CONF_CELL_VOLTAGE_25 = "cell_voltage_25"
+CONF_CELL_VOLTAGE_26 = "cell_voltage_26"
+CONF_CELL_VOLTAGE_27 = "cell_voltage_27"
+CONF_CELL_VOLTAGE_28 = "cell_voltage_28"
+CONF_CELL_VOLTAGE_29 = "cell_voltage_29"
+CONF_CELL_VOLTAGE_30 = "cell_voltage_30"
+CONF_CELL_VOLTAGE_31 = "cell_voltage_31"
+CONF_CELL_VOLTAGE_32 = "cell_voltage_32"
+
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_SOC = "mdi:battery-50"
 
 UNIT_AMPERE_HOURS = "Ah"
+
+CELLS = [
+    CONF_CELL_VOLTAGE_1,
+    CONF_CELL_VOLTAGE_2,
+    CONF_CELL_VOLTAGE_3,
+    CONF_CELL_VOLTAGE_4,
+    CONF_CELL_VOLTAGE_5,
+    CONF_CELL_VOLTAGE_6,
+    CONF_CELL_VOLTAGE_7,
+    CONF_CELL_VOLTAGE_8,
+    CONF_CELL_VOLTAGE_9,
+    CONF_CELL_VOLTAGE_10,
+    CONF_CELL_VOLTAGE_11,
+    CONF_CELL_VOLTAGE_12,
+    CONF_CELL_VOLTAGE_13,
+    CONF_CELL_VOLTAGE_14,
+    CONF_CELL_VOLTAGE_15,
+    CONF_CELL_VOLTAGE_16,
+    CONF_CELL_VOLTAGE_17,
+    CONF_CELL_VOLTAGE_18,
+    CONF_CELL_VOLTAGE_19,
+    CONF_CELL_VOLTAGE_20,
+    CONF_CELL_VOLTAGE_21,
+    CONF_CELL_VOLTAGE_22,
+    CONF_CELL_VOLTAGE_23,
+    CONF_CELL_VOLTAGE_24,
+    CONF_CELL_VOLTAGE_25,
+    CONF_CELL_VOLTAGE_26,
+    CONF_CELL_VOLTAGE_27,
+    CONF_CELL_VOLTAGE_28,
+    CONF_CELL_VOLTAGE_29,
+    CONF_CELL_VOLTAGE_30,
+    CONF_CELL_VOLTAGE_31,
+    CONF_CELL_VOLTAGE_32,
+]
 
 SENSORS = [
     CONF_CAPACITY_REMAINING,
@@ -52,12 +120,113 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_TOTAL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
         ),
+        cv.Optional(CONF_CELL_VOLTAGE_1): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_2): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_3): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_4): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_5): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_6): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_7): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_8): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_9): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_10): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_11): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_12): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_13): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_14): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_15): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_16): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_17): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_18): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_19): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_20): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_21): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_22): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_23): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_24): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_25): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_26): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_27): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_28): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_29): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_30): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_31): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CELL_VOLTAGE_32): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
     }
 )
 
 
 def to_code(config):
     hub = yield cg.get_variable(config[CONF_ANT_BMS_ID])
+    for i, key in enumerate(CELLS):
+        if key in config:
+            conf = config[key]
+            sens = yield sensor.new_sensor(conf)
+            cg.add(hub.set_cell_voltage_sensor(i, sens))
     for key in SENSORS:
         if key in config:
             conf = config[key]
