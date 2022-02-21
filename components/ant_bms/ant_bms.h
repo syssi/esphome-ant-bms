@@ -41,7 +41,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   sensor::Sensor *capacity_remaining_sensor_;
   sensor::Sensor *soc_sensor_;
   sensor::Sensor *total_voltage_sensor_;
-<<<<<<< HEAD
+  sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
 
@@ -52,9 +52,6 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   struct Temperature {
     sensor::Sensor *temperature_sensor_{nullptr};
   } temperatures_[6];
-=======
-  sensor::Sensor *average_cell_voltage_sensor_;
->>>>>>> c88ae8c (Add average cell voltage sensor)
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
