@@ -26,6 +26,8 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
     return (uint32_t(ant_get_16bit(i + 0)) << 16) | (uint32_t(ant_get_16bit(i + 2)) << 0);
   };
 
+  ESP_LOGI(TAG, "Status frame received");
+
   // Status request
   // -> 0x5A 0x5A 0x00 0x00 0x01 0x01
   //
@@ -37,42 +39,46 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   // Byte   Address Content: Description      Decoded content                         Coeff./Unit
 
   //   4    0x02 0x1D: Total voltage         541 * 0.1 = 54.1V                        0.1 V
-  //   6    0x10 0x2A: Cell 1                4138 * 0.001 = 4.138V                    0.001 V
-  //   8    0x10 0x2A: Cell 2                4138 * 0.001 = 4.138V                    0.001 V
-  //  10    0x10 0x27: Cell 3                4135 * 0.001 = 4.135V                    0.001 V
-  //  12    0x10 0x2A: Cell 4                                                         0.001 V
-  //  14    0x10 0x2A: Cell 5                                                         0.001 V
-  //  16    0x10 0x28: Cell 6                                                         0.001 V
-  //  18    0x10 0x28: Cell 7                                                         0.001 V
-  //  20    0x10 0x28: Cell 8                                                         0.001 V
-  //  22    0x10 0x26: Cell 9                                                         0.001 V
-  //  24    0x10 0x29: Cell 10                                                        0.001 V
-  //  26    0x10 0x28: Cell 11                                                        0.001 V
-  //  28    0x10 0x29: Cell 12                                                        0.001 V
-  //  30    0x10 0x2C: Cell 13                                                        0.001 V
-  //  32    0x00 0x00: Cell 14                                                        0.001 V
-  //  34    0x00 0x00: Cell 15                                                        0.001 V
-  //  36    0x00 0x00: Cell 16                                                        0.001 V
-  //  38    0x00 0x00: Cell 17                                                        0.001 V
-  //  40    0x00 0x00: Cell 18                                                        0.001 V
-  //  42    0x00 0x00: Cell 19                                                        0.001 V
-  //  44    0x00 0x00: Cell 20                                                        0.001 V
-  //  46    0x00 0x00: Cell 21                                                        0.001 V
-  //  48    0x00 0x00: Cell 22                                                        0.001 V
-  //  50    0x00 0x00: Cell 23                                                        0.001 V
-  //  52    0x00 0x00: Cell 24                                                        0.001 V
-  //  54    0x00 0x00: Cell 25                                                        0.001 V
-  //  56    0x00 0x00: Cell 26                                                        0.001 V
-  //  58    0x00 0x00: Cell 27                                                        0.001 V
-  //  60    0x00 0x00: Cell 28                                                        0.001 V
-  //  62    0x00 0x00: Cell 29                                                        0.001 V
-  //  64    0x00 0x00: Cell 30                                                        0.001 V
-  //  66    0x00 0x00: Cell 31                                                        0.001 V
-  //  68    0x00 0x00: Cell 32                                                        0.001 V
+  this->publish_state_(this->total_voltage_sensor_, (float) ant_get_16bit(4) * 0.1f);
+  //   6    0x10 0x2A: Cell voltage 1        4138 * 0.001 = 4.138V                    0.001 V
+  ESP_LOGD(TAG, "Cell voltage 1: %f V", (float) ant_get_16bit(6) * 0.001f);
+  //   8    0x10 0x2A: Cell voltage 2                4138 * 0.001 = 4.138V            0.001 V
+  //  10    0x10 0x27: Cell voltage 3                4135 * 0.001 = 4.135V            0.001 V
+  //  12    0x10 0x2A: Cell voltage 4                                                 0.001 V
+  //  14    0x10 0x2A: Cell voltage 5                                                 0.001 V
+  //  16    0x10 0x28: Cell voltage 6                                                 0.001 V
+  //  18    0x10 0x28: Cell voltage 7                                                 0.001 V
+  //  20    0x10 0x28: Cell voltage 8                                                 0.001 V
+  //  22    0x10 0x26: Cell voltage 9                                                 0.001 V
+  //  24    0x10 0x29: Cell voltage 10                                                0.001 V
+  //  26    0x10 0x28: Cell voltage 11                                                0.001 V
+  //  28    0x10 0x29: Cell voltage 12                                                0.001 V
+  //  30    0x10 0x2C: Cell voltage 13                                                0.001 V
+  //  32    0x00 0x00: Cell voltage 14                                                0.001 V
+  //  34    0x00 0x00: Cell voltage 15                                                0.001 V
+  //  36    0x00 0x00: Cell voltage 16                                                0.001 V
+  //  38    0x00 0x00: Cell voltage 17                                                0.001 V
+  //  40    0x00 0x00: Cell voltage 18                                                0.001 V
+  //  42    0x00 0x00: Cell voltage 19                                                0.001 V
+  //  44    0x00 0x00: Cell voltage 20                                                0.001 V
+  //  46    0x00 0x00: Cell voltage 21                                                0.001 V
+  //  48    0x00 0x00: Cell voltage 22                                                0.001 V
+  //  50    0x00 0x00: Cell voltage 23                                                0.001 V
+  //  52    0x00 0x00: Cell voltage 24                                                0.001 V
+  //  54    0x00 0x00: Cell voltage 25                                                0.001 V
+  //  56    0x00 0x00: Cell voltage 26                                                0.001 V
+  //  58    0x00 0x00: Cell voltage 27                                                0.001 V
+  //  60    0x00 0x00: Cell voltage 28                                                0.001 V
+  //  62    0x00 0x00: Cell voltage 29                                                0.001 V
+  //  64    0x00 0x00: Cell voltage 30                                                0.001 V
+  //  66    0x00 0x00: Cell voltage 31                                                0.001 V
+  //  68    0x00 0x00: Cell voltage 32                                                0.001 V
   //  70    0x00 0x00 0x00 0x00: Current               0.0 A                          0.1 A
   //  74    0x64: SOC                                  100 %                          1.0 %
+  this->publish_state_(this->soc_sensor_, (float) data[74]);
   //  75    0x02 0x53 0x17 0xC0: Total Battery Capacity Setting   39000000            0.000001 Ah
   //  79    0x02 0x53 0x06 0x11: Battery Capacity Remaining                           0.000001 Ah
+  this->publish_state_(this->capacity_remaining_sensor_, (float) ant_get_32bit(79) * 0.000001f);
   //  83    0x00 0x08 0xC7 0x8E: Battery Cycle Capacity                               0.001 Ah
   //  87    0x00 0x08 0x57 0x20: Uptime in seconds     546.592 s / 3600 = 151.83 h    s
   //  91    0x00 0x15: Temperature 1                   21°C                           1.0 °C
@@ -101,8 +107,6 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  132   0x00 0x00 0x00 0x00: Battery is in balance bitmask (Bit 1 = Cell 1, Bit 2 = Cell 2, ...)
   //  136   0x11 0x62: System log / overall status bitmask?
   //  138   0x0B 0x00: CRC
-
-  ESP_LOGI(TAG, "Status frame received");
 }
 
 void AntBms::update() {
@@ -174,6 +178,8 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
 
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
+  LOG_SENSOR("", "SoC", this->soc_sensor_);
+  LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
 }
 
 }  // namespace ant_bms

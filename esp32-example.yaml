@@ -9,6 +9,8 @@ esphome:
 external_components:
   - source: github://syssi/esphome-ant-bms@main
     refresh: 0s
+#  - source: components
+#    refresh: 0s
 
 wifi:
   ssid: !secret wifi_ssid
@@ -20,8 +22,8 @@ logger:
   logs:
     api.service: WARN
     ota: WARN
-    sensor: WARN
     wif: WARN
+    sensor: DEBUG
 
 uart:
   id: uart0
@@ -44,3 +46,7 @@ sensor:
   - platform: ant_bms
     capacity_remaining:
       name: "${name} capacity remaining"
+    soc:
+      name: "${name} soc"
+    total_voltage:
+      name: "${name} total voltage"
