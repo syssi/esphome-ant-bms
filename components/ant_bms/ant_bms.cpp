@@ -84,6 +84,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  119   0x10 0x26: Minimum cell voltage            4134 * 0.001 = 4.134V          0.001 V
   this->publish_state_(this->max_cell_voltage_sensor_, (float) ant_get_16bit(119) * 0.001f);
   //  121   0x10 0x28: Average cell voltage            4136 * 0.001 = 4.136V          0.001 V
+  this->publish_state_(this->average_cell_voltage_sensor_, (float) ant_get_16bit(121) * 0.001f);
   //  123   0x0D: Cell count                           13
   //  124   0x00 0x00: Discharge MOSFET, voltage between D-S                          0.1 V
   //  126   0x00 0x73: Drive voltage (discharge MOSFET)                               0.1 V
@@ -165,16 +166,15 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "SoC", this->soc_sensor_);
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
+  LOG_SENSOR("", "Average cell voltage sensor", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum cell voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum cell voltage", this->max_cell_voltage_sensor_);
-
   LOG_SENSOR("", "Temperature 1", this->temperatures_[0].temperature_sensor_);
   LOG_SENSOR("", "Temperature 2", this->temperatures_[1].temperature_sensor_);
   LOG_SENSOR("", "Temperature 3", this->temperatures_[2].temperature_sensor_);
   LOG_SENSOR("", "Temperature 4", this->temperatures_[3].temperature_sensor_);
   LOG_SENSOR("", "Temperature 5", this->temperatures_[4].temperature_sensor_);
   LOG_SENSOR("", "Temperature 6", this->temperatures_[5].temperature_sensor_);
-
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 2", this->cells_[1].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 3", this->cells_[2].cell_voltage_sensor_);

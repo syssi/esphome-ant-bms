@@ -21,6 +21,8 @@ CODEOWNERS = ["@syssi"]
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_SOC = "soc"
 CONF_TOTAL_VOLTAGE = "total_voltage"
+
+CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
 
@@ -117,6 +119,7 @@ SENSORS = [
     CONF_CAPACITY_REMAINING,
     CONF_SOC,
     CONF_TOTAL_VOLTAGE,
+    CONF_AVERAGE_CELL_VOLTAGE,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
 ]
@@ -140,6 +143,9 @@ CONFIG_SCHEMA = cv.Schema(
             STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TOTAL_VOLTAGE): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_AVERAGE_CELL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
