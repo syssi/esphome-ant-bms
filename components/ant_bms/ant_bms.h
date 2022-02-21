@@ -12,10 +12,16 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
     battery_strings_sensor_ = battery_strings_sensor;
   }
+  void set_soc_sensor(sensor::Sensor *soc_sensor) { soc_sensor_ = soc_sensor; }
+  void set_total_battery_capacity_setting_sensor(sensor::Sensor *total_battery_capacity_setting_sensor) {
+    total_battery_capacity_setting_sensor_ = total_battery_capacity_setting_sensor;
+  }
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
-  void set_soc_sensor(sensor::Sensor *soc_sensor) { soc_sensor_ = soc_sensor; }
+  void set_battery_cycle_capacity_sensor(sensor::Sensor *battery_cycle_capacity_sensor) {
+    battery_cycle_capacity_sensor_ = battery_cycle_capacity_sensor;
+  }
   void set_total_voltage_sensor(sensor::Sensor *total_voltage_sensor) { total_voltage_sensor_ = total_voltage_sensor; }
   void set_average_cell_voltage_sensor(sensor::Sensor *average_cell_voltage_sensor) {
     average_cell_voltage_sensor_ = average_cell_voltage_sensor;
@@ -42,8 +48,10 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
 
  protected:
   sensor::Sensor *battery_strings_sensor_;
-  sensor::Sensor *capacity_remaining_sensor_;
   sensor::Sensor *soc_sensor_;
+  sensor::Sensor *total_battery_capacity_setting_sensor_;
+  sensor::Sensor *capacity_remaining_sensor_;
+  sensor::Sensor *battery_cycle_capacity_sensor_;
   sensor::Sensor *total_voltage_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;

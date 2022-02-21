@@ -46,10 +46,14 @@ sensor:
   - platform: ant_bms
     battery_strings:
       name: "${name} battery strings"
-    capacity_remaining:
-      name: "${name} capacity remaining"
     soc:
       name: "${name} soc"
+    total_battery_capacity_setting:
+      name: "${name} total battery capacity setting"
+    capacity_remaining:
+      name: "${name} capacity remaining"
+    battery_cycle_capacity:
+      name: "${name} battery cycle capacity"
     total_voltage:
       name: "${name} total voltage"
     average_cell_voltage:

@@ -56,9 +56,11 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  74    0x64: SOC                                  100 %                          1.0 %
   this->publish_state_(this->soc_sensor_, (float) data[74]);
   //  75    0x02 0x53 0x17 0xC0: Total Battery Capacity Setting   39000000            0.000001 Ah
+  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) ant_get_32bit(75) * 0.000001f);
   //  79    0x02 0x53 0x06 0x11: Battery Capacity Remaining                           0.000001 Ah
   this->publish_state_(this->capacity_remaining_sensor_, (float) ant_get_32bit(79) * 0.000001f);
   //  83    0x00 0x08 0xC7 0x8E: Battery Cycle Capacity                               0.001 Ah
+  this->publish_state_(this->battery_cycle_capacity_sensor_, (float) ant_get_32bit(83) * 0.001f);
   //  87    0x00 0x08 0x57 0x20: Uptime in seconds     546.592 s / 3600 = 151.83 h    s
   //  91    0x00 0x15: Temperature 1                   21°C                           1.0 °C
   //  93    0x00 0x15: Temperature 2                   21°C                           1.0 °C
@@ -165,8 +167,10 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
 
   LOG_SENSOR("", "Battery Strings", this->battery_strings_sensor_);
-  LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "SoC", this->soc_sensor_);
+  LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
+  LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
+  LOG_SENSOR("", "Battery Cycle Capacity", this->battery_cycle_capacity_sensor_);
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
   LOG_SENSOR("", "Average cell voltage sensor", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum cell voltage", this->min_cell_voltage_sensor_);
