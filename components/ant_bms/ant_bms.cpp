@@ -166,18 +166,15 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "SoC", this->soc_sensor_);
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
-
   LOG_SENSOR("", "Average cell voltage sensor", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum cell voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum cell voltage", this->max_cell_voltage_sensor_);
-
   LOG_SENSOR("", "Temperature 1", this->temperatures_[0].temperature_sensor_);
   LOG_SENSOR("", "Temperature 2", this->temperatures_[1].temperature_sensor_);
   LOG_SENSOR("", "Temperature 3", this->temperatures_[2].temperature_sensor_);
   LOG_SENSOR("", "Temperature 4", this->temperatures_[3].temperature_sensor_);
   LOG_SENSOR("", "Temperature 5", this->temperatures_[4].temperature_sensor_);
   LOG_SENSOR("", "Temperature 6", this->temperatures_[5].temperature_sensor_);
-
   LOG_SENSOR("", "Cell Voltage 1", this->cells_[0].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 2", this->cells_[1].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 3", this->cells_[2].cell_voltage_sensor_);
