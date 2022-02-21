@@ -41,40 +41,44 @@ bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
   size_t at = this->rx_buffer_.size();
   this->rx_buffer_.push_back(byte);
   const uint8_t *raw = &this->rx_buffer_[0];
+  uint16_t frame_len = 140;
 
-  // Byte 0: Start sequence (0x4E)
+  // 0xAA 0x55 0xAA 0xFF 0x02 0x1D 0x10 0x2A ...
+  //   0    1    2    3  ^^^^^ data ^^^^^^^^
+
+  // Byte 0: Ant BMS start byte (match all)
   if (at == 0)
     return true;
   uint8_t address = raw[0];
 
-  // Byte 1: Start sequence (0x57)
-  if (at == 1)
+  // Byte 0...3: Header
+  if (at < 4)
     return true;
 
-  // Byte 2: Size (low byte)
-  if (at == 2)
-    return true;
+  if (raw[0] != 0xAA || raw[1] != 0x55 || raw[2] != 0xAA || raw[3] != 0xFF) {
+    ESP_LOGW(TAG, "Invalid header.");
 
-  // Byte 3: Size (high byte)
-  if (at == 3)
-    return true;
-  uint16_t data_len = (uint16_t(raw[2]) << 8 | (uint16_t(raw[2 + 1]) << 0));
-
-  // data_len: CRC_LO (over all bytes)
-  if (at <= data_len)
-    return true;
-
-  uint8_t function = raw[8];
-
-  // data_len+1: CRC_HI (over all bytes)
-  uint16_t computed_crc = chksum(raw, data_len);
-  uint16_t remote_crc = uint16_t(raw[data_len]) << 8 | (uint16_t(raw[data_len + 1]) << 0);
-  if (computed_crc != remote_crc) {
-    ESP_LOGW(TAG, "AntModbus CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
+    // return false to reset buffer
     return false;
   }
 
-  std::vector<uint8_t> data(this->rx_buffer_.begin() + 11, this->rx_buffer_.begin() + data_len - 3);
+  // Byte 0...139
+  if (at < frame_len)
+    return true;
+
+  uint8_t function = raw[3];
+
+  //  uint16_t computed_crc = chksum(raw, data_len);
+  //  uint16_t remote_crc = uint16_t(raw[data_len]) << 8 | (uint16_t(raw[data_len + 1]) << 0);
+  //  if (computed_crc != remote_crc) {
+  //    ESP_LOGW(TAG, "AntModbus CRC Check failed! %02X!=%02X", computed_crc, remote_crc);
+  //    return false;
+  //  }
+
+  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());
+  ESP_LOGVV(TAG, "CRC: 0x%02X 0x%02X", raw[138], raw[139]);
+
+  std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
   bool found = false;
   for (auto *device : this->devices_) {
