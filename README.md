@@ -8,6 +8,7 @@
 
 ESPHome component to monitor a ANT-BMS via UART
 
+![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
 
 ## Supported devices
 
@@ -73,7 +74,34 @@ esphome run esp32-example.yaml
 ## Example response all sensors enabled
 
 ```
-TBD.
+[sensor:125]: 'ant-bms total voltage': Sending state 54.10000 V with 2 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 1': Sending state 4.13800 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 2': Sending state 4.13800 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 3': Sending state 4.13500 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 4': Sending state 4.13800 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 5': Sending state 4.13800 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 6': Sending state 4.13600 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 7': Sending state 4.13600 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 8': Sending state 4.13600 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 9': Sending state 4.13400 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 10': Sending state 4.13700 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 11': Sending state 4.13600 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 12': Sending state 4.13700 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms cell voltage 13': Sending state 4.14000 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms soc': Sending state 100.00000 % with 0 decimals of accuracy
+[sensor:125]: 'ant-bms total battery capacity setting': Sending state 39.00000 Ah with 2 decimals of accuracy
+[sensor:125]: 'ant-bms capacity remaining': Sending state 38.99547 Ah with 2 decimals of accuracy
+[sensor:125]: 'ant-bms battery cycle capacity': Sending state 575.37402 Ah with 2 decimals of accuracy
+[sensor:125]: 'ant-bms temperature 1': Sending state 21.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'ant-bms temperature 2': Sending state 21.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'ant-bms temperature 3': Sending state 20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'ant-bms temperature 4': Sending state 20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'ant-bms temperature 5': Sending state 20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'ant-bms temperature 6': Sending state 20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'ant-bms min cell voltage': Sending state 4.14000 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms max cell voltage': Sending state 4.13400 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms average cell voltage': Sending state 4.13600 V with 2 decimals of accuracy
+[sensor:125]: 'ant-bms battery strings': Sending state 13.00000  with 0 decimals of accuracy
 ```
 
 ## Protocol

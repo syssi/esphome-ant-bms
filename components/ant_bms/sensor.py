@@ -72,6 +72,8 @@ CONF_CELL_VOLTAGE_32 = "cell_voltage_32"
 
 ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
+ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-50"
+ICON_BATTERY_CYCLE_CAPACITY = "mdi:battery-50"
 ICON_SOC = "mdi:battery-50"
 
 UNIT_AMPERE_HOURS = "Ah"
@@ -152,7 +154,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_TOTAL_BATTERY_CAPACITY_SETTING): sensor.sensor_schema(
             UNIT_AMPERE_HOURS,
-            ICON_EMPTY,
+            ICON_TOTAL_BATTERY_CAPACITY_SETTING,
             2,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,
@@ -166,7 +168,7 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_BATTERY_CYCLE_CAPACITY): sensor.sensor_schema(
             UNIT_AMPERE_HOURS,
-            ICON_EMPTY,
+            ICON_BATTERY_CYCLE_CAPACITY,
             2,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,
