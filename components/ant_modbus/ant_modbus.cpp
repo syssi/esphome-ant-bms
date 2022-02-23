@@ -103,19 +103,16 @@ float AntModbus::get_setup_priority() const {
   // After UART bus
   return setup_priority::BUS - 1.0f;
 }
-void AntModbus::send(uint8_t address, uint8_t function, uint16_t start_address, uint16_t register_count) {
-  uint8_t frame[8];
-  frame[0] = address;
-  frame[1] = function;
-  frame[2] = start_address >> 8;
-  frame[3] = start_address >> 0;
-  frame[4] = register_count >> 8;
-  frame[5] = register_count >> 0;
-  auto crc = chksum(frame, 6);
-  frame[6] = crc >> 8;
-  frame[7] = crc >> 0;
+void AntModbus::send(uint8_t function, uint8_t address, uint16_t value) {
+  uint8_t frame[6];
+  frame[0] = 0xA5;
+  frame[1] = function;    // 0xA5
+  frame[2] = address;     // 0xFA (Charge MOSFET)
+  frame[3] = value >> 8;  // 0x00
+  frame[4] = value >> 0;  // 0x01 (On)
+  frame[5] = (uint8_t)(frame[2] + frame[3]) + frame[4];
 
-  this->write_array(frame, 8);
+  this->write_array(frame, 6);
   this->flush();
 }
 
