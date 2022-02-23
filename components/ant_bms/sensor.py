@@ -2,15 +2,21 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import sensor
 from esphome.const import (
+    CONF_CURRENT,
+    CONF_POWER,
+    DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ICON_EMPTY,
     STATE_CLASS_MEASUREMENT,
+    UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
     UNIT_PERCENT,
     UNIT_VOLT,
+    UNIT_WATT,
 )
 
 from . import CONF_ANT_BMS_ID, AntBms
@@ -124,12 +130,14 @@ TEMPERATURES = [
 
 SENSORS = [
     CONF_BATTERY_STRINGS,
+    CONF_CURRENT,
     CONF_SOC,
     CONF_TOTAL_BATTERY_CAPACITY_SETTING,
     CONF_CAPACITY_REMAINING,
     CONF_BATTERY_CYCLE_CAPACITY,
     CONF_TOTAL_VOLTAGE,
     CONF_AVERAGE_CELL_VOLTAGE,
+    CONF_POWER,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
 ]
@@ -143,6 +151,13 @@ CONFIG_SCHEMA = cv.Schema(
             ICON_BATTERY_STRINGS,
             0,
             DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CURRENT): sensor.sensor_schema(
+            UNIT_AMPERE,
+            ICON_EMPTY,
+            1,
+            DEVICE_CLASS_CURRENT,
             STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_SOC): sensor.sensor_schema(
@@ -178,6 +193,9 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_AVERAGE_CELL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_POWER): sensor.sensor_schema(
+            UNIT_WATT, ICON_EMPTY, 1, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT

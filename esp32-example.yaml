@@ -47,6 +47,8 @@ sensor:
   - platform: ant_bms
     battery_strings:
       name: "${name} battery strings"
+    current:
+      name: "${name} current"
     soc:
       name: "${name} soc"
     total_battery_capacity_setting:
@@ -59,6 +61,8 @@ sensor:
       name: "${name} total voltage"
     average_cell_voltage:
       name: "${name} average cell voltage"
+    power:
+      name: "${name} power"
     min_cell_voltage:
       name: "${name} min cell voltage"
     max_cell_voltage:
