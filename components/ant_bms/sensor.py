@@ -3,6 +3,7 @@ import esphome.config_validation as cv
 from esphome.components import sensor
 from esphome.const import (
     CONF_CURRENT,
+    CONF_POWER,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
     DEVICE_CLASS_POWER,
@@ -32,7 +33,6 @@ CONF_BATTERY_CYCLE_CAPACITY = "battery_cycle_capacity"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
-CONF_POWER = "power"
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
 
