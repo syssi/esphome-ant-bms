@@ -1,5 +1,6 @@
 substitutions:
   name: ant-bms
+  external_components_source: github://syssi/esphome-ant-bms@main
 
 esphome:
   name: ${name}
@@ -7,10 +8,8 @@ esphome:
   board: esp-wrover-kit
 
 external_components:
-  - source: github://syssi/esphome-ant-bms@main
+  - source: ${external_components_source}
     refresh: 0s
-#  - source: components
-#    refresh: 0s
 
 wifi:
   ssid: !secret wifi_ssid
@@ -25,12 +24,7 @@ mqtt:
 # api:
 ota:
 logger:
-  level: VERY_VERBOSE
-  logs:
-    api.service: WARN
-    ota: WARN
-    wifi: WARN
-    sensor: DEBUG
+  level: DEBUG
 
 uart:
   id: uart0

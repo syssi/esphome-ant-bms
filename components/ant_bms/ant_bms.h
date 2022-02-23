@@ -40,6 +40,8 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
     this->temperatures_[temperature].temperature_sensor_ = temperature_sensor;
   }
 
+  void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
+
   void dump_config() override;
 
   void on_ant_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) override;
@@ -64,6 +66,8 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   struct Temperature {
     sensor::Sensor *temperature_sensor_{nullptr};
   } temperatures_[6];
+
+  bool enable_fake_traffic_;
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
