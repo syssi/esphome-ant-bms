@@ -63,7 +63,7 @@ bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
   }
 
   // Byte 0...139
-  if (at < frame_len)
+  if (at < frame_len - 1)
     return true;
 
   uint8_t function = raw[3];
