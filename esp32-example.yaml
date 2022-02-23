@@ -143,3 +143,18 @@ sensor:
       name: "${name} cell voltage 31"
     cell_voltage_32:
       name: "${name} cell voltage 32"
+    charge_mosfet_status_code:
+      name: "${name} charge mosfet status code"
+    discharge_mosfet_status_code:
+      name: "${name} discharge mosfet status code"
+    balancer_status_code:
+      name: "${name} balancer status code"
+
+text_sensor:
+  - platform: ant_bms
+    charge_mosfet_status:
+      name: "${name} charge mosfet status"
+    discharge_mosfet_status:
+      name: "${name} discharge mosfet status"
+    balancer_status:
+      name: "${name} balancer status"
