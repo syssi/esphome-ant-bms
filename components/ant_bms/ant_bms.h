@@ -2,6 +2,7 @@
 
 #include "esphome/core/component.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/components/ant_modbus/ant_modbus.h"
 
 namespace esphome {
@@ -41,6 +42,25 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_temperature_sensor(uint8_t temperature, sensor::Sensor *temperature_sensor) {
     this->temperatures_[temperature].temperature_sensor_ = temperature_sensor;
   }
+  void set_charge_mosfet_status_code_sensor(sensor::Sensor *charge_mosfet_status_code_sensor) {
+    charge_mosfet_status_code_sensor_ = charge_mosfet_status_code_sensor;
+  }
+  void set_discharge_mosfet_status_code_sensor(sensor::Sensor *discharge_mosfet_status_code_sensor) {
+    discharge_mosfet_status_code_sensor_ = discharge_mosfet_status_code_sensor;
+  }
+  void set_balancer_status_code_sensor(sensor::Sensor *balancer_status_code_sensor) {
+    balancer_status_code_sensor_ = balancer_status_code_sensor;
+  }
+
+  void set_charge_mosfet_status_text_sensor(text_sensor::TextSensor *charge_mosfet_status_text_sensor) {
+    charge_mosfet_status_text_sensor_ = charge_mosfet_status_text_sensor;
+  }
+  void set_discharge_mosfet_status_text_sensor(text_sensor::TextSensor *discharge_mosfet_status_text_sensor) {
+    discharge_mosfet_status_text_sensor_ = discharge_mosfet_status_text_sensor;
+  }
+  void set_balancer_status_text_sensor(text_sensor::TextSensor *balancer_status_text_sensor) {
+    balancer_status_text_sensor_ = balancer_status_text_sensor;
+  }
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
 
@@ -62,6 +82,13 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   sensor::Sensor *power_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
+  sensor::Sensor *charge_mosfet_status_code_sensor_;
+  sensor::Sensor *discharge_mosfet_status_code_sensor_;
+  sensor::Sensor *balancer_status_code_sensor_;
+
+  text_sensor::TextSensor *charge_mosfet_status_text_sensor_;
+  text_sensor::TextSensor *discharge_mosfet_status_text_sensor_;
+  text_sensor::TextSensor *balancer_status_text_sensor_;
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -75,6 +102,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
+  void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   float get_signed_float_(const uint32_t value) {
     if ((value & 0x80000000) == 0x80000000) {
       return (float) (value & 0x7FFFFFFF) * -1;

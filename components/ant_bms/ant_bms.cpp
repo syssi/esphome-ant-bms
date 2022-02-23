@@ -9,6 +9,61 @@ static const char *const TAG = "ant_bms";
 
 static const uint8_t FUNCTION_READ_ALL = 0xFF;
 
+static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 16;
+static const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
+    "Off",                           // 0x00
+    "On",                            // 0x01
+    "Overcharge protection",         // 0x02
+    "Over current protection",       // 0x03
+    "Battery full",                  // 0x04
+    "Total overpressure",            // 0x05
+    "Battery over temperature",      // 0x06
+    "MOSFET over temperature",       // 0x07
+    "Abnormal current",              // 0x08
+    "Balanced line dropped string",  // 0x09
+    "Motherboard over temperature",  // 0x0A
+    "Unknown",                       // 0x0B
+    "Unknown",                       // 0x0C
+    "Discharge MOSFET abnormality",  // 0x0D
+    "Unknown",                       // 0x0E
+    "Manually turned off",           // 0x0F
+};
+
+static const uint8_t DISCHARGE_MOSFET_STATUS_SIZE = 16;
+static const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STATUS_SIZE] = {
+    "Off",                           // 0x00
+    "On",                            // 0x01
+    "Overdischarge protection",      // 0x02
+    "Over current protection",       // 0x03
+    "Unknown",                       // 0x04
+    "Total pressure undervoltage",   // 0x05
+    "Battery over temperature",      // 0x06
+    "MOSFET over temperature",       // 0x07
+    "Abnormal current",              // 0x08
+    "Balanced line dropped string",  // 0x09
+    "Motherboard over temperature",  // 0x0A
+    "Charge MOSFET on",              // 0x0B
+    "Short circuit protection",      // 0x0C
+    "Discharge MOSFET abnormality",  // 0x0D
+    "Start exception",               // 0x0E
+    "Manually turned off",           // 0x0F
+};
+
+static const uint8_t BALANCER_STATUS_SIZE = 11;
+static const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
+    "Off",                                   // 0x00
+    "Exceeds the limit equilibrium",         // 0x01
+    "Charge differential pressure balance",  // 0x02
+    "Balanced over temperature",             // 0x03
+    "Automatic equalization",                // 0x04
+    "Unknown",                               // 0x05
+    "Unknown",                               // 0x06
+    "Unknown",                               // 0x07
+    "Unknown",                               // 0x08
+    "Unknown",                               // 0x09
+    "Motherboard over temperature",          // 0x0A
+};
+
 void AntBms::on_ant_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) {
   if (data.size() == 140) {
     this->on_status_data_(data);
@@ -74,8 +129,33 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   }
 
   //  103   0x01: Charge MOSFET Status
+  uint8_t raw_charge_mosfet_status = data[103];
+  this->publish_state_(this->charge_mosfet_status_code_sensor_, (float) raw_charge_mosfet_status);
+  if (raw_charge_mosfet_status < CHARGE_MOSFET_STATUS_SIZE) {
+    this->publish_state_(this->charge_mosfet_status_text_sensor_, CHARGE_MOSFET_STATUS[raw_charge_mosfet_status]);
+  } else {
+    this->publish_state_(this->charge_mosfet_status_text_sensor_, "Unknown");
+  }
+
   //  104   0x01: Discharge MOSFET Status
+  uint8_t raw_discharge_mosfet_status = data[104];
+  this->publish_state_(this->discharge_mosfet_status_code_sensor_, (float) raw_discharge_mosfet_status);
+  if (raw_discharge_mosfet_status < DISCHARGE_MOSFET_STATUS_SIZE) {
+    this->publish_state_(this->discharge_mosfet_status_text_sensor_,
+                         DISCHARGE_MOSFET_STATUS[raw_discharge_mosfet_status]);
+  } else {
+    this->publish_state_(this->discharge_mosfet_status_text_sensor_, "Unknown");
+  }
+
   //  105   0x00: Balancer Status
+  uint8_t raw_balancer_status = data[105];
+  this->publish_state_(this->balancer_status_code_sensor_, (float) raw_balancer_status);
+  if (raw_balancer_status < BALANCER_STATUS_SIZE) {
+    this->publish_state_(this->balancer_status_text_sensor_, BALANCER_STATUS[raw_balancer_status]);
+  } else {
+    this->publish_state_(this->balancer_status_text_sensor_, "Unknown");
+  }
+
   //  106   0x03 0xE8: Tire length                                                    mm
   //  108   0x00 0x17: Number of pulses per week
   //  110   0x01: Relay switch
@@ -124,6 +204,13 @@ void AntBms::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void AntBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
+  if (text_sensor == nullptr)
+    return;
+
+  text_sensor->publish_state(state);
 }
 
 void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
@@ -179,6 +266,12 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_SENSOR("", "Cell Voltage 30", this->cells_[29].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 31", this->cells_[30].cell_voltage_sensor_);
   LOG_SENSOR("", "Cell Voltage 32", this->cells_[31].cell_voltage_sensor_);
+  LOG_SENSOR("", "Charge Mosfet Status Code", this->charge_mosfet_status_code_sensor_);
+  LOG_TEXT_SENSOR("", "Charge Mosfet Status", this->charge_mosfet_status_text_sensor_);
+  LOG_SENSOR("", "Discharge Mosfet Status Code", this->discharge_mosfet_status_code_sensor_);
+  LOG_TEXT_SENSOR("", "Discharge Mosfet Status", this->discharge_mosfet_status_text_sensor_);
+  LOG_SENSOR("", "Balancer Status Code", this->balancer_status_code_sensor_);
+  LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
 }
 
 }  // namespace ant_bms

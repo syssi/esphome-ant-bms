@@ -76,11 +76,18 @@ CONF_CELL_VOLTAGE_30 = "cell_voltage_30"
 CONF_CELL_VOLTAGE_31 = "cell_voltage_31"
 CONF_CELL_VOLTAGE_32 = "cell_voltage_32"
 
+CONF_CHARGE_MOSFET_STATUS_CODE = "charge_mosfet_status_code"
+CONF_DISCHARGE_MOSFET_STATUS_CODE = "discharge_mosfet_status_code"
+CONF_BALANCER_STATUS_CODE = "balancer_status_code"
+
 ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-50"
 ICON_BATTERY_CYCLE_CAPACITY = "mdi:battery-50"
 ICON_SOC = "mdi:battery-50"
+ICON_CHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
+ICON_DISCHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
+ICON_BALANCER_STATUS_CODE = "mdi:heart-pulse"
 
 UNIT_AMPERE_HOURS = "Ah"
 
@@ -140,6 +147,9 @@ SENSORS = [
     CONF_POWER,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
+    CONF_CHARGE_MOSFET_STATUS_CODE,
+    CONF_DISCHARGE_MOSFET_STATUS_CODE,
+    CONF_BALANCER_STATUS_CODE,
 ]
 
 # pylint: disable=too-many-function-args
@@ -340,6 +350,27 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_CELL_VOLTAGE_32): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CHARGE_MOSFET_STATUS_CODE): sensor.sensor_schema(
+            UNIT_EMPTY,
+            ICON_CHARGE_MOSFET_STATUS_CODE,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_DISCHARGE_MOSFET_STATUS_CODE): sensor.sensor_schema(
+            UNIT_EMPTY,
+            ICON_DISCHARGE_MOSFET_STATUS_CODE,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_BALANCER_STATUS_CODE): sensor.sensor_schema(
+            UNIT_EMPTY,
+            ICON_BALANCER_STATUS_CODE,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
         ),
     }
 )
