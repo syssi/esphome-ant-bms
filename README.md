@@ -88,6 +88,7 @@ esphome run esp32-example.yaml
 [sensor:125]: 'ant-bms cell voltage 11': Sending state 4.13600 V with 3 decimals of accuracy
 [sensor:125]: 'ant-bms cell voltage 12': Sending state 4.13700 V with 3 decimals of accuracy
 [sensor:125]: 'ant-bms cell voltage 13': Sending state 4.14000 V with 3 decimals of accuracy
+[sensor:125]: 'ant-bms current': Sending state 0.00000 A with 1 decimals of accuracy
 [sensor:125]: 'ant-bms soc': Sending state 100.00000 % with 0 decimals of accuracy
 [sensor:125]: 'ant-bms total battery capacity setting': Sending state 39.00000 Ah with 2 decimals of accuracy
 [sensor:125]: 'ant-bms capacity remaining': Sending state 38.99547 Ah with 2 decimals of accuracy
@@ -98,6 +99,13 @@ esphome run esp32-example.yaml
 [sensor:125]: 'ant-bms temperature 4': Sending state 20.00000 °C with 0 decimals of accuracy
 [sensor:125]: 'ant-bms temperature 5': Sending state 20.00000 °C with 0 decimals of accuracy
 [sensor:125]: 'ant-bms temperature 6': Sending state 20.00000 °C with 0 decimals of accuracy
+[sensor:125]: 'ant-bms charge mosfet status code': Sending state 1.00000  with 0 decimals of accuracy
+[text_sensor:067]: 'ant-bms charge mosfet status': Sending state 'On'
+[sensor:125]: 'ant-bms discharge mosfet status code': Sending state 1.00000  with 0 decimals of accuracy
+[text_sensor:067]: 'ant-bms discharge mosfet status': Sending state 'On'
+[sensor:125]: 'ant-bms balancer status code': Sending state 0.00000  with 0 decimals of accuracy
+[text_sensor:067]: 'ant-bms balancer status': Sending state 'Off'
+[sensor:125]: 'ant-bms power': Sending state 0.00000 W with 1 decimals of accuracy
 [sensor:125]: 'ant-bms min cell voltage': Sending state 4.14000 V with 3 decimals of accuracy
 [sensor:125]: 'ant-bms max cell voltage': Sending state 4.13400 V with 3 decimals of accuracy
 [sensor:125]: 'ant-bms average cell voltage': Sending state 4.13600 V with 2 decimals of accuracy
