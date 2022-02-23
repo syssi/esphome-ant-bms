@@ -32,10 +32,23 @@ TBD.
 │          │<----- RX ----->│         │
 │ ANT-BMS  │<----- TX ----->│ ESP32/  │
 │          │<----- GND ---->│ ESP8266 │<-- 3.3V
-│          │                │         │<-- GND
+│          │<----- 3.3V --->│         │<-- GND
 └──────────┘                └─────────┘
 
+
+
+│                ANT-BMS                 │
+│                                        │
+│  Comm                            Temp  │
+└─[oooo]──[oooooooo]──[oooooooo]──[oooo]─┘
+   ││││
+ VCC│││
+  GND││
+   RXD│
+    TXD
 ```
+
+https://github.com/syssi/esphome-ant-bms/issues/1#issuecomment-1049048825
 
 ## Installation
 
