@@ -29,7 +29,7 @@ logger:
   logs:
     api.service: WARN
     ota: WARN
-    wif: WARN
+    wifi: WARN
     sensor: DEBUG
 
 uart:
