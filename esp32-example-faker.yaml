@@ -1,0 +1,6 @@
+<<: !include esp32-example-debug.yaml
+
+ant_bms:
+  id: bms0
+  ant_modbus_id: modbus0
+  enable_fake_traffic: true
