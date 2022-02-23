@@ -5,6 +5,7 @@ from esphome.const import (
     CONF_CURRENT,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ICON_EMPTY,
@@ -14,6 +15,7 @@ from esphome.const import (
     UNIT_EMPTY,
     UNIT_PERCENT,
     UNIT_VOLT,
+    UNIT_WATT,
 )
 
 from . import CONF_ANT_BMS_ID, AntBms
@@ -30,6 +32,7 @@ CONF_BATTERY_CYCLE_CAPACITY = "battery_cycle_capacity"
 CONF_TOTAL_VOLTAGE = "total_voltage"
 
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
+CONF_POWER = "power"
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
 
@@ -134,6 +137,7 @@ SENSORS = [
     CONF_BATTERY_CYCLE_CAPACITY,
     CONF_TOTAL_VOLTAGE,
     CONF_AVERAGE_CELL_VOLTAGE,
+    CONF_POWER,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
 ]
@@ -189,6 +193,9 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_AVERAGE_CELL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_POWER): sensor.sensor_schema(
+            UNIT_WATT, ICON_EMPTY, 4, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT

@@ -27,6 +27,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_average_cell_voltage_sensor(sensor::Sensor *average_cell_voltage_sensor) {
     average_cell_voltage_sensor_ = average_cell_voltage_sensor;
   }
+  void set_power_sensor(sensor::Sensor *power_sensor) { power_sensor_ = power_sensor; }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
   }
@@ -58,6 +59,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   sensor::Sensor *battery_cycle_capacity_sensor_;
   sensor::Sensor *total_voltage_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
+  sensor::Sensor *power_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
 
@@ -73,6 +75,13 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
+  float get_signed_float_(const uint32_t value) {
+    if ((value & 0x80000000) == 0x80000000) {
+      return (float) (value & 0x7FFFFFFF) * -1;
+    }
+
+    return (float) (value & 0x7FFFFFFF);
+  }
 };
 
 }  // namespace ant_bms
