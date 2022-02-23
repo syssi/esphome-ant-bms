@@ -12,6 +12,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
     battery_strings_sensor_ = battery_strings_sensor;
   }
+  void set_current_sensor(sensor::Sensor *current_sensor) { current_sensor_ = current_sensor; }
   void set_soc_sensor(sensor::Sensor *soc_sensor) { soc_sensor_ = soc_sensor; }
   void set_total_battery_capacity_setting_sensor(sensor::Sensor *total_battery_capacity_setting_sensor) {
     total_battery_capacity_setting_sensor_ = total_battery_capacity_setting_sensor;
@@ -50,6 +51,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
 
  protected:
   sensor::Sensor *battery_strings_sensor_;
+  sensor::Sensor *current_sensor_;
   sensor::Sensor *soc_sensor_;
   sensor::Sensor *total_battery_capacity_setting_sensor_;
   sensor::Sensor *capacity_remaining_sensor_;

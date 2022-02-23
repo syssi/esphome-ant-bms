@@ -53,6 +53,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, (float) ant_get_16bit(i * 2 + 6) * 0.001f);
   }
   //  70    0x00 0x00 0x00 0x00: Current               0.0 A                          0.1 A
+  this->publish_state_(this->current_sensor_, (float) ant_get_32bit(75) * 0.000001f);
   //  74    0x64: SOC                                  100 %                          1.0 %
   this->publish_state_(this->soc_sensor_, (float) data[74]);
   //  75    0x02 0x53 0x17 0xC0: Total Battery Capacity Setting   39000000            0.000001 Ah
@@ -129,11 +130,12 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   ESP_LOGCONFIG(TAG, "  Address: 0x%02X", this->address_);
 
   LOG_SENSOR("", "Battery Strings", this->battery_strings_sensor_);
+  LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
+  LOG_SENSOR("", "Current", this->current_sensor_);
   LOG_SENSOR("", "SoC", this->soc_sensor_);
   LOG_SENSOR("", "Total Battery Capacity Setting", this->total_battery_capacity_setting_sensor_);
   LOG_SENSOR("", "Capacity Remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "Battery Cycle Capacity", this->battery_cycle_capacity_sensor_);
-  LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
   LOG_SENSOR("", "Average cell voltage sensor", this->average_cell_voltage_sensor_);
   LOG_SENSOR("", "Minimum cell voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum cell voltage", this->max_cell_voltage_sensor_);

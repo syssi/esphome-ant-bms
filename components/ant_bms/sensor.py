@@ -2,11 +2,14 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import sensor
 from esphome.const import (
+    CONF_CURRENT,
+    DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ICON_EMPTY,
     STATE_CLASS_MEASUREMENT,
+    UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
     UNIT_PERCENT,
@@ -124,6 +127,7 @@ TEMPERATURES = [
 
 SENSORS = [
     CONF_BATTERY_STRINGS,
+    CONF_CURRENT,
     CONF_SOC,
     CONF_TOTAL_BATTERY_CAPACITY_SETTING,
     CONF_CAPACITY_REMAINING,
@@ -143,6 +147,13 @@ CONFIG_SCHEMA = cv.Schema(
             ICON_BATTERY_STRINGS,
             0,
             DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_CURRENT): sensor.sensor_schema(
+            UNIT_AMPERE,
+            ICON_EMPTY,
+            2,
+            DEVICE_CLASS_CURRENT,
             STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_SOC): sensor.sensor_schema(

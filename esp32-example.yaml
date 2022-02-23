@@ -47,6 +47,8 @@ sensor:
   - platform: ant_bms
     battery_strings:
       name: "${name} battery strings"
+    current:
+      name: "${name} current"
     soc:
       name: "${name} soc"
     total_battery_capacity_setting:
