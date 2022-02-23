@@ -1,6 +1,8 @@
 substitutions:
   name: ant-bms
   external_components_source: github://syssi/esphome-ant-bms@main
+  tx_pin: GPIO16
+  rx_pin: GPIO17
 
 esphome:
   name: ${name}
@@ -30,10 +32,8 @@ uart:
   id: uart0
   baud_rate: 19200
   rx_buffer_size: 384
-  tx_pin: GPIO14
-  rx_pin: GPIO4
-  debug:
-    direction: BOTH
+  tx_pin: ${tx_pin}
+  rx_pin: ${rx_pin}
 
 ant_modbus:
   id: modbus0
