@@ -21,7 +21,7 @@ CONFIG_SCHEMA = (
         }
     )
     .extend(cv.polling_component_schema("5s"))
-    .extend(ant_modbus.ant_modbus_device_schema(0x4E))
+    .extend(ant_modbus.ant_modbus_device_schema(0xAA))
 )
 
 
