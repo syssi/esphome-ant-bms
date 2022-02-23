@@ -156,7 +156,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_CURRENT): sensor.sensor_schema(
             UNIT_AMPERE,
             ICON_EMPTY,
-            2,
+            1,
             DEVICE_CLASS_CURRENT,
             STATE_CLASS_MEASUREMENT,
         ),
@@ -195,7 +195,7 @@ CONFIG_SCHEMA = cv.Schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_POWER): sensor.sensor_schema(
-            UNIT_WATT, ICON_EMPTY, 4, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
+            UNIT_WATT, ICON_EMPTY, 1, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
