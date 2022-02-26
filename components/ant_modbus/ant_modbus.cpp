@@ -6,11 +6,6 @@ namespace ant_modbus {
 
 static const char *const TAG = "ant_modbus";
 
-void AntModbus::setup() {
-  if (this->flow_control_pin_ != nullptr) {
-    this->flow_control_pin_->setup();
-  }
-}
 void AntModbus::loop() {
   const uint32_t now = millis();
   if (now - this->last_ant_modbus_byte_ > 50) {
@@ -94,10 +89,7 @@ bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
   return false;
 }
 
-void AntModbus::dump_config() {
-  ESP_LOGCONFIG(TAG, "AntModbus:");
-  LOG_PIN("  Flow Control Pin: ", this->flow_control_pin_);
-}
+void AntModbus::dump_config() { ESP_LOGCONFIG(TAG, "AntModbus:"); }
 float AntModbus::get_setup_priority() const {
   // After UART bus
   return setup_priority::BUS - 1.0f;
