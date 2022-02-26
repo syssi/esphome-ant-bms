@@ -19,15 +19,15 @@ ICON_CHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
 ICON_RESTART = "mdi:restart"
 
-# 0xF7   Close BMS power
+# 0xF7   Shutdown the BMS
 # 0xF8   Current zeroing
 # 0xF9   Discharge MOS tube switch
 #        Forced to close the discharge tube     Data is 0
 # 0xFA   Charge MOS tube switch
 #        Forced shutdown charge tube            Data is 0
-# 0xFB   Change the parameter to iron lithium
+# 0xFB   Change the battery type(?)
 # 0xFC   The battery is automatically balanced
-# 0xFD   Factory Settings button
+# 0xFD   Factory default
 # 0xFE   Reboot button
 # 0xFF   Apply button
 #
