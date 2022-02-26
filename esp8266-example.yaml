@@ -43,6 +43,7 @@ ant_modbus:
 ant_bms:
   id: bms0
   ant_modbus_id: modbus0
+  update_interval: 10s
 
 sensor:
   - platform: ant_bms
