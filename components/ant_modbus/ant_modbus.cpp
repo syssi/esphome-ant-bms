@@ -76,7 +76,6 @@ bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
   }
 
   ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());
-  ESP_LOGVV(TAG, "CRC: 0x%02X 0x%02X", raw[138], raw[139]);
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
