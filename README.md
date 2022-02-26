@@ -42,10 +42,11 @@ ESPHome component to monitor a ANT-BMS via UART
 │  Comm                            Temp  │
 └─[oooo]──[oooooooo]──[oooooooo]──[oooo]─┘
    ││││
- VCC│││
-  GND││
-   RXD│
-    TXD
+   ││││      (ESP32)
+   │││└─ TXD (GPIO16)
+   ││└── RXD (GPIO17)
+   │└─── GND (GND)
+   └──── VCC (3.3V)
 ```
 
 https://github.com/syssi/esphome-ant-bms/issues/1#issuecomment-1049048825
