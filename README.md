@@ -43,6 +43,7 @@ ESPHome component to monitor a ANT-BMS via UART
 └─[oooo]──[oooooooo]──[oooooooo]──[oooo]─┘
    ││││
    ││││      (ESP32)
+   ││││
    │││└─ TXD (GPIO16)
    ││└── RXD (GPIO17)
    │└─── GND (GND)
