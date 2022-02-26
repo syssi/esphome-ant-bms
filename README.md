@@ -124,6 +124,9 @@ esphome run esp32-example.yaml
 [sensor:125]: 'ant-bms max cell voltage': Sending state 4.13400 V with 3 decimals of accuracy
 [sensor:125]: 'ant-bms average cell voltage': Sending state 4.13600 V with 2 decimals of accuracy
 [sensor:125]: 'ant-bms battery strings': Sending state 13.00000  with 0 decimals of accuracy
+[switch:037]: 'ant-bms charging': Sending state ON
+[switch:037]: 'ant-bms discharging': Sending state ON
+[switch:037]: 'ant-bms balancer': Sending state OFF
 ```
 
 ## Protocol

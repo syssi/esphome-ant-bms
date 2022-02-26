@@ -17,11 +17,11 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
-# mqtt:
-#   broker: !secret mqtt_host
-#   username: !secret mqtt_username
-#   password: !secret mqtt_password
-#   id: mqtt_client
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
 
 # api:
 ota:
