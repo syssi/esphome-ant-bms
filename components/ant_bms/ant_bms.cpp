@@ -8,6 +8,7 @@ namespace ant_bms {
 static const char *const TAG = "ant_bms";
 
 static const uint8_t FUNCTION_READ_ALL = 0xFF;
+static const uint8_t WRITE_SINGLE_REGISTER = 0xA5;
 
 static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 16;
 static const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
@@ -136,6 +137,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   } else {
     this->publish_state_(this->charge_mosfet_status_text_sensor_, "Unknown");
   }
+  this->publish_state_(this->charging_switch_, (bool) (raw_charge_mosfet_status == 0x01));
 
   //  104   0x01: Discharge MOSFET Status
   uint8_t raw_discharge_mosfet_status = data[104];
@@ -146,6 +148,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   } else {
     this->publish_state_(this->discharge_mosfet_status_text_sensor_, "Unknown");
   }
+  this->publish_state_(this->discharging_switch_, (bool) (raw_discharge_mosfet_status == 0x01));
 
   //  105   0x00: Balancer Status
   uint8_t raw_balancer_status = data[105];
@@ -155,6 +158,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   } else {
     this->publish_state_(this->balancer_status_text_sensor_, "Unknown");
   }
+  this->publish_state_(this->balancer_switch_, (bool) (raw_balancer_status == 0x04));
 
   //  106   0x03 0xE8: Tire length                                                    mm
   //  108   0x00 0x17: Number of pulses per week
@@ -178,6 +182,13 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  132   0x00 0x00 0x00 0x00: Battery is in balance bitmask (Bit 1 = Cell 1, Bit 2 = Cell 2, ...)
   //  136   0x11 0x62: System log / overall status bitmask?
   //  138   0x0B 0x00: CRC
+}
+
+void AntBms::write_register(uint8_t address, uint16_t value) {
+  this->send(WRITE_SINGLE_REGISTER, address, value);
+
+  ESP_LOGI(TAG, "Write register request: A5.%02X.%02X.%02X.%02X + CRC (6)", WRITE_SINGLE_REGISTER, address,
+           (uint8_t)(value >> 8), (uint8_t) value);
 }
 
 void AntBms::update() {
@@ -204,6 +215,13 @@ void AntBms::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void AntBms::publish_state_(switch_::Switch *obj, const bool &state) {
+  if (obj == nullptr)
+    return;
+
+  obj->publish_state(state);
 }
 
 void AntBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {

@@ -158,3 +158,14 @@ text_sensor:
       name: "${name} discharge mosfet status"
     balancer_status:
       name: "${name} balancer status"
+
+switch:
+  - platform: ant_bms
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
+    balancer:
+      name: "${name} balancer"
+    restart:
+      name: "${name} restart"

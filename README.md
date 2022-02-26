@@ -124,6 +124,9 @@ esphome run esp32-example.yaml
 [sensor:125]: 'ant-bms max cell voltage': Sending state 4.13400 V with 3 decimals of accuracy
 [sensor:125]: 'ant-bms average cell voltage': Sending state 4.13600 V with 2 decimals of accuracy
 [sensor:125]: 'ant-bms battery strings': Sending state 13.00000  with 0 decimals of accuracy
+[switch:037]: 'ant-bms charging': Sending state ON
+[switch:037]: 'ant-bms discharging': Sending state ON
+[switch:037]: 'ant-bms balancer': Sending state OFF
 ```
 
 ## Protocol
@@ -198,6 +201,10 @@ esphome run esp32-example.yaml
 |  `132` | `4` | `0x00 0x00 0x00 0x00` | Battery is in balance bitmask (Bit 1 = Cell 1, Bit 2 = Cell 2, ...) | | |
 |  `136` | `2` | `0x11 0x62`           | System log / overall status bitmask?              | |
 |  `138` | `2` | `0x0B 0x00`           | CRC                                               | |
+
+## Known issues
+
+* A command queue / command scheduling would be nice. At the moment changing settings via the switch entities isn't reliable.
 
 ## Debugging
 
