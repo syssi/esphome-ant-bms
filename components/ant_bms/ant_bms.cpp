@@ -8,6 +8,7 @@ namespace ant_bms {
 static const char *const TAG = "ant_bms";
 
 static const uint8_t FUNCTION_READ_ALL = 0xFF;
+static const uint8_t WRITE_SINGLE_REGISTER = 0xA5;
 
 static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 16;
 static const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
@@ -180,6 +181,13 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  138   0x0B 0x00: CRC
 }
 
+void AntBms::write_register(uint8_t address, uint16_t value) {
+  this->send(WRITE_SINGLE_REGISTER, address, value);
+
+  ESP_LOGI(TAG, "Write register request: A5.%02X.%02X.%02X.%02X + CRC (6)", WRITE_SINGLE_REGISTER, address,
+           (uint8_t)(value >> 8), (uint8_t) value);
+}
+
 void AntBms::update() {
   this->read_registers();
 
@@ -204,6 +212,13 @@ void AntBms::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void AntBms::publish_state_(switch_::Switch *obj, const bool &state) {
+  if (obj == nullptr)
+    return;
+
+  obj->publish_state(state);
 }
 
 void AntBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {

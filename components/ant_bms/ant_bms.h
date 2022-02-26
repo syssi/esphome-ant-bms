@@ -2,6 +2,7 @@
 
 #include "esphome/core/component.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/components/ant_modbus/ant_modbus.h"
 
@@ -62,6 +63,11 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
     balancer_status_text_sensor_ = balancer_status_text_sensor;
   }
 
+  void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
+  void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
+  void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
+  void set_restart_switch(switch_::Switch *restart_switch) { restart_switch_ = restart_switch; }
+
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
 
   void dump_config() override;
@@ -69,6 +75,8 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void on_ant_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) override;
 
   void update() override;
+
+  void write_register(uint8_t address, uint16_t value);
 
  protected:
   sensor::Sensor *battery_strings_sensor_;
@@ -86,6 +94,11 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   sensor::Sensor *discharge_mosfet_status_code_sensor_;
   sensor::Sensor *balancer_status_code_sensor_;
 
+  switch_::Switch *charging_switch_;
+  switch_::Switch *discharging_switch_;
+  switch_::Switch *balancer_switch_;
+  switch_::Switch *restart_switch_;
+
   text_sensor::TextSensor *charge_mosfet_status_text_sensor_;
   text_sensor::TextSensor *discharge_mosfet_status_text_sensor_;
   text_sensor::TextSensor *balancer_status_text_sensor_;
@@ -102,6 +115,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
+  void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   float get_signed_float_(const uint32_t value) {
     if ((value & 0x80000000) == 0x80000000) {
