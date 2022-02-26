@@ -235,3 +235,4 @@ uart:
 * https://github.com/esphome/feature-requests/issues/1396
 * https://github.com/imval/AntBMS/blob/main/AntBMS.cpp
 * https://diysolarforum.com/threads/for-those-of-you-looking-to-monitor-your-ant-bms-with-pi3-via-bluetooth.6726/
+* http://mysharegadget.com/947324863
