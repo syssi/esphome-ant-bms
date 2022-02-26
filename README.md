@@ -202,6 +202,10 @@ esphome run esp32-example.yaml
 |  `136` | `2` | `0x11 0x62`           | System log / overall status bitmask?              | |
 |  `138` | `2` | `0x0B 0x00`           | CRC                                               | |
 
+## Known issues
+
+* A command queue / command scheduling would be nice. At the moment changing settings via the switch entities isn't reliable.
+
 ## Debugging
 
 If this component doesn't work out of the box for your device please update your configuration to enable the debug output of the UART component and increase the log level to the see outgoing and incoming serial traffic:
