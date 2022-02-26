@@ -166,7 +166,3 @@ switch:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
-    balancer:
-      name: "${name} balancer"
-    restart:
-      name: "${name} restart"
