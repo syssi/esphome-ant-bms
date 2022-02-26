@@ -166,3 +166,16 @@ switch:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
+
+button:
+  - platform: ant_bms
+    shutdown:
+      name: "${name} shutdown"
+    clear_counter:
+      name: "${name} clear counter"
+    balancer:
+      name: "${name} balancer"
+    factory_reset:
+      name: "${name} factory reset"
+    restart:
+      name: "${name} restart"
