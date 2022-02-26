@@ -186,6 +186,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
 
 void AntBms::write_register(uint8_t address, uint16_t value) {
   this->send(WRITE_SINGLE_REGISTER, address, value);
+  delay(200);  // NOLINT
   this->send(WRITE_SINGLE_REGISTER, REGISTER_APPLY_WRITE, 0x00);
 
   ESP_LOGI(TAG, "Write and apply register request: A5.%02X.%02X.%02X.%02X + CRC (6)", WRITE_SINGLE_REGISTER, address,
