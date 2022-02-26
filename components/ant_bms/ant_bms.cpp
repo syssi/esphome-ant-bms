@@ -137,6 +137,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   } else {
     this->publish_state_(this->charge_mosfet_status_text_sensor_, "Unknown");
   }
+  this->publish_state_(this->charging_switch_, (bool) (raw_charge_mosfet_status == 0x01));
 
   //  104   0x01: Discharge MOSFET Status
   uint8_t raw_discharge_mosfet_status = data[104];
@@ -147,6 +148,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   } else {
     this->publish_state_(this->discharge_mosfet_status_text_sensor_, "Unknown");
   }
+  this->publish_state_(this->discharging_switch_, (bool) (raw_discharge_mosfet_status == 0x01));
 
   //  105   0x00: Balancer Status
   uint8_t raw_balancer_status = data[105];
