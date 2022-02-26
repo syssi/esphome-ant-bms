@@ -158,7 +158,6 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   } else {
     this->publish_state_(this->balancer_status_text_sensor_, "Unknown");
   }
-  this->publish_state_(this->balancer_switch_, (bool) (raw_balancer_status == 0x04));
 
   //  106   0x03 0xE8: Tire length                                                    mm
   //  108   0x00 0x17: Number of pulses per week
