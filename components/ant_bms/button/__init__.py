@@ -21,8 +21,10 @@ ICON_BALANCER = "mdi:seesaw"
 ICON_FACTORY_RESET = "mdi:factory"
 ICON_RESTART = "mdi:restart"
 
-# 0xF8 0x00 0x00 -> clearBmsCurrentCmd
-# 0xEF 0x1A 0x01 -> requestUpgradeCmd
+# 0xEF 0x1A 0x01    Request upgrade command
+# 0xF0 0x00 0x00    Apply LTO settings
+# 0xF6 0x00 0x00    Change MAC address (randomize?)
+# 0xFB 0x00 0x00    Apply LiFePo4 settings
 #
 # https://github.com/klotztech/VBMS/wiki/Serial-protocol#control-addresses
 BUTTONS = {
