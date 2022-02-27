@@ -67,6 +67,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
+  void set_password(const std::string &password) { this->password_ = password; }
 
   void dump_config() override;
 
@@ -108,11 +109,14 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   } temperatures_[6];
 
   bool enable_fake_traffic_;
+  std::string password_;
 
   void on_status_data_(const std::vector<uint8_t> &data);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void authenticate_();
+
   float get_signed_float_(const uint32_t value) {
     if ((value & 0x80000000) == 0x80000000) {
       return (float) (value & 0x7FFFFFFF) * -1;
