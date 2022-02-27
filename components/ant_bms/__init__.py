@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import ant_modbus
-from esphome.const import CONF_ID
+from esphome.const import CONF_ID, CONF_PASSWORD
 
 AUTO_LOAD = ["ant_modbus", "button", "sensor", "switch", "text_sensor"]
 CODEOWNERS = ["@syssi"]
@@ -9,7 +9,6 @@ MULTI_CONF = True
 
 CONF_ANT_BMS_ID = "ant_bms_id"
 CONF_ENABLE_FAKE_TRAFFIC = "enable_fake_traffic"
-CONF_PASSWORD = "password"
 
 ant_bms_ns = cg.esphome_ns.namespace("ant_bms")
 AntBms = ant_bms_ns.class_("AntBms", cg.PollingComponent, ant_modbus.AntModbusDevice)
