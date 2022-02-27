@@ -32,6 +32,22 @@ uint16_t chksum(const uint8_t data[], const uint16_t len) {
   return checksum;
 }
 
+uint16_t crc16(const uint8_t *data, uint8_t len) {
+  uint16_t crc = 0xFFFF;
+  while (len--) {
+    crc ^= *data++;
+    for (uint8_t i = 0; i < 8; i++) {
+      if ((crc & 0x01) != 0) {
+        crc >>= 1;
+        crc ^= 0xA001;
+      } else {
+        crc >>= 1;
+      }
+    }
+  }
+  return crc;
+}
+
 bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
   size_t at = this->rx_buffer_.size();
   this->rx_buffer_.push_back(byte);
@@ -117,6 +133,59 @@ void AntModbus::read_registers() {
   frame[5] = 0x01;
 
   this->write_array(frame, 6);
+  this->flush();
+}
+
+void AntModbus::authenticate_v2021_() {
+  uint8_t frame[22];
+
+  frame[0] = 0x7e;  // header
+  frame[1] = 0xa1;  // header
+  frame[2] = 0x23;  // control
+  frame[3] = 0x6a;  // address
+  frame[4] = 0x01;
+  frame[5] = 0x0c;   // data len
+  frame[6] = 0x31;   // 1
+  frame[7] = 0x32;   // 2
+  frame[8] = 0x33;   // 3
+  frame[9] = 0x34;   // 4
+  frame[10] = 0x35;  // 5
+  frame[11] = 0x36;  // 6
+  frame[12] = 0x37;  // 7
+  frame[13] = 0x38;  // 8
+  frame[14] = 0x39;  // 9
+  frame[15] = 0x61;  // a
+  frame[16] = 0x62;  // b
+  frame[17] = 0x63;  // c
+
+  auto crc = crc16(frame + 1, 17);
+  frame[18] = crc >> 0;  // CRC
+  frame[19] = crc >> 8;  // CRC
+
+  frame[20] = 0xaa;
+  frame[21] = 0x55;
+
+  this->write_array(frame, 22);
+  this->flush();
+}
+
+void AntModbus::send_v2021(uint8_t function, uint8_t address, uint16_t value) {
+  this->authenticate_v2021_();
+
+  uint8_t frame[10];
+  frame[0] = 0x7e;        // header
+  frame[1] = 0xa1;        // header
+  frame[2] = function;    // control
+  frame[3] = address;     // address
+  frame[4] = value >> 8;  // value
+  frame[5] = value >> 0;  // value
+  auto crc = crc16(frame + 1, 5);
+  frame[6] = crc >> 0;  // CRC
+  frame[7] = crc >> 8;  // CRC
+  frame[8] = 0xaa;      // footer
+  frame[9] = 0x55;      // footer
+
+  this->write_array(frame, 10);
   this->flush();
 }
 

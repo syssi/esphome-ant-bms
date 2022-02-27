@@ -65,9 +65,13 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
+  void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
+  void set_bluetooth_switch(switch_::Switch *bluetooth_switch) { bluetooth_switch_ = bluetooth_switch; }
+  void set_buzzer_switch(switch_::Switch *buzzer_switch) { buzzer_switch_ = buzzer_switch; }
 
   void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
   void set_password(const std::string &password) { this->password_ = password; }
+  void set_supports_new_commands(bool supports_new_commands) { supports_new_commands_ = supports_new_commands; }
 
   void dump_config() override;
 
@@ -76,6 +80,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void update() override;
 
   void write_register(uint8_t address, uint16_t value);
+  bool supports_new_commands() { return supports_new_commands_; }
 
  protected:
   sensor::Sensor *battery_strings_sensor_;
@@ -95,6 +100,9 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
 
   switch_::Switch *charging_switch_;
   switch_::Switch *discharging_switch_;
+  switch_::Switch *balancer_switch_;
+  switch_::Switch *bluetooth_switch_;
+  switch_::Switch *buzzer_switch_;
 
   text_sensor::TextSensor *charge_mosfet_status_text_sensor_;
   text_sensor::TextSensor *discharge_mosfet_status_text_sensor_;
@@ -109,6 +117,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   } temperatures_[6];
 
   bool enable_fake_traffic_;
+  bool supports_new_commands_;
   std::string password_;
 
   void on_status_data_(const std::vector<uint8_t> &data);

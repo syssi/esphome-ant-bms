@@ -21,10 +21,12 @@ class AntModbus : public uart::UARTDevice, public Component {
   float get_setup_priority() const override;
 
   void send(uint8_t function, uint8_t address, uint16_t value);
+  void send_v2021(uint8_t function, uint8_t address, uint16_t value);
   void read_registers();
 
  protected:
   bool parse_ant_modbus_byte_(uint8_t byte);
+  void authenticate_v2021_();
 
   std::vector<uint8_t> rx_buffer_;
   uint32_t last_ant_modbus_byte_{0};
@@ -38,6 +40,9 @@ class AntModbusDevice {
   virtual void on_ant_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) = 0;
 
   void send(uint8_t function, uint8_t address, uint16_t value) { this->parent_->send(function, address, value); }
+  void send_v2021(uint8_t function, uint8_t address, uint16_t value) {
+    this->parent_->send_v2021(function, address, value);
+  }
   void read_registers() { this->parent_->read_registers(); }
 
  protected:
