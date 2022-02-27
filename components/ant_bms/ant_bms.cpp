@@ -184,14 +184,6 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  138   0x0B 0x00: CRC
 }
 
-void AntBms::write_register(uint8_t address, uint16_t value) {
-  this->send(WRITE_SINGLE_REGISTER, address, value);
-  this->send(WRITE_SINGLE_REGISTER, REGISTER_APPLY_WRITE, 0x00);
-
-  ESP_LOGI(TAG, "Write and apply register request: A5.%02X.%02X.%02X.%02X + CRC (6)", WRITE_SINGLE_REGISTER, address,
-           (uint8_t)(value >> 8), (uint8_t) value);
-}
-
 void AntBms::update() {
   this->read_registers();
 
@@ -208,6 +200,28 @@ void AntBms::update() {
             0x00, 0x17, 0x01, 0x00, 0x00, 0x00, 0x00, 0x0D, 0x10, 0x2C, 0x09, 0x10, 0x26, 0x10, 0x28, 0x0D, 0x00, 0x00,
             0x00, 0x73, 0x00, 0x6F, 0x02, 0xA7, 0x00, 0x00, 0x00, 0x00, 0x11, 0x62, 0x0B, 0x24,
         });
+  }
+}
+
+void AntBms::write_register(uint8_t address, uint16_t value) {
+  this->authenticate_();
+  this->send(WRITE_SINGLE_REGISTER, address, value);
+  this->send(WRITE_SINGLE_REGISTER, REGISTER_APPLY_WRITE, 0x00);
+
+  ESP_LOGI(TAG, "Write and apply register request: A5.%02X.%02X.%02X.%02X + CRC (6)", WRITE_SINGLE_REGISTER, address,
+           (uint8_t)(value >> 8), (uint8_t) value);
+}
+
+void AntBms::authenticate_() {
+  if (this->password_.empty()) {
+    ESP_LOGI(TAG, "Authentication skipped because there was no password provided.");
+    return;
+  }
+
+  ESP_LOGD(TAG, "Authenticate write command");
+  const uint8_t *password = reinterpret_cast<const uint8_t *>(this->password_.c_str());
+  for (uint8_t i = 0; i < 4; i++) {
+    this->send(WRITE_SINGLE_REGISTER, 0xF1 + i, (uint16_t(password[i]) << 8) | uint16_t(password[i + 1]));
   }
 }
 

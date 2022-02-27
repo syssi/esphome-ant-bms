@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import ant_modbus
-from esphome.const import CONF_ID
+from esphome.const import CONF_ID, CONF_PASSWORD
 
 AUTO_LOAD = ["ant_modbus", "button", "sensor", "switch", "text_sensor"]
 CODEOWNERS = ["@syssi"]
@@ -18,6 +18,10 @@ CONFIG_SCHEMA = (
         {
             cv.GenerateID(): cv.declare_id(AntBms),
             cv.Optional(CONF_ENABLE_FAKE_TRAFFIC, default=False): cv.boolean,
+            cv.Optional(CONF_PASSWORD, default=""): cv.Any(
+                cv.All(cv.string_strict, cv.Length(min=8, max=8)),
+                cv.All(cv.string_strict, cv.Length(min=0, max=0)),
+            ),
         }
     )
     .extend(cv.polling_component_schema("5s"))
@@ -31,3 +35,8 @@ def to_code(config):
     yield ant_modbus.register_ant_modbus_device(var, config)
 
     cg.add(var.set_enable_fake_traffic(config[CONF_ENABLE_FAKE_TRAFFIC]))
+
+    if CONF_PASSWORD in config:
+        cg.add(var.set_password(config[CONF_PASSWORD]))
+    else:
+        cg.add(var.set_password(""))
