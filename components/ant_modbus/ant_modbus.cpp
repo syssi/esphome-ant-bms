@@ -203,7 +203,7 @@ void AntModbus::authenticate_v2021_variable_(uint8_t data_len, const uint8_t *da
   data.push_back(0xAA);
   data.push_back(0x55);
 
-  this->write_array(data);
+  this->write_array(data.data(), data.size());
   this->flush();
 }
 
