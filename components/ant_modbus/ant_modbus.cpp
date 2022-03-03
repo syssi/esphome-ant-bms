@@ -66,16 +66,37 @@ bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
   if (at < 4)
     return true;
 
-  if (raw[0] != 0xAA || raw[1] != 0x55 || raw[2] != 0xAA || raw[3] != 0xFF) {
+  if (!(raw[0] == 0xAA && raw[1] == 0x55 && raw[2] == 0xAA && raw[3] == 0xFF) && !(raw[0] == 0x7E && raw[1] == 0xA1)) {
     ESP_LOGW(TAG, "Invalid header.");
 
     // return false to reset buffer
     return false;
   }
 
+  // Byte 0...5
+  if (at < 6)
+    return true;
+
+  // Calculate new protocol frame length
+  if (address == 0x7E) {
+    frame_len = 6 + raw[5] + 4;
+  }
+
   // Byte 0...139
   if (at < frame_len - 1)
     return true;
+
+  // New protocol response frame
+  //
+  // 0x7E 0xA1 0x43 0x6A 0x01 0x02 0x05 0x00 0x1E 0x5C 0xAA 0x55    Password ACK
+  // 0x7E 0xA1 0x61 0x04 0x00 0x02 0x01 0x00 0xF2 0x2B 0xAA 0x55    Register 0x04 ACK
+  // 0x7E 0xA1 0x61 0x06 0x00 0x02 0x01 0x00 0x8B 0xEB 0xAA 0x55    Register 0x06 ACK
+  //  0    1    2    3    4    5    6    7    8    9    10   11
+  // head add  func val  val  len  data data crc  crc  end  end
+  if (address == 0x7E) {
+    // Discard new protocol frame for now
+    return false;
+  }
 
   uint8_t function = raw[3];
 
