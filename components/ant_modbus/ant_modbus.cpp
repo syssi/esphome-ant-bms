@@ -191,19 +191,19 @@ void AntModbus::authenticate_v2021_() {
   this->flush();
 }
 
-void AntModbus::authenticate_v2021_variable_(uint8_t data_len, const uint8_t *data) {
-  std::vector<uint8_t> data = {0x7E, 0xA1, 0x23, 0x6A, 0x01};
-  data.push_back(data_len);
+void AntModbus::authenticate_v2021_variable_(const uint8_t *data, uint8_t data_len) {
+  std::vector<uint8_t> frame = {0x7E, 0xA1, 0x23, 0x6A, 0x01};
+  frame.push_back(data_len);
   for (int i = 0; i < data_len; i++) {
-    data.push_back(data[i]);
+    frame.push_back(data[i]);
   }
-  auto crc = crc16(data.data() + 1, data.size());
-  data.push_back(crc >> 0);
-  data.push_back(crc >> 8);
-  data.push_back(0xAA);
-  data.push_back(0x55);
+  auto crc = crc16(frame.data() + 1, frame.size());
+  frame.push_back(crc >> 0);
+  frame.push_back(crc >> 8);
+  frame.push_back(0xAA);
+  frame.push_back(0x55);
 
-  this->write_array(data.data(), data.size());
+  this->write_array(frame.data(), frame.size());
   this->flush();
 }
 

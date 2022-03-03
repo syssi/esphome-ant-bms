@@ -27,6 +27,7 @@ class AntModbus : public uart::UARTDevice, public Component {
  protected:
   bool parse_ant_modbus_byte_(uint8_t byte);
   void authenticate_v2021_();
+  void authenticate_v2021_variable_(const uint8_t *data, uint8_t data_len);
 
   std::vector<uint8_t> rx_buffer_;
   uint32_t last_ant_modbus_byte_{0};
