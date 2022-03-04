@@ -120,7 +120,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  83    0x00 0x08 0xC7 0x8E: Battery Cycle Capacity                               0.001 Ah
   this->publish_state_(this->battery_cycle_capacity_sensor_, (float) ant_get_32bit(83) * 0.001f);
   //  87    0x00 0x08 0x57 0x20: Uptime in seconds     546.592 s / 3600 = 151.83 h    s
-  this->publish_state_(this->total_runtime_sensor_, (float) jk_get_32bit(87) / 3600.0f);
+  this->publish_state_(this->total_runtime_sensor_, (float) ant_get_32bit(87) / 3600.0f);
   //  91    0x00 0x15: Temperature 1                   21°C                           1.0 °C
   //  93    0x00 0x15: Temperature 2                   21°C                           1.0 °C
   //  95    0x00 0x14: Temperature 3                   20°C                           1.0 °C
