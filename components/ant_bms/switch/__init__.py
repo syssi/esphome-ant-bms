@@ -12,17 +12,22 @@ CODEOWNERS = ["@syssi"]
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
 CONF_BALANCER = "balancer"
-CONF_RESTART = "restart"
+CONF_BLUETOOTH = "bluetooth"
+CONF_BUZZER = "buzzer"
 
 ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
-ICON_RESTART = "mdi:restart"
+ICON_BLUETOOTH = "mdi:bluetooth"
+ICON_BUZZER = "mdi:volume-high"
 
 # https://github.com/klotztech/VBMS/wiki/Serial-protocol#control-addresses
 SWITCHES = {
-    CONF_DISCHARGING: 0xF9,
-    CONF_CHARGING: 0xFA,
+    CONF_DISCHARGING: [0xF9, 0x03, 0x01],
+    CONF_CHARGING: [0xFA, 0x06, 0x04],
+    CONF_BALANCER: [0x00, 0x0D, 0x0E],
+    CONF_BLUETOOTH: [0x00, 0x1D, 0x1C],
+    CONF_BUZZER: [0x00, 0x1E, 0x1F],
 }
 
 AntSwitch = ant_bms_ns.class_("AntSwitch", switch.Switch, cg.Component)
@@ -42,6 +47,24 @@ CONFIG_SCHEMA = cv.Schema(
                 cv.Optional(CONF_ICON, default=ICON_CHARGING): switch.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(AntSwitch),
+                cv.Optional(CONF_ICON, default=ICON_BALANCER): switch.icon,
+            }
+        ).extend(cv.COMPONENT_SCHEMA),
+        # cv.Optional(CONF_BLUETOOTH): switch.SWITCH_SCHEMA.extend(
+        #     {
+        #         cv.GenerateID(): cv.declare_id(AntSwitch),
+        #         cv.Optional(CONF_ICON, default=ICON_BLUETOOTH): switch.icon,
+        #     }
+        # ).extend(cv.COMPONENT_SCHEMA),
+        # cv.Optional(CONF_BUZZER): switch.SWITCH_SCHEMA.extend(
+        #     {
+        #         cv.GenerateID(): cv.declare_id(AntSwitch),
+        #         cv.Optional(CONF_ICON, default=ICON_BUZZER): switch.icon,
+        #     }
+        # ).extend(cv.COMPONENT_SCHEMA),
     }
 )
 
@@ -56,4 +79,6 @@ def to_code(config):
             yield switch.register_switch(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
-            cg.add(var.set_holding_register(address))
+            cg.add(var.set_holding_register(address[0]))
+            cg.add(var.set_new_protocol_turn_on_register(address[1]))
+            cg.add(var.set_new_protocol_turn_off_register(address[2]))

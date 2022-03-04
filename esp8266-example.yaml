@@ -3,6 +3,7 @@ substitutions:
   external_components_source: github://syssi/esphome-ant-bms@main
   tx_pin: GPIO1
   rx_pin: GPIO3
+  password: "12345678"
 
 esphome:
   name: ${name}
@@ -43,7 +44,9 @@ ant_modbus:
 ant_bms:
   id: bms0
   ant_modbus_id: modbus0
+  password: "${password}"
   update_interval: 10s
+  supports_new_commands: true
 
 sensor:
   - platform: ant_bms
@@ -167,6 +170,10 @@ switch:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
+    # BMS version 2021 only
+    # Please enable supports_new_commands
+    balancer:
+      name: "${name} balancer"
 
 button:
   - platform: ant_bms

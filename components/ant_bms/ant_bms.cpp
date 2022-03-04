@@ -154,6 +154,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  105   0x00: Balancer Status
   uint8_t raw_balancer_status = data[105];
   this->publish_state_(this->balancer_status_code_sensor_, (float) raw_balancer_status);
+  this->publish_state_(this->balancer_switch_, (bool) (raw_balancer_status == 0x04));
   if (raw_balancer_status < BALANCER_STATUS_SIZE) {
     this->publish_state_(this->balancer_status_text_sensor_, BALANCER_STATUS[raw_balancer_status]);
   } else {
@@ -204,12 +205,14 @@ void AntBms::update() {
 }
 
 void AntBms::write_register(uint8_t address, uint16_t value) {
+  if (this->supports_new_commands_) {
+    this->send_v2021(0x51, address, value);
+    return;
+  }
+
   this->authenticate_();
   this->send(WRITE_SINGLE_REGISTER, address, value);
   this->send(WRITE_SINGLE_REGISTER, REGISTER_APPLY_WRITE, 0x00);
-
-  ESP_LOGI(TAG, "Write and apply register request: A5.%02X.%02X.%02X.%02X + CRC (6)", WRITE_SINGLE_REGISTER, address,
-           (uint8_t)(value >> 8), (uint8_t) value);
 }
 
 void AntBms::authenticate_() {

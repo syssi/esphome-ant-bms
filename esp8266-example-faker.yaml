@@ -1,4 +1,4 @@
-<<: !include esp32-example-debug.yaml
+<<: !include esp8266-example-debug.yaml
 
 ant_bms:
   id: bms0

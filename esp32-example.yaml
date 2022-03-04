@@ -43,8 +43,9 @@ ant_modbus:
 ant_bms:
   id: bms0
   ant_modbus_id: modbus0
-  update_interval: 10s
   password: "${password}"
+  update_interval: 10s
+  supports_new_commands: true
 
 sensor:
   - platform: ant_bms
@@ -168,6 +169,10 @@ switch:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
+    # BMS version 2021 only
+    # Please enable supports_new_commands
+    balancer:
+      name: "${name} balancer"
 
 button:
   - platform: ant_bms
