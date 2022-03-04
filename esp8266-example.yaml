@@ -64,6 +64,8 @@ sensor:
       name: "${name} battery cycle capacity"
     total_voltage:
       name: "${name} total voltage"
+    total_runtime:
+      name: "${name} total runtime"
     average_cell_voltage:
       name: "${name} average cell voltage"
     power:

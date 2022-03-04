@@ -26,6 +26,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
     battery_cycle_capacity_sensor_ = battery_cycle_capacity_sensor;
   }
   void set_total_voltage_sensor(sensor::Sensor *total_voltage_sensor) { total_voltage_sensor_ = total_voltage_sensor; }
+  void set_total_runtime_sensor(sensor::Sensor *total_runtime_sensor) { total_runtime_sensor_ = total_runtime_sensor; }
   void set_average_cell_voltage_sensor(sensor::Sensor *average_cell_voltage_sensor) {
     average_cell_voltage_sensor_ = average_cell_voltage_sensor;
   }
@@ -90,6 +91,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   sensor::Sensor *capacity_remaining_sensor_;
   sensor::Sensor *battery_cycle_capacity_sensor_;
   sensor::Sensor *total_voltage_sensor_;
+  sensor::Sensor *total_runtime_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *power_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;

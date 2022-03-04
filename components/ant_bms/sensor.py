@@ -10,10 +10,13 @@ from esphome.const import (
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ICON_EMPTY,
+    ICON_TIMELAPSE,
     STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL_INCREASING,
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
+    UNIT_HOURS,
     UNIT_PERCENT,
     UNIT_VOLT,
     UNIT_WATT,
@@ -31,6 +34,7 @@ CONF_TOTAL_BATTERY_CAPACITY_SETTING = "total_battery_capacity_setting"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_BATTERY_CYCLE_CAPACITY = "battery_cycle_capacity"
 CONF_TOTAL_VOLTAGE = "total_voltage"
+CONF_TOTAL_RUNTIME = "total_runtime"
 
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
@@ -143,6 +147,7 @@ SENSORS = [
     CONF_CAPACITY_REMAINING,
     CONF_BATTERY_CYCLE_CAPACITY,
     CONF_TOTAL_VOLTAGE,
+    CONF_TOTAL_RUNTIME,
     CONF_AVERAGE_CELL_VOLTAGE,
     CONF_POWER,
     CONF_MIN_CELL_VOLTAGE,
@@ -200,6 +205,13 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_TOTAL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_TOTAL_RUNTIME): sensor.sensor_schema(
+            UNIT_HOURS,
+            ICON_TIMELAPSE,
+            2,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_TOTAL_INCREASING,
         ),
         cv.Optional(CONF_AVERAGE_CELL_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
