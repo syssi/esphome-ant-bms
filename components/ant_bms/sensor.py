@@ -16,7 +16,6 @@ from esphome.const import (
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
-    UNIT_HOURS,
     UNIT_PERCENT,
     UNIT_VOLT,
     UNIT_WATT,
@@ -93,6 +92,7 @@ ICON_CHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_DISCHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_BALANCER_STATUS_CODE = "mdi:heart-pulse"
 
+UNIT_HOURS = "h"
 UNIT_AMPERE_HOURS = "Ah"
 
 CELLS = [
