@@ -95,7 +95,7 @@ bool AntModbus::parse_ant_modbus_byte_(uint8_t byte) {
   // head add  func val  val  len  data data crc  crc  end  end
   if (address == 0x7E) {
     // Discard new protocol frame for now
-    ESP_LOGD(TAG, "New protocol response frame discarded: %s", format_hex_pretty(raw, at + 1).c_str());
+    ESP_LOGVV(TAG, "New protocol response frame discarded: %s", format_hex_pretty(raw, at + 1).c_str());
     return false;
   }
 
