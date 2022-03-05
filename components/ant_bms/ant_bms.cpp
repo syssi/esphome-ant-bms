@@ -172,9 +172,11 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  111   0x00 0x00 0x00 0x00: Current power         0W                             1.0 W
   this->publish_state_(this->power_sensor_, (float) get_signed_float_(ant_get_32bit(111)) * 0.1f);
   //  115   0x0D: Cell with the highest voltage        Cell 13
+  this->publish_state_(this->max_voltage_cellsensor_, (float) data[115]);
   //  116   0x10 0x2C: Maximum cell voltage            4140 * 0.001 = 4.140V          0.001 V
   this->publish_state_(this->min_cell_voltage_sensor_, (float) ant_get_16bit(116) * 0.001f);
   //  118   0x09: Cell with the lowest voltage         Cell 9
+  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[118]);
   //  119   0x10 0x26: Minimum cell voltage            4134 * 0.001 = 4.134V          0.001 V
   this->publish_state_(this->max_cell_voltage_sensor_, (float) ant_get_16bit(119) * 0.001f);
   //  121   0x10 0x28: Average cell voltage            4136 * 0.001 = 4.136V          0.001 V
@@ -270,6 +272,8 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_SENSOR("", "Power", this->power_sensor_);
   LOG_SENSOR("", "Minimum cell voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Maximum cell voltage", this->max_cell_voltage_sensor_);
+  LOG_SENSOR("", "Min Voltage Cell", this->min_voltage_cell_sensor_);
+  LOG_SENSOR("", "Max Voltage Cell", this->max_voltage_cell_sensor_);
   LOG_SENSOR("", "Temperature 1", this->temperatures_[0].temperature_sensor_);
   LOG_SENSOR("", "Temperature 2", this->temperatures_[1].temperature_sensor_);
   LOG_SENSOR("", "Temperature 3", this->temperatures_[2].temperature_sensor_);

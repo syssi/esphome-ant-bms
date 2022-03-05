@@ -38,6 +38,8 @@ CONF_TOTAL_RUNTIME = "total_runtime"
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
+CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
+CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
 
 CONF_TEMPERATURE_1 = "temperature_1"
 CONF_TEMPERATURE_2 = "temperature_2"
@@ -91,6 +93,11 @@ ICON_SOC = "mdi:battery-50"
 ICON_CHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_DISCHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_BALANCER_STATUS_CODE = "mdi:heart-pulse"
+
+ICON_MIN_CELL_VOLTAGE = "mdi:battery-minus-outline"
+ICON_MAX_CELL_VOLTAGE = "mdi:battery-plus-outline"
+ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
+ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 
 UNIT_SECONDS = "s"
 UNIT_AMPERE_HOURS = "Ah"
@@ -152,6 +159,8 @@ SENSORS = [
     CONF_POWER,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
+    CONF_MIN_VOLTAGE_CELL,
+    CONF_MAX_VOLTAGE_CELL,
     CONF_CHARGE_MOSFET_STATUS_CODE,
     CONF_DISCHARGE_MOSFET_STATUS_CODE,
     CONF_BALANCER_STATUS_CODE,
@@ -220,10 +229,32 @@ CONFIG_SCHEMA = cv.Schema(
             UNIT_WATT, ICON_EMPTY, 1, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_MIN_CELL_VOLTAGE): sensor.sensor_schema(
-            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+            UNIT_VOLT,
+            ICON_MIN_CELL_VOLTAGE,
+            3,
+            DEVICE_CLASS_VOLTAGE,
+            STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_MAX_CELL_VOLTAGE): sensor.sensor_schema(
-            UNIT_VOLT, ICON_EMPTY, 3, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+            UNIT_VOLT,
+            ICON_MAX_CELL_VOLTAGE,
+            3,
+            DEVICE_CLASS_VOLTAGE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_MIN_VOLTAGE_CELL): sensor.sensor_schema(
+            UNIT_EMPTY,
+            ICON_MIN_VOLTAGE_CELL,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_MAX_VOLTAGE_CELL): sensor.sensor_schema(
+            UNIT_EMPTY,
+            ICON_MAX_VOLTAGE_CELL,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TEMPERATURE_1): sensor.sensor_schema(
             UNIT_CELSIUS,
