@@ -40,8 +40,8 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_min_voltage_cell_sensor(sensor::Sensor *min_voltage_cell_sensor) {
     min_voltage_cell_sensor_ = min_voltage_cell_sensor;
   }
-  void set_max_voltage_cellsensor(sensor::Sensor *max_voltage_cellsensor) {
-    max_voltage_cellsensor_ = max_voltage_cellsensor;
+  void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
+    max_voltage_cell_sensor_ = max_voltage_cell_sensor;
   }
 
   void set_cell_voltage_sensor(uint8_t cell, sensor::Sensor *cell_voltage_sensor) {
