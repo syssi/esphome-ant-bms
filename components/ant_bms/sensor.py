@@ -92,7 +92,7 @@ ICON_CHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_DISCHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_BALANCER_STATUS_CODE = "mdi:heart-pulse"
 
-UNIT_HOURS = "h"
+UNIT_SECONDS = "s"
 UNIT_AMPERE_HOURS = "Ah"
 
 CELLS = [
@@ -207,9 +207,9 @@ CONFIG_SCHEMA = cv.Schema(
             UNIT_VOLT, ICON_EMPTY, 2, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
         ),
         cv.Optional(CONF_TOTAL_RUNTIME): sensor.sensor_schema(
-            UNIT_HOURS,
+            UNIT_SECONDS,
             ICON_TIMELAPSE,
-            2,
+            0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_TOTAL_INCREASING,
         ),

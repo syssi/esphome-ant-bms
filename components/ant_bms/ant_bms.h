@@ -63,6 +63,9 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_balancer_status_text_sensor(text_sensor::TextSensor *balancer_status_text_sensor) {
     balancer_status_text_sensor_ = balancer_status_text_sensor;
   }
+  void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
+    total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
+  }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
@@ -109,6 +112,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   text_sensor::TextSensor *charge_mosfet_status_text_sensor_;
   text_sensor::TextSensor *discharge_mosfet_status_text_sensor_;
   text_sensor::TextSensor *balancer_status_text_sensor_;
+  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -134,6 +138,18 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
     }
 
     return (float) (value & 0x7FFFFFFF);
+  }
+
+  const std::string format_total_runtime_(const uint32_t value) {
+    int seconds = (int) value;
+    int years = seconds / (24 * 3600 * 365);
+    seconds = seconds % (24 * 3600 * 365);
+    int days = seconds / (24 * 3600);
+    seconds = seconds % (24 * 3600);
+    int hours = seconds / 3600;
+    return ((years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
+            (hours ? to_string(hours) + "h " : ""))
+        .c_str();
   }
 };
 
