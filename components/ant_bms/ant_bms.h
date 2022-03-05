@@ -140,7 +140,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
     return (float) (value & 0x7FFFFFFF);
   }
 
-  const std::string format_total_runtime_(const uint32_t value) {
+  std::string format_total_runtime_(const uint32_t value) {
     int seconds = (int) value;
     int years = seconds / (24 * 3600 * 365);
     seconds = seconds % (24 * 3600 * 365);
