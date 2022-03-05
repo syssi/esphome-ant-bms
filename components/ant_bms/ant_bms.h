@@ -147,9 +147,8 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
     int days = seconds / (24 * 3600);
     seconds = seconds % (24 * 3600);
     int hours = seconds / 3600;
-    return ((years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
-            (hours ? to_string(hours) + "h" : ""))
-        .c_str();
+    return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
+            (hours ? to_string(hours) + "h" : "");
   }
 };
 
