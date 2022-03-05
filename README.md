@@ -128,6 +128,8 @@ esphome run esp32-example.yaml
 [switch:037]: 'ant-bms charging': Sending state ON
 [switch:037]: 'ant-bms discharging': Sending state ON
 [switch:037]: 'ant-bms balancer': Sending state OFF
+[text_sensor:067]: 'ant-bms total runtime formatted': Sending state '6d 7h '
+[sensor:124]: 'ant-bms total runtime': Sending state 546592.00000 s with 0 decimals of accuracy
 ```
 
 ## Protocol
