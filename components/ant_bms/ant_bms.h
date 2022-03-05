@@ -37,6 +37,12 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_max_cell_voltage_sensor(sensor::Sensor *max_cell_voltage_sensor) {
     max_cell_voltage_sensor_ = max_cell_voltage_sensor;
   }
+  void set_min_voltage_cell_sensor(sensor::Sensor *min_voltage_cell_sensor) {
+    min_voltage_cell_sensor_ = min_voltage_cell_sensor;
+  }
+  void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
+    max_voltage_cell_sensor_ = max_voltage_cell_sensor;
+  }
 
   void set_cell_voltage_sensor(uint8_t cell, sensor::Sensor *cell_voltage_sensor) {
     this->cells_[cell].cell_voltage_sensor_ = cell_voltage_sensor;
@@ -99,6 +105,8 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   sensor::Sensor *power_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
+  sensor::Sensor *min_voltage_cell_sensor_;
+  sensor::Sensor *max_voltage_cell_sensor_;
   sensor::Sensor *charge_mosfet_status_code_sensor_;
   sensor::Sensor *discharge_mosfet_status_code_sensor_;
   sensor::Sensor *balancer_status_code_sensor_;

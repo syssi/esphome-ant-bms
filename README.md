@@ -177,7 +177,7 @@ esphome run esp32-example.yaml
 |  `75`  | `4` | `0x02 0x53 0x17 0xC0` | Total Battery Capacity Setting | 39000000         | 0.000001 Ah |
 |  `79`  | `4` | `0x02 0x53 0x06 0x11` | Battery Capacity Remaining     |                  | 0.000001 Ah |
 |  `83`  | `4` | `0x00 0x08 0xC7 0x8E` | Battery Cycle Capacity         | 575374 * 0.001 = 575.374 Ah | 0.001 Ah |
-|  `87`  | `4` | `0x00 0x08 0x57 0x20` | Uptime in seconds       | 546.592 s / 3600 = 151.83 h | 1.0 s   |
+|  `87`  | `4` | `0x00 0x08 0x57 0x20` | Uptime in seconds       | 546.592 s               | 1.0 s       |
 |  `91`  | `2` | `0x00 0x15`           | Temperature 1           | 21°C                    | 1.0 °C      |
 |  `93`  | `2` | `0x00 0x15`           | Temperature 2           | 21°C                    | 1.0 °C      |
 |  `95`  | `2` | `0x00 0x14`           | Temperature 3           | 20°C                    | 1.0 °C      |

@@ -73,6 +73,10 @@ sensor:
       name: "${name} min cell voltage"
     max_cell_voltage:
       name: "${name} max cell voltage"
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+    max_voltage_cell:
+      name: "${name} max voltage cell"
     temperature_1:
       name: "${name} temperature 1"
     temperature_2:
