@@ -106,7 +106,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
   sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cellsensor_;
+  sensor::Sensor *max_voltage_cell_sensor_;
   sensor::Sensor *charge_mosfet_status_code_sensor_;
   sensor::Sensor *discharge_mosfet_status_code_sensor_;
   sensor::Sensor *balancer_status_code_sensor_;
