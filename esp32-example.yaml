@@ -164,6 +164,8 @@ text_sensor:
       name: "${name} discharge mosfet status"
     balancer_status:
       name: "${name} balancer status"
+    total_runtime_formatted:
+      name: "${name} total runtime formatted"
 
 switch:
   - platform: ant_bms

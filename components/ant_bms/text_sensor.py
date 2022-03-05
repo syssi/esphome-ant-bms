@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import text_sensor
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ICON, CONF_ID, ICON_TIMELAPSE
 
 from . import CONF_ANT_BMS_ID, AntBms
 
@@ -12,6 +12,7 @@ CODEOWNERS = ["@syssi"]
 CONF_CHARGE_MOSFET_STATUS = "charge_mosfet_status"
 CONF_DISCHARGE_MOSFET_STATUS = "discharge_mosfet_status"
 CONF_BALANCER_STATUS = "balancer_status"
+CONF_TOTAL_RUNTIME_FORMATTED = "total_runtime_formatted"
 
 ICON_CHARGE_MOSFET_STATUS = "mdi:heart-pulse"
 ICON_DISCHARGE_MOSFET_STATUS = "mdi:heart-pulse"
@@ -21,6 +22,7 @@ TEXT_SENSORS = [
     CONF_CHARGE_MOSFET_STATUS,
     CONF_DISCHARGE_MOSFET_STATUS,
     CONF_BALANCER_STATUS,
+    CONF_TOTAL_RUNTIME_FORMATTED,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
@@ -44,6 +46,14 @@ CONFIG_SCHEMA = cv.Schema(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
                 cv.Optional(CONF_ICON, default=ICON_BALANCER_STATUS): cv.icon,
+            }
+        ),
+        cv.Optional(
+            CONF_TOTAL_RUNTIME_FORMATTED
+        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
             }
         ),
     }
