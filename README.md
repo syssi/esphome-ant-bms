@@ -13,6 +13,7 @@ ESPHome component to monitor a ANT-BMS via UART
 ## Supported devices
 
 * 16ZMB-TB-7-16S-300A ([7-16S, 300A, 2021-08-12](https://github.com/esphome/feature-requests/issues/1396#issuecomment-1017462249))
+* ANT 16S 100A ([16S, 100A, 2020](https://github.com/syssi/esphome-ant-bms/issues/28#issuecomment-1069100025))
 
 ## Untested devices
 
