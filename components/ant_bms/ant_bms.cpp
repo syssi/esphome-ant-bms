@@ -170,7 +170,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  108   0x00 0x17: Number of pulses per week
   //  110   0x01: Relay switch
   //  111   0x00 0x00 0x00 0x00: Current power         0W                             1.0 W
-  this->publish_state_(this->power_sensor_, (float) get_signed_float_(ant_get_32bit(111)) * 0.1f);
+  this->publish_state_(this->power_sensor_, (float) get_signed_float_(ant_get_32bit(111)));
   //  115   0x0D: Cell with the highest voltage        Cell 13
   this->publish_state_(this->max_voltage_cell_sensor_, (float) data[115]);
   //  116   0x10 0x2C: Maximum cell voltage            4140 * 0.001 = 4.140V          0.001 V
