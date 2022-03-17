@@ -141,11 +141,11 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void authenticate_();
 
   float get_signed_float_(const uint32_t value) {
-    if ((value & 0x80000000) == 0x80000000) {
-      return (float) (value & 0x7FFFFFFF) * -1;
+    if (value > 2147483648) {
+      return (float) (-(2 * 2147483648) + int(value));
     }
 
-    return (float) (value & 0x7FFFFFFF);
+    return (float) int(value);
   }
 
   std::string format_total_runtime_(const uint32_t value) {
