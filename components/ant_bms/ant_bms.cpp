@@ -110,7 +110,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->cells_[i].cell_voltage_sensor_, (float) ant_get_16bit(i * 2 + 6) * 0.001f);
   }
   //  70    0x00 0x00 0x00 0x00: Current               0.0 A                          0.1 A
-  this->publish_state_(this->current_sensor_, (float) get_signed_float_(ant_get_32bit(70)) * 0.1f);
+  this->publish_state_(this->current_sensor_, (float) ((int) ant_get_32bit(70)) * 0.1f);
   //  74    0x64: SOC                                  100 %                          1.0 %
   this->publish_state_(this->soc_sensor_, (float) data[74]);
   //  75    0x02 0x53 0x17 0xC0: Total Battery Capacity Setting   39000000            0.000001 Ah
@@ -170,7 +170,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  108   0x00 0x17: Number of pulses per week
   //  110   0x01: Relay switch
   //  111   0x00 0x00 0x00 0x00: Current power         0W                             1.0 W
-  this->publish_state_(this->power_sensor_, (float) get_signed_float_(ant_get_32bit(111)));
+  this->publish_state_(this->power_sensor_, (float) (int) ant_get_32bit(111));
   //  115   0x0D: Cell with the highest voltage        Cell 13
   this->publish_state_(this->max_voltage_cell_sensor_, (float) data[115]);
   //  116   0x10 0x2C: Maximum cell voltage            4140 * 0.001 = 4.140V          0.001 V
