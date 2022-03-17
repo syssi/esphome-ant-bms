@@ -140,14 +140,6 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   void authenticate_();
 
-  float get_signed_float_(const uint32_t value) {
-    if ((value & 0x80000000) == 0x80000000) {
-      return (float) (value & 0x7FFFFFFF) * -1;
-    }
-
-    return (float) (value & 0x7FFFFFFF);
-  }
-
   std::string format_total_runtime_(const uint32_t value) {
     int seconds = (int) value;
     int years = seconds / (24 * 3600 * 365);
