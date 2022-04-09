@@ -210,7 +210,10 @@ esphome run esp32-example.yaml
 
 ## Known issues
 
+* ESP32: Adding all supported sensors can lead to a stack overflow / boot loop. This can be solved by increasing the stack size. ([#36][i36])
 * A command queue / command scheduling would be nice. At the moment changing settings via the switch entities isn't reliable.
+
+[i36]: https://github.com/syssi/esphome-ant-bms/issues/36#issuecomment-1085529679
 
 ## Debugging
 
