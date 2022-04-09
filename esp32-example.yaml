@@ -27,7 +27,6 @@ mqtt:
 # api:
 ota:
 logger:
-  level: DEBUG
 
 uart:
   id: uart0

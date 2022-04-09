@@ -218,11 +218,7 @@ If this component doesn't work out of the box for your device please update your
 
 ```
 logger:
-  level: VERY_VERBOSE
-  logs:
-    api.service: WARN
-    ota: WARN
-    sensor: WARN
+  level: DEBUG
 
 uart:
   id: uart0
