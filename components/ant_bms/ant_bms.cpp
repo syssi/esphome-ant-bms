@@ -173,9 +173,9 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  110   0x01: Relay switch
   //  111   0x00 0x00 0x00 0x00: Current power         0W                             1.0 W
   if (this->supports_new_commands_) {
-    this->publish_state_(this->power_sensor_, (float) (int) ant_get_32bit(111));
-  } else {
     this->publish_state_(this->power_sensor_, total_voltage * current);
+  } else {
+    this->publish_state_(this->power_sensor_, (float) (int) ant_get_32bit(111));
   }
   //  115   0x0D: Cell with the highest voltage        Cell 13
   this->publish_state_(this->max_voltage_cell_sensor_, (float) data[115]);
