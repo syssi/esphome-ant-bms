@@ -53,6 +53,8 @@ ESPHome component to monitor a ANT-BMS via UART
    └──── VCC (3.3V)
 ```
 
+The connector is a 4 Pin JST 1.25mm. It's important to connect VCC too because the BMS doesn't respond/start if you connect TXD, RXD and GND only.
+
 https://github.com/syssi/esphome-ant-bms/issues/1#issuecomment-1049048825
 
 ## Installation
