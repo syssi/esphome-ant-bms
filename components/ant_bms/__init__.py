@@ -31,10 +31,10 @@ CONFIG_SCHEMA = (
 )
 
 
-def to_code(config):
+async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
-    yield cg.register_component(var, config)
-    yield ant_modbus.register_ant_modbus_device(var, config)
+    await cg.register_component(var, config)
+    await ant_modbus.register_ant_modbus_device(var, config)
 
     cg.add(var.set_enable_fake_traffic(config[CONF_ENABLE_FAKE_TRAFFIC]))
     cg.add(var.set_supports_new_commands(config[CONF_SUPPORTS_NEW_COMMANDS]))
