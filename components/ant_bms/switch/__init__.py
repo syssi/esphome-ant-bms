@@ -38,31 +38,31 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_DISCHARGING): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_DISCHARGING): switch.icon,
+                cv.Optional(CONF_ICON, default=ICON_DISCHARGING): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_CHARGING): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_CHARGING): switch.icon,
+                cv.Optional(CONF_ICON, default=ICON_CHARGING): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_BALANCER): switch.icon,
+                cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
             }
         ).extend(cv.COMPONENT_SCHEMA),
         # cv.Optional(CONF_BLUETOOTH): switch.SWITCH_SCHEMA.extend(
         #     {
         #         cv.GenerateID(): cv.declare_id(AntSwitch),
-        #         cv.Optional(CONF_ICON, default=ICON_BLUETOOTH): switch.icon,
+        #         cv.Optional(CONF_ICON, default=ICON_BLUETOOTH): cv.icon,
         #     }
         # ).extend(cv.COMPONENT_SCHEMA),
         # cv.Optional(CONF_BUZZER): switch.SWITCH_SCHEMA.extend(
         #     {
         #         cv.GenerateID(): cv.declare_id(AntSwitch),
-        #         cv.Optional(CONF_ICON, default=ICON_BUZZER): switch.icon,
+        #         cv.Optional(CONF_ICON, default=ICON_BUZZER): cv.icon,
         #     }
         # ).extend(cv.COMPONENT_SCHEMA),
     }
