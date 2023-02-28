@@ -45,12 +45,12 @@ ESPHome component to monitor and control a ANT-BMS via UART
 │  Comm                            Temp  │
 └─[oooo]──[oooooooo]──[oooooooo]──[oooo]─┘
    ││││
-   ││││      (ESP32)
+   ││││      (ESP32)    /    (ESP8266)
    ││││
-   │││└─ TXD (GPIO16)
-   ││└── RXD (GPIO17)
-   │└─── GND (GND)
-   └──── VCC (3.3V)
+   │││└─ TXD (GPIO16)        (GPIO4)
+   ││└── RXD (GPIO17)        (GPIO5)
+   │└─── GND (GND)           (GND)
+   └──── VCC (3.3V)          (3.3V)
 ```
 
 The connector is a 4 Pin JST 1.25mm. It's important to connect VCC too because the BMS doesn't respond/start if you connect TXD, RXD and GND only.
@@ -229,8 +229,8 @@ uart:
   id: uart0
   baud_rate: 19200
   rx_buffer_size: 384
-  tx_pin: GPIO14
-  rx_pin: GPIO4
+  tx_pin: ${tx_pin}
+  rx_pin: ${rx_pin}
   debug:
     direction: BOTH
 ```

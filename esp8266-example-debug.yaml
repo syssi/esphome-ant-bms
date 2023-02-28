@@ -1,7 +1,6 @@
 <<: !include esp8266-example.yaml
 
 logger:
-  baud_rate: 0
 
 uart:
   - id: uart0
