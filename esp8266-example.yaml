@@ -1,6 +1,7 @@
 substitutions:
   name: ant-bms
   external_components_source: github://syssi/esphome-ant-bms@main
+  rx_timeout: 50ms
   tx_pin: GPIO1
   rx_pin: GPIO3
   password: "12345678"
@@ -46,9 +47,10 @@ uart:
 ant_bms:
   - id: bms0
     uart_id: uart0
-    password: "${password}"
     update_interval: 10s
+    rx_timeout: ${rx_timeout}
     supports_new_commands: true
+    password: "${password}"
 
 sensor:
   - platform: ant_bms
