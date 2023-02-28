@@ -4,13 +4,18 @@
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
-#include "esphome/components/ant_modbus/ant_modbus.h"
+#include "esphome/components/uart/uart.h"
 
 namespace esphome {
 namespace ant_bms {
 
-class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
+class AntBms : public uart::UARTDevice, public PollingComponent {
  public:
+  void loop() override;
+  void dump_config() override;
+  void update() override;
+  float get_setup_priority() const override;
+
   void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
     battery_strings_sensor_ = battery_strings_sensor;
   }
@@ -83,12 +88,7 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   void set_password(const std::string &password) { this->password_ = password; }
   void set_supports_new_commands(bool supports_new_commands) { supports_new_commands_ = supports_new_commands; }
 
-  void dump_config() override;
-
-  void on_ant_modbus_data(const uint8_t &function, const std::vector<uint8_t> &data) override;
-
-  void update() override;
-
+  void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
   void write_register(uint8_t address, uint16_t value);
   bool supports_new_commands() { return supports_new_commands_; }
 
@@ -134,11 +134,46 @@ class AntBms : public PollingComponent, public ant_modbus::AntModbusDevice {
   bool supports_new_commands_;
   std::string password_;
 
+  std::vector<uint8_t> rx_buffer_;
+  uint32_t last_byte_{0};
+  uint16_t rx_timeout_{50};
+
+  void on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
+  bool parse_ant_bms_byte_(uint8_t byte);
+  void authenticate_();
+  void authenticate_v2021_();
+  void authenticate_v2021_variable_(const uint8_t *data, uint8_t data_len);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
-  void authenticate_();
+  void read_registers_();
+  void send_(uint8_t function, uint8_t address, uint16_t value);
+  void send_v2021_(uint8_t function, uint8_t address, uint16_t value);
+
+  uint16_t chksum_(const uint8_t data[], const uint16_t len) {
+    uint16_t checksum = 0;
+    for (uint16_t i = 4; i < len; i++) {
+      checksum = checksum + data[i];
+    }
+    return checksum;
+  }
+
+  uint16_t crc16_(const uint8_t *data, uint8_t len) {
+    uint16_t crc = 0xFFFF;
+    while (len--) {
+      crc ^= *data++;
+      for (uint8_t i = 0; i < 8; i++) {
+        if ((crc & 0x01) != 0) {
+          crc >>= 1;
+          crc ^= 0xA001;
+        } else {
+          crc >>= 1;
+        }
+      }
+    }
+    return crc;
+  }
 
   std::string format_total_runtime_(const uint32_t value) {
     int seconds = (int) value;

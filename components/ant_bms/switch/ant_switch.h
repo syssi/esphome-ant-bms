@@ -23,11 +23,12 @@ class AntSwitch : public switch_::Switch, public Component {
   float get_setup_priority() const override { return setup_priority::DATA; }
 
  protected:
-  void write_state(bool state) override;
   AntBms *parent_;
   uint8_t holding_register_;
   uint8_t new_protocol_turn_on_register_;
   uint8_t new_protocol_turn_off_register_;
+
+  void write_state(bool state) override;
 };
 
 }  // namespace ant_bms

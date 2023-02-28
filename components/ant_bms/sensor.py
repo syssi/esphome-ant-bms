@@ -1,6 +1,6 @@
 import esphome.codegen as cg
-import esphome.config_validation as cv
 from esphome.components import sensor
+import esphome.config_validation as cv
 from esphome.const import (
     CONF_CURRENT,
     CONF_POWER,
@@ -237,7 +237,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_POWER): sensor.sensor_schema(
             unit_of_measurement=UNIT_WATT,
             icon=ICON_EMPTY,
-            accuracy_decimals=1,
+            accuracy_decimals=2,
             device_class=DEVICE_CLASS_POWER,
             state_class=STATE_CLASS_MEASUREMENT,
         ),

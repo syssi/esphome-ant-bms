@@ -1,13 +1,12 @@
 <<: !include esp8266-example.yaml
 
 logger:
-  baud_rate: 0
 
 uart:
-  id: uart0
-  baud_rate: 19200
-  rx_buffer_size: 384
-  tx_pin: ${tx_pin}
-  rx_pin: ${rx_pin}
-  debug:
-    direction: BOTH
+  - id: uart0
+    baud_rate: 19200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin}
+    rx_pin: ${rx_pin}
+    debug:
+      direction: BOTH
