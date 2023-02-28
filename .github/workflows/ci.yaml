@@ -160,14 +160,24 @@ jobs:
       - name: Write secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
-      - run: |
+      - name: Validate esp32 example configurations
+        run: |
           esphome -s external_components_source components config esp32-example.yaml
           esphome -s external_components_source components config esp32-example-debug.yaml
           esphome -s external_components_source components config esp32-example-faker.yaml
-      - run: |
+      - name: Validate esp8266 example configurations
+        run: |
           esphome -s external_components_source components config esp8266-example.yaml
           esphome -s external_components_source components config esp8266-example-debug.yaml
           esphome -s external_components_source components config esp8266-example-faker.yaml
+      - name: Write tests/secrets.yaml
+        shell: bash
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
+      - name: Validate test configurations
+        run: |
+          esphome -s external_components_source ../components config tests/esp8266-fake-bms.yaml
+          esphome -s external_components_source ../components config tests/esp8266-query-data-v2021.yaml
+          esphome -s external_components_source ../components config tests/esp8266-query-data.yaml
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -204,7 +214,9 @@ jobs:
       - name: Write secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
-      - run: |
+      - name: Compile esp32 example configurations
+        run: |
           esphome -s external_components_source components compile esp32-example-faker.yaml
-      - run: |
+      - name: Compile esp8266 example configurations
+        run: |
           esphome -s external_components_source components compile esp8266-example-faker.yaml
