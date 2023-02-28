@@ -1,5 +1,6 @@
 substitutions:
   name: ant-bms
+  device_description: "Monitor and control a ANT Battery Management System (ANT-BMS) via UART"
   external_components_source: github://syssi/esphome-ant-bms@main
   rx_timeout: 50ms
   tx_pin: GPIO16
