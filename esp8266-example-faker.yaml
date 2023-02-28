@@ -2,7 +2,7 @@
 
 ant_bms:
   id: bms0
-  ant_modbus_id: modbus0
+  uart_id: uart0
   enable_fake_traffic: true
   password: "${password}"
   supports_new_commands: true
