@@ -136,7 +136,7 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
 
   std::vector<uint8_t> rx_buffer_;
   uint32_t last_byte_{0};
-  uint16_t rx_timeout_{150};
+  uint16_t rx_timeout_{50};
 
   void on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
