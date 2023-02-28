@@ -243,3 +243,4 @@ uart:
 * https://diysolarforum.com/threads/for-those-of-you-looking-to-monitor-your-ant-bms-with-pi3-via-bluetooth.6726/
 * http://mysharegadget.com/947324863
 * http://mysharegadget.com/734493564
+* https://github.com/RoboDurden/AntBms-Arduino
