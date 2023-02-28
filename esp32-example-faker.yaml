@@ -4,6 +4,6 @@ ant_bms:
   - id: bms0
     uart_id: uart0
     rx_timeout: ${rx_timeout}
-    password: "${password}"
     supports_new_commands: true
+    password: "${password}"
     enable_fake_traffic: true
