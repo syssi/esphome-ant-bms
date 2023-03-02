@@ -222,7 +222,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  99    0x00 0x14: Temperature 5                   20°C                           1.0 °C
   //  101   0x00 0x14: Temperature 6                   20°C                           1.0 °C
   for (uint8_t i = 0; i < 6; i++) {
-    this->publish_state_(this->temperatures_[i].temperature_sensor_, (float) ant_get_16bit(i * 2 + 91));
+    this->publish_state_(this->temperatures_[i].temperature_sensor_, (float) ((int16_t) ant_get_16bit(i * 2 + 91)));
   }
 
   //  103   0x01: Charge MOSFET Status
