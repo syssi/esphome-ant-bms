@@ -140,7 +140,7 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
   uint16_t computed_crc = chksum_(raw, frame_len - 2);
   uint16_t remote_crc = uint16_t(raw[frame_len - 2]) << 8 | (uint16_t(raw[frame_len - 1]) << 0);
   if (computed_crc != remote_crc) {
-    ESP_LOGW(TAG, "CRC Check failed! %04X != %04X", computed_crc, remote_crc);
+    ESP_LOGW(TAG, "CRC check failed! 0x%04X != 0x%04X", computed_crc, remote_crc);
     return false;
   }
 
