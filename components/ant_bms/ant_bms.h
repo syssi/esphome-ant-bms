@@ -139,7 +139,9 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   uint16_t rx_timeout_{50};
 
   void on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data);
+  void on_v2021_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
+  void on_v2021_status_data_(const std::vector<uint8_t> &data);
   bool parse_ant_bms_byte_(uint8_t byte);
   void authenticate_();
   void authenticate_v2021_();
