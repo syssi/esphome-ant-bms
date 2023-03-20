@@ -7,6 +7,8 @@ namespace ant_bms_ble {
 
 static const char *const TAG = "ant_bms_ble";
 
+static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
+
 static const uint16_t ANT_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t ANT_BMS_CHARACTERISTIC_UUID = 0xFFE1;  // Handle 0x10
 
@@ -94,8 +96,6 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
     }
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
-
-      // this->publish_state_(this->voltage_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
@@ -235,6 +235,7 @@ void AntBmsBle::update() {
     this->assemble_(device_info_frame2, sizeof(device_info_frame2));
   }
 
+  this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
     ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str().c_str());
     return;
@@ -245,6 +246,8 @@ void AntBmsBle::update() {
 }
 
 void AntBmsBle::on_ant_bms_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data) {
+  this->reset_online_status_tracker_();
+
   switch (function) {
     case ANT_FRAME_TYPE_STATUS:
       this->on_status_data_(data);
@@ -478,6 +481,55 @@ void AntBmsBle::on_device_info_data_(const std::vector<uint8_t> &data) {
   //  46   2  0xAA 0x55   End of frame
 }
 
+void AntBmsBle::track_online_status_() {
+  if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
+    this->no_response_count_++;
+  }
+  if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
+    this->publish_device_unavailable_();
+    this->no_response_count_++;
+  }
+}
+
+void AntBmsBle::reset_online_status_tracker_() {
+  this->no_response_count_ = 0;
+  this->publish_state_(this->online_status_binary_sensor_, true);
+}
+
+void AntBmsBle::publish_device_unavailable_() {
+  this->publish_state_(this->online_status_binary_sensor_, false);
+  this->publish_state_(this->discharge_mosfet_status_text_sensor_, "Offline");
+  this->publish_state_(this->charge_mosfet_status_text_sensor_, "Offline");
+  this->publish_state_(this->balancer_status_text_sensor_, "Offline");
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
+
+  this->publish_state_(battery_strings_sensor_, NAN);
+  this->publish_state_(current_sensor_, NAN);
+  this->publish_state_(soc_sensor_, NAN);
+  this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
+  this->publish_state_(capacity_remaining_sensor_, NAN);
+  this->publish_state_(battery_cycle_capacity_sensor_, NAN);
+  this->publish_state_(total_voltage_sensor_, NAN);
+  this->publish_state_(total_runtime_sensor_, NAN);
+  this->publish_state_(average_cell_voltage_sensor_, NAN);
+  this->publish_state_(power_sensor_, NAN);
+  this->publish_state_(min_cell_voltage_sensor_, NAN);
+  this->publish_state_(max_cell_voltage_sensor_, NAN);
+  this->publish_state_(min_voltage_cell_sensor_, NAN);
+  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(charge_mosfet_status_code_sensor_, NAN);
+  this->publish_state_(discharge_mosfet_status_code_sensor_, NAN);
+  this->publish_state_(balancer_status_code_sensor_, NAN);
+
+  for (auto &temperature : this->temperatures_) {
+    this->publish_state_(temperature.temperature_sensor_, NAN);
+  }
+
+  for (auto &cell : this->cells_) {
+    this->publish_state_(cell.cell_voltage_sensor_, NAN);
+  }
+}
+
 void AntBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "AntBmsBle:");
   ESP_LOGCONFIG(TAG, "  Fake traffic enabled: %s", YESNO(this->enable_fake_traffic_));
@@ -542,6 +594,13 @@ void AntBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_TEXT_SENSOR("", "Charge Mosfet Status", this->charge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+}
+
+void AntBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->publish_state(state);
 }
 
 void AntBmsBle::publish_state_(sensor::Sensor *sensor, float value) {

@@ -3,6 +3,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/ble_client/ble_client.h"
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
@@ -23,6 +24,10 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void dump_config() override;
   void update() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
+
+  void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
+    online_status_binary_sensor_ = online_status_binary_sensor;
+  }
 
   void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
     battery_strings_sensor_ = battery_strings_sensor;
@@ -104,6 +109,8 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void write_register(uint16_t address, uint8_t value);
 
  protected:
+  binary_sensor::BinarySensor *online_status_binary_sensor_;
+
   sensor::Sensor *battery_strings_sensor_;
   sensor::Sensor *current_sensor_;
   sensor::Sensor *soc_sensor_;
@@ -147,6 +154,7 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   std::string password_;
 
   std::vector<uint8_t> frame_buffer_;
+  uint8_t no_response_count_{0};
   uint16_t characteristic_handle_;
 
   void assemble_(const uint8_t *data, uint16_t length);
@@ -156,9 +164,13 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   bool send_(uint8_t function, uint16_t address, uint8_t value, bool authenticate);
   bool authenticate_();
   bool authenticate_variable_(const uint8_t *data, uint8_t data_len);
+  void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void publish_device_unavailable_();
+  void reset_online_status_tracker_();
+  void track_online_status_();
 
   uint16_t crc16_(const uint8_t *data, uint8_t len) {
     uint16_t crc = 0xFFFF;

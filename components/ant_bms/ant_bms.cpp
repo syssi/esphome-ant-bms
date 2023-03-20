@@ -7,6 +7,8 @@ namespace ant_bms {
 
 static const char *const TAG = "ant_bms";
 
+static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
+
 static const uint8_t FUNCTION_READ_ALL = 0xFF;
 static const uint8_t WRITE_SINGLE_REGISTER = 0xA5;
 static const uint8_t REGISTER_APPLY_WRITE = 0xFF;
@@ -155,6 +157,8 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
 }
 
 void AntBms::on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data) {
+  this->reset_online_status_tracker_();
+
   if (data.size() == 140) {
     this->on_status_data_(data);
     return;
@@ -287,6 +291,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
 }
 
 void AntBms::update() {
+  this->track_online_status_();
   this->read_registers_();
 
   if (this->enable_fake_traffic_) {
@@ -329,25 +334,53 @@ void AntBms::authenticate_() {
   }
 }
 
-void AntBms::publish_state_(sensor::Sensor *sensor, float value) {
-  if (sensor == nullptr)
-    return;
-
-  sensor->publish_state(value);
+void AntBms::track_online_status_() {
+  if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
+    this->no_response_count_++;
+  }
+  if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
+    this->publish_device_unavailable_();
+    this->no_response_count_++;
+  }
 }
 
-void AntBms::publish_state_(switch_::Switch *obj, const bool &state) {
-  if (obj == nullptr)
-    return;
-
-  obj->publish_state(state);
+void AntBms::reset_online_status_tracker_() {
+  this->no_response_count_ = 0;
+  this->publish_state_(this->online_status_binary_sensor_, true);
 }
 
-void AntBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
-  if (text_sensor == nullptr)
-    return;
+void AntBms::publish_device_unavailable_() {
+  this->publish_state_(this->online_status_binary_sensor_, false);
+  this->publish_state_(this->discharge_mosfet_status_text_sensor_, "Offline");
+  this->publish_state_(this->charge_mosfet_status_text_sensor_, "Offline");
+  this->publish_state_(this->balancer_status_text_sensor_, "Offline");
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
 
-  text_sensor->publish_state(state);
+  this->publish_state_(battery_strings_sensor_, NAN);
+  this->publish_state_(current_sensor_, NAN);
+  this->publish_state_(soc_sensor_, NAN);
+  this->publish_state_(total_battery_capacity_setting_sensor_, NAN);
+  this->publish_state_(capacity_remaining_sensor_, NAN);
+  this->publish_state_(battery_cycle_capacity_sensor_, NAN);
+  this->publish_state_(total_voltage_sensor_, NAN);
+  this->publish_state_(total_runtime_sensor_, NAN);
+  this->publish_state_(average_cell_voltage_sensor_, NAN);
+  this->publish_state_(power_sensor_, NAN);
+  this->publish_state_(min_cell_voltage_sensor_, NAN);
+  this->publish_state_(max_cell_voltage_sensor_, NAN);
+  this->publish_state_(min_voltage_cell_sensor_, NAN);
+  this->publish_state_(max_voltage_cell_sensor_, NAN);
+  this->publish_state_(charge_mosfet_status_code_sensor_, NAN);
+  this->publish_state_(discharge_mosfet_status_code_sensor_, NAN);
+  this->publish_state_(balancer_status_code_sensor_, NAN);
+
+  for (auto &temperature : this->temperatures_) {
+    this->publish_state_(temperature.temperature_sensor_, NAN);
+  }
+
+  for (auto &cell : this->cells_) {
+    this->publish_state_(cell.cell_voltage_sensor_, NAN);
+  }
 }
 
 void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
@@ -420,6 +453,34 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
 float AntBms::get_setup_priority() const {
   // After UART bus
   return setup_priority::BUS - 1.0f;
+}
+
+void AntBms::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->publish_state(state);
+}
+
+void AntBms::publish_state_(sensor::Sensor *sensor, float value) {
+  if (sensor == nullptr)
+    return;
+
+  sensor->publish_state(value);
+}
+
+void AntBms::publish_state_(switch_::Switch *obj, const bool &state) {
+  if (obj == nullptr)
+    return;
+
+  obj->publish_state(state);
+}
+
+void AntBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
+  if (text_sensor == nullptr)
+    return;
+
+  text_sensor->publish_state(state);
 }
 
 void AntBms::send_(uint8_t function, uint8_t address, uint16_t value) {

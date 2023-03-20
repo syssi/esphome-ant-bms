@@ -54,6 +54,12 @@ ant_bms:
     supports_new_commands: true
     password: "${password}"
 
+binary_sensor:
+  - platform: ant_bms
+    ant_bms_id: bms0
+    online_status:
+      name: "${name} online status"
+
 sensor:
   - platform: ant_bms
     ant_bms_id: bms0
