@@ -334,7 +334,7 @@ void AntBms::authenticate_() {
   }
 }
 
-void AntBmsBle::track_online_status_() {
+void AntBms::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
     this->no_response_count_++;
   }
