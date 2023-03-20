@@ -59,6 +59,12 @@ ant_bms_ble:
     ble_client_id: client0
     update_interval: 5s
 
+binary_sensor:
+  - platform: ant_bms_ble
+    ant_bms_id: bms0
+    online_status:
+      name: "${name} online status"
+
 sensor:
   - platform: ant_bms_ble
     ant_bms_ble_id: bms0

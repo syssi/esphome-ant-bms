@@ -29,13 +29,7 @@ ota:
 logger:
 
 # If you use Home Assistant please remove this `mqtt` section and uncomment the native `api` component!
-# api:
-
-mqtt:
-  broker: !secret mqtt_host
-  username: !secret mqtt_username
-  password: !secret mqtt_password
-  id: mqtt_client
+api:
 
 uart:
   - id: uart0
@@ -51,6 +45,12 @@ ant_bms:
     rx_timeout: ${rx_timeout}
     supports_new_commands: true
     password: "${password}"
+
+binary_sensor:
+  - platform: ant_bms
+    ant_bms_id: bms0
+    online_status:
+      name: "${name} online status"
 
 sensor:
   - platform: ant_bms

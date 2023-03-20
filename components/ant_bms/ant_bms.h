@@ -3,6 +3,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/switch/switch.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/components/uart/uart.h"
 
@@ -15,6 +16,10 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void dump_config() override;
   void update() override;
   float get_setup_priority() const override;
+
+  void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
+    online_status_binary_sensor_ = online_status_binary_sensor;
+  }
 
   void set_battery_strings_sensor(sensor::Sensor *battery_strings_sensor) {
     battery_strings_sensor_ = battery_strings_sensor;
@@ -93,6 +98,8 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   bool supports_new_commands() { return supports_new_commands_; }
 
  protected:
+  binary_sensor::BinarySensor *online_status_binary_sensor_;
+
   sensor::Sensor *battery_strings_sensor_;
   sensor::Sensor *current_sensor_;
   sensor::Sensor *soc_sensor_;
@@ -135,6 +142,7 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   std::string password_;
 
   std::vector<uint8_t> rx_buffer_;
+  uint8_t no_response_count_{0};
   uint32_t last_byte_{0};
   uint16_t rx_timeout_{50};
 
@@ -150,6 +158,9 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void read_registers_();
   void send_(uint8_t function, uint8_t address, uint16_t value);
   void send_v2021_(uint8_t function, uint8_t address, uint16_t value);
+  void publish_device_unavailable_();
+  void reset_online_status_tracker_();
+  void track_online_status_();
 
   uint16_t chksum_(const uint8_t data[], const uint16_t len) {
     uint16_t checksum = 0;
