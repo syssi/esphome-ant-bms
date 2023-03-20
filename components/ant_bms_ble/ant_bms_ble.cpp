@@ -599,6 +599,13 @@ void AntBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
 }
 
+void AntBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->publish_state(state);
+}
+
 void AntBmsBle::publish_state_(sensor::Sensor *sensor, float value) {
   if (sensor == nullptr)
     return;

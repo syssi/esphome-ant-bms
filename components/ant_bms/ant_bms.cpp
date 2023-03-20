@@ -456,6 +456,13 @@ float AntBms::get_setup_priority() const {
   return setup_priority::BUS - 1.0f;
 }
 
+void AntBms::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->publish_state(state);
+}
+
 void AntBms::publish_state_(sensor::Sensor *sensor, float value) {
   if (sensor == nullptr)
     return;
