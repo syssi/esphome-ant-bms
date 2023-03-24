@@ -92,6 +92,7 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void set_password(const std::string &password) { this->password_ = password; }
   void set_supports_new_commands(bool supports_new_commands) { supports_new_commands_ = supports_new_commands; }
 
+  void on_ant_bms_data(const std::vector<uint8_t> &data);
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
   void write_register(uint8_t address, uint16_t value);
   bool supports_new_commands() { return supports_new_commands_; }
@@ -144,7 +145,6 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   uint32_t last_byte_{0};
   uint16_t rx_timeout_{50};
 
-  void on_ant_bms_data_(const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
   bool parse_ant_bms_byte_(uint8_t byte);
   void authenticate_();

@@ -148,13 +148,13 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
-  this->on_ant_bms_data_(data);
+  this->on_ant_bms_data(data);
 
   // return false to reset buffer
   return false;
 }
 
-void AntBms::on_ant_bms_data_(const std::vector<uint8_t> &data) {
+void AntBms::on_ant_bms_data(const std::vector<uint8_t> &data) {
   this->reset_online_status_tracker_();
 
   if (data.size() == 140) {
