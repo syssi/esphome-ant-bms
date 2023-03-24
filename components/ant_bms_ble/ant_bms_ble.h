@@ -105,6 +105,7 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
 
   void set_password(const std::string &password) { this->password_ = password; }
 
+  void assemble(const uint8_t *data, uint16_t length);
   void write_register(uint16_t address, uint8_t value);
 
  protected:
@@ -155,7 +156,6 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   uint8_t no_response_count_{0};
   uint16_t characteristic_handle_;
 
-  void assemble_(const uint8_t *data, uint16_t length);
   void on_ant_bms_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
   void on_device_info_data_(const std::vector<uint8_t> &data);

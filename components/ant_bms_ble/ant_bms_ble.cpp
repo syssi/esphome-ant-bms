@@ -144,7 +144,7 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
       ESP_LOGVV(TAG, "Notification received: %s",
                 format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
 
-      this->assemble_(param->notify.value, param->notify.value_len);
+      this->assemble(param->notify.value, param->notify.value_len);
 
       break;
     }
@@ -153,7 +153,7 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
   }
 }
 
-void AntBmsBle::assemble_(const uint8_t *data, uint16_t length) {
+void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Maximum response size exceeded");
     this->frame_buffer_.clear();
