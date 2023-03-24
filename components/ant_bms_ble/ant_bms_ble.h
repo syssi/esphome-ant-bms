@@ -103,9 +103,9 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_bluetooth_switch(switch_::Switch *bluetooth_switch) { bluetooth_switch_ = bluetooth_switch; }
   void set_buzzer_switch(switch_::Switch *buzzer_switch) { buzzer_switch_ = buzzer_switch; }
 
-  void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
   void set_password(const std::string &password) { this->password_ = password; }
 
+  void assemble(const uint8_t *data, uint16_t length);
   void write_register(uint16_t address, uint8_t value);
 
  protected:
@@ -150,14 +150,12 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
     sensor::Sensor *temperature_sensor_{nullptr};
   } temperatures_[6];
 
-  bool enable_fake_traffic_;
   std::string password_;
 
   std::vector<uint8_t> frame_buffer_;
   uint8_t no_response_count_{0};
   uint16_t characteristic_handle_;
 
-  void assemble_(const uint8_t *data, uint16_t length);
   void on_ant_bms_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
   void on_device_info_data_(const std::vector<uint8_t> &data);

@@ -89,10 +89,10 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void set_bluetooth_switch(switch_::Switch *bluetooth_switch) { bluetooth_switch_ = bluetooth_switch; }
   void set_buzzer_switch(switch_::Switch *buzzer_switch) { buzzer_switch_ = buzzer_switch; }
 
-  void set_enable_fake_traffic(bool enable_fake_traffic) { enable_fake_traffic_ = enable_fake_traffic; }
   void set_password(const std::string &password) { this->password_ = password; }
   void set_supports_new_commands(bool supports_new_commands) { supports_new_commands_ = supports_new_commands; }
 
+  void on_ant_bms_data(const std::vector<uint8_t> &data);
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
   void write_register(uint8_t address, uint16_t value);
   bool supports_new_commands() { return supports_new_commands_; }
@@ -137,7 +137,6 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
     sensor::Sensor *temperature_sensor_{nullptr};
   } temperatures_[6];
 
-  bool enable_fake_traffic_;
   bool supports_new_commands_;
   std::string password_;
 
@@ -146,7 +145,6 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   uint32_t last_byte_{0};
   uint16_t rx_timeout_{50};
 
-  void on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
   bool parse_ant_bms_byte_(uint8_t byte);
   void authenticate_();
