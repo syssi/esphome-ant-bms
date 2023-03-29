@@ -3,8 +3,10 @@ from esphome.components import uart
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_PASSWORD
 
-AUTO_LOAD = ["uart", "binary_sensor", "button", "sensor", "switch", "text_sensor"]
 CODEOWNERS = ["@syssi"]
+
+DEPENDENCIES = ["uart"]
+AUTO_LOAD = ["binary_sensor", "button", "sensor", "switch", "text_sensor"]
 MULTI_CONF = True
 
 CONF_ANT_BMS_ID = "ant_bms_id"
