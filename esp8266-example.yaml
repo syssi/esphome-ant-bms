@@ -28,8 +28,14 @@ wifi:
 ota:
 logger:
 
-# If you use Home Assistant please remove this `mqtt` section and uncomment the native `api` component!
-api:
+# If you use Home Assistant please uncomment the native `api` component and remove the `mqtt` section!
+# api:
+
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
 
 uart:
   - id: uart0
