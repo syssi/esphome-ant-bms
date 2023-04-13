@@ -1,6 +1,7 @@
 <<: !include esp8266-example.yaml
 
 logger:
+  level: DEBUG
 
 uart:
   - id: uart0
