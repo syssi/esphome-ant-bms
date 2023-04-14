@@ -162,7 +162,8 @@ void AntBms::on_ant_bms_data(const std::vector<uint8_t> &data) {
     return;
   }
 
-  ESP_LOGW(TAG, "Invalid size (%zu) for ANT BMS frame!", data.size());
+  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
+           format_hex_pretty(&data.front(), data.size()).c_str());
 }
 
 void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
