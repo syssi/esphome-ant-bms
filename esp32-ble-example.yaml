@@ -1,7 +1,7 @@
 substitutions:
   name: ant-bms-ble
   device_description: "Monitor and control a ANT Battery Management System (ANT-BMS) via BLE"
-  external_components_source: github://syssi/esphome-ant-bms@add-ble-support
+  external_components_source: github://syssi/esphome-ant-bms@main
   mac_address: 16:aa:22:02:23:45
 
 esphome:
