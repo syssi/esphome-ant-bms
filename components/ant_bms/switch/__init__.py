@@ -4,14 +4,15 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
 from .. import CONF_ANT_BMS_ID, AntBms, ant_bms_ns
+from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
 
 DEPENDENCIES = ["ant_bms"]
 
 CODEOWNERS = ["@syssi"]
 
-CONF_CHARGING = "charging"
-CONF_DISCHARGING = "discharging"
-CONF_BALANCER = "balancer"
+# CONF_CHARGING = "charging"
+# CONF_DISCHARGING = "discharging"
+# CONF_BALANCER = "balancer"
 CONF_BLUETOOTH = "bluetooth"
 CONF_BUZZER = "buzzer"
 

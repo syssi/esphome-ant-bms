@@ -3,10 +3,10 @@ from esphome.components import button
 import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
-from .. import CONF_ANT_BMS_ID, AntBms, ant_bms_ns
+from .. import CONF_ANT_BMS_OLD_BLE_ID, AntBmsOldBle, ant_bms_old_ble_ns
 from ..const import CONF_BALANCER
 
-DEPENDENCIES = ["ant_bms"]
+DEPENDENCIES = ["ant_bms_old_ble"]
 
 CODEOWNERS = ["@syssi"]
 
@@ -36,11 +36,11 @@ BUTTONS = {
     CONF_RESTART: 0xFE,
 }
 
-AntButton = ant_bms_ns.class_("AntButton", button.Button, cg.Component)
+AntButton = ant_bms_old_ble_ns.class_("AntButton", button.Button, cg.Component)
 
 CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_ANT_BMS_ID): cv.use_id(AntBms),
+        cv.GenerateID(CONF_ANT_BMS_OLD_BLE_ID): cv.use_id(AntBmsOldBle),
         cv.Optional(CONF_SHUTDOWN): button.BUTTON_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(AntButton),
@@ -82,7 +82,7 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
-    hub = await cg.get_variable(config[CONF_ANT_BMS_ID])
+    hub = await cg.get_variable(config[CONF_ANT_BMS_OLD_BLE_ID])
     for key, address in BUTTONS.items():
         if key in config:
             conf = config[key]
