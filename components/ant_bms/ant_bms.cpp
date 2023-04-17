@@ -307,7 +307,7 @@ void AntBms::write_register(uint8_t address, uint16_t value) {
 
 void AntBms::authenticate_() {
   if (this->password_.empty()) {
-    ESP_LOGE(TAG, "Authentication skipped because there was no password provided");
+    ESP_LOGI(TAG, "Authentication skipped because there was no password provided");
     return;
   }
 
