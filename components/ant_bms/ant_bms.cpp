@@ -313,8 +313,8 @@ void AntBms::authenticate_() {
 
   ESP_LOGD(TAG, "Authenticate write command");
   const uint8_t *password = reinterpret_cast<const uint8_t *>(this->password_.c_str());
-  for (uint8_t i = 0; i < 8; i = i + 2) {
-    this->send_(WRITE_SINGLE_REGISTER, 0xF1 + i, (uint16_t(password[i]) << 8) | uint16_t(password[i + 1]));
+  for (uint8_t i = 0; i < 4; i++) {
+    this->send_(WRITE_SINGLE_REGISTER, 0xF1 + i, (uint16_t(password[i * 2]) << 8) | uint16_t(password[(i * 2) + 1]));
   }
 }
 
