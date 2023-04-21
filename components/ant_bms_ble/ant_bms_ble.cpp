@@ -384,8 +384,8 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   // 116   2  0x01 0x00              Minimum voltage cell
   this->publish_state_(this->min_voltage_cell_sensor_, ant_get_16bit(80 + offset) * 1.0f);
 
-  // 118   2  0x00 0x00              Voltage difference
-  ESP_LOGI(TAG, "  Voltage difference: %.2f V", ant_get_16bit(82 + offset) * 0.001f);
+  // 118   2  0x00 0x00              Delta cell voltage
+  this->publish_state_(this->delta_cell_voltage_sensor_, ant_get_16bit(82 + offset) * 0.001f);
 
   // 120   2  0x11 0x10              Average cell voltage
   this->publish_state_(this->average_cell_voltage_sensor_, ant_get_16bit(84 + offset) * 0.001f);

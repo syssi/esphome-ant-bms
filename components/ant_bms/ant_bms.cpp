@@ -271,13 +271,16 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   //  115   0x0D: Cell with the highest voltage        Cell 13
   this->publish_state_(this->max_voltage_cell_sensor_, (float) data[115]);
   //  116   0x10 0x2C: Maximum cell voltage            4140 * 0.001 = 4.140V          0.001 V
-  this->publish_state_(this->max_cell_voltage_sensor_, (float) ant_get_16bit(116) * 0.001f);
+  float max_cell_voltage = ant_get_16bit(116) * 0.001f;
+  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
   //  118   0x09: Cell with the lowest voltage         Cell 9
   this->publish_state_(this->min_voltage_cell_sensor_, (float) data[118]);
+  float min_cell_voltage = ant_get_16bit(119) * 0.001f;
   //  119   0x10 0x26: Minimum cell voltage            4134 * 0.001 = 4.134V          0.001 V
-  this->publish_state_(this->min_cell_voltage_sensor_, (float) ant_get_16bit(119) * 0.001f);
+  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
+  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
   //  121   0x10 0x28: Average cell voltage            4136 * 0.001 = 4.136V          0.001 V
-  this->publish_state_(this->average_cell_voltage_sensor_, (float) ant_get_16bit(121) * 0.001f);
+  this->publish_state_(this->average_cell_voltage_sensor_, ant_get_16bit(121) * 0.001f);
   //  123   0x0D: Battery strings                      13
   this->publish_state_(this->battery_strings_sensor_, (float) data[123]);
   //  124   0x00 0x00: Discharge MOSFET, voltage between D-S                          0.1 V

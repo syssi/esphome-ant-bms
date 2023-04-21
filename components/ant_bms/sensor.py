@@ -40,6 +40,7 @@ CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
 CONF_MAX_CELL_VOLTAGE = "max_cell_voltage"
 CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
 CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
+CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 
 CONF_TEMPERATURE_1 = "temperature_1"
 CONF_TEMPERATURE_2 = "temperature_2"
@@ -162,6 +163,7 @@ SENSORS = [
     CONF_MAX_CELL_VOLTAGE,
     CONF_MIN_VOLTAGE_CELL,
     CONF_MAX_VOLTAGE_CELL,
+    CONF_DELTA_CELL_VOLTAGE,
     CONF_CHARGE_MOSFET_STATUS_CODE,
     CONF_DISCHARGE_MOSFET_STATUS_CODE,
     CONF_BALANCER_STATUS_CODE,
@@ -267,6 +269,13 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_MAX_VOLTAGE_CELL,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_DELTA_CELL_VOLTAGE): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_TEMPERATURE_1): sensor.sensor_schema(
