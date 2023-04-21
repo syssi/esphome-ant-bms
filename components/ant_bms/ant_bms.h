@@ -53,6 +53,9 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void set_max_voltage_cell_sensor(sensor::Sensor *max_voltage_cell_sensor) {
     max_voltage_cell_sensor_ = max_voltage_cell_sensor;
   }
+  void set_delta_cell_voltage_sensor(sensor::Sensor *delta_cell_voltage_sensor) {
+    delta_cell_voltage_sensor_ = delta_cell_voltage_sensor;
+  }
 
   void set_cell_voltage_sensor(uint8_t cell, sensor::Sensor *cell_voltage_sensor) {
     this->cells_[cell].cell_voltage_sensor_ = cell_voltage_sensor;
@@ -114,6 +117,7 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   sensor::Sensor *max_cell_voltage_sensor_;
   sensor::Sensor *min_voltage_cell_sensor_;
   sensor::Sensor *max_voltage_cell_sensor_;
+  sensor::Sensor *delta_cell_voltage_sensor_;
   sensor::Sensor *charge_mosfet_status_code_sensor_;
   sensor::Sensor *discharge_mosfet_status_code_sensor_;
   sensor::Sensor *balancer_status_code_sensor_;
