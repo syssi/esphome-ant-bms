@@ -275,8 +275,8 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
   //  118   0x09: Cell with the lowest voltage         Cell 9
   this->publish_state_(this->min_voltage_cell_sensor_, (float) data[118]);
-  float min_cell_voltage = ant_get_16bit(119) * 0.001f;
   //  119   0x10 0x26: Minimum cell voltage            4134 * 0.001 = 4.134V          0.001 V
+  float min_cell_voltage = ant_get_16bit(119) * 0.001f;
   this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
   this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
   //  121   0x10 0x28: Average cell voltage            4136 * 0.001 = 4.136V          0.001 V
