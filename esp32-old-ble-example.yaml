@@ -1,7 +1,7 @@
 substitutions:
   name: ant-bms-old-ble
   device_description: "Monitor and control a ANT Battery Management System (ANT-BMS) via BLE"
-  external_components_source: github://syssi/esphome-ant-bms@old-proto-ble
+  external_components_source: github://syssi/esphome-ant-bms@main
   # Apply the MAC address of your ANT-BMS here (BLE device name: "ANT-BLE24C"). Please don't use "BMS-ANT24C".
   mac_address: 16:aa:22:02:23:45
   password: "12345678"
