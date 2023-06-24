@@ -152,8 +152,8 @@ class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingCo
   void on_ant_bms_old_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
   void authenticate_();
-  bool send_(uint8_t function, uint8_t address, uint16_t value);
   bool read_registers_();
+  bool send_(uint8_t function, uint8_t address, uint16_t value);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);

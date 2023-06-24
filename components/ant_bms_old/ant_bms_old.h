@@ -149,12 +149,12 @@ class AntBmsOld : public uart::UARTDevice, public PollingComponent {
   void on_status_data_(const std::vector<uint8_t> &data);
   bool parse_ant_bms_old_byte_(uint8_t byte);
   void authenticate_();
+  void read_registers_();
+  void send_(uint8_t function, uint8_t address, uint16_t value);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
-  void read_registers_();
-  void send_(uint8_t function, uint8_t address, uint16_t value);
   void publish_device_unavailable_();
   void reset_online_status_tracker_();
   void track_online_status_();
