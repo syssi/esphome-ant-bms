@@ -1,0 +1,13 @@
+<<: !include esp32-old-example.yaml
+
+logger:
+  level: DEBUG
+
+uart:
+  - id: uart_0
+    baud_rate: 19200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin}
+    rx_pin: ${rx_pin}
+    debug:
+      direction: BOTH

@@ -1,29 +1,21 @@
 #pragma once
 
 #include "esphome/core/component.h"
-#include "esphome/components/ble_client/ble_client.h"
-#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/switch/switch.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
-
-#ifdef USE_ESP32
-
-#include <esp_gattc_api.h>
+#include "esphome/components/uart/uart.h"
 
 namespace esphome {
-namespace ant_bms_old_ble {
+namespace ant_bms_old {
 
-namespace espbt = esphome::esp32_ble_tracker;
-
-class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingComponent {
+class AntBmsOld : public uart::UARTDevice, public PollingComponent {
  public:
-  void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
-                           esp_ble_gattc_cb_param_t *param) override;
+  void loop() override;
   void dump_config() override;
   void update() override;
-  float get_setup_priority() const override { return setup_priority::DATA; }
+  float get_setup_priority() const override;
 
   void set_online_status_binary_sensor(binary_sensor::BinarySensor *online_status_binary_sensor) {
     online_status_binary_sensor_ = online_status_binary_sensor;
@@ -96,10 +88,14 @@ class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingCo
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
+  void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
+  void set_bluetooth_switch(switch_::Switch *bluetooth_switch) { bluetooth_switch_ = bluetooth_switch; }
+  void set_buzzer_switch(switch_::Switch *buzzer_switch) { buzzer_switch_ = buzzer_switch; }
 
   void set_password(const std::string &password) { this->password_ = password; }
 
-  void assemble(const uint8_t *data, uint16_t length);
+  void on_ant_bms_old_data(const std::vector<uint8_t> &data);
+  void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
   void write_register(uint8_t address, uint16_t value);
 
  protected:
@@ -145,15 +141,16 @@ class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingCo
 
   std::string password_;
 
-  std::vector<uint8_t> frame_buffer_;
+  std::vector<uint8_t> rx_buffer_;
   uint8_t no_response_count_{0};
-  uint16_t characteristic_handle_;
+  uint32_t last_byte_{0};
+  uint16_t rx_timeout_{50};
 
-  void on_ant_bms_old_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
+  bool parse_ant_bms_old_byte_(uint8_t byte);
   void authenticate_();
-  bool read_registers_();
-  bool send_(uint8_t function, uint8_t address, uint16_t value);
+  void read_registers_();
+  void send_(uint8_t function, uint8_t address, uint16_t value);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
@@ -182,7 +179,5 @@ class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingCo
   }
 };
 
-}  // namespace ant_bms_old_ble
+}  // namespace ant_bms_old
 }  // namespace esphome
-
-#endif

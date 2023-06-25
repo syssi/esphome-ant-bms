@@ -1,16 +1,13 @@
-#include "ant_bms_old_ble.h"
+#include "ant_bms_old.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
 namespace esphome {
-namespace ant_bms_old_ble {
+namespace ant_bms_old {
 
-static const char *const TAG = "ant_bms_old_ble";
+static const char *const TAG = "ant_bms_old";
 
-static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
-
-static const uint16_t ANT_BMS_OLD_SERVICE_UUID = 0xFFE0;
-static const uint16_t ANT_BMS_OLD_CHARACTERISTIC_UUID = 0xFFE1;  // Handle 0x10
+static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 
 static const uint16_t STATUS_FRAME_LENGTH = 140;
 
@@ -18,6 +15,7 @@ static const uint8_t ANT_PKT_START_1 = 0xAA;
 static const uint8_t ANT_PKT_START_2 = 0x55;
 static const uint8_t ANT_PKT_START_3 = 0xAA;
 
+static const uint8_t FUNCTION_READ_ALL = 0xFF;
 static const uint8_t WRITE_SINGLE_REGISTER = 0xA5;
 static const uint8_t REGISTER_APPLY_WRITE = 0xFF;
 
@@ -76,110 +74,84 @@ static const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
     "Motherboard over temperature",          // 0x0A
 };
 
-void AntBmsOldBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
-                                       esp_ble_gattc_cb_param_t *param) {
-  switch (event) {
-    case ESP_GATTC_OPEN_EVT: {
-      break;
-    }
-    case ESP_GATTC_DISCONNECT_EVT: {
-      this->node_state = espbt::ClientState::IDLE;
-      break;
-    }
-    case ESP_GATTC_SEARCH_CMPL_EVT: {
-      // [esp32_ble_client:064]: [0] [AA:BB:CC:92:23:45] 0x00 Attempting BLE connection
-      // [esp32_ble_client:129]: [0] [AA:BB:CC:92:23:45] ESP_GATTC_OPEN_EVT
-      // [esp32_ble_client:189]: [0] [AA:BB:CC:92:23:45] ESP_GATTC_SEARCH_CMPL_EVT
-      // [esp32_ble_client:192]: [0] [AA:BB:CC:92:23:45] Service UUID: 0x1800
-      // [esp32_ble_client:194]: [0] [AA:BB:CC:92:23:45]  start_handle: 0x1  end_handle: 0x9
-      // [esp32_ble_client:192]: [0] [AA:BB:CC:92:23:45] Service UUID: 0x1801
-      // [esp32_ble_client:194]: [0] [AA:BB:CC:92:23:45]  start_handle: 0xa  end_handle: 0xd
-      // [esp32_ble_client:192]: [0] [AA:BB:CC:92:23:45] Service UUID: 0xFFE0
-      // [esp32_ble_client:194]: [0] [AA:BB:CC:92:23:45]  start_handle: 0xe  end_handle: 0xffff
-      // [esp32_ble_client:196]: [0] [AA:BB:CC:92:23:45] Connected
-      // [esp32_ble_client:069]: [0] [AA:BB:CC:92:23:45]  characteristic 0xFFE1, handle 0x10, properties 0x1c
-      // [esp32_ble_client:069]: [0] [AA:BB:CC:92:23:45]  characteristic 0xFFE2, handle 0x13, properties 0xc
-      auto *characteristic =
-          this->parent_->get_characteristic(ANT_BMS_OLD_SERVICE_UUID, ANT_BMS_OLD_CHARACTERISTIC_UUID);
-      if (characteristic == nullptr) {
-        ESP_LOGE(TAG, "[%s] No notify service found at device, not an ANT BMS..?",
-                 this->parent_->address_str().c_str());
-        break;
-      }
-      this->characteristic_handle_ = characteristic->handle;
+void AntBmsOld::loop() {
+  const uint32_t now = millis();
+  if (now - this->last_byte_ > this->rx_timeout_) {
+    this->rx_buffer_.clear();
+    this->last_byte_ = now;
+  }
 
-      auto status = esp_ble_gattc_register_for_notify(this->parent()->get_gattc_if(), this->parent()->get_remote_bda(),
-                                                      characteristic->handle);
-      if (status) {
-        ESP_LOGW(TAG, "esp_ble_gattc_register_for_notify failed, status=%d", status);
-      }
-
-      break;
+  while (this->available()) {
+    uint8_t byte;
+    this->read_byte(&byte);
+    if (this->parse_ant_bms_old_byte_(byte)) {
+      this->last_byte_ = now;
+    } else {
+      this->rx_buffer_.clear();
     }
-    case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
-      this->node_state = espbt::ClientState::ESTABLISHED;
-      break;
-    }
-    case ESP_GATTC_NOTIFY_EVT: {
-      if (param->notify.handle != this->characteristic_handle_)
-        break;
-
-      ESP_LOGVV(TAG, "Notification received: %s",
-                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
-
-      this->assemble(param->notify.value, param->notify.value_len);
-
-      break;
-    }
-    default:
-      break;
   }
 }
 
-void AntBmsOldBle::assemble(const uint8_t *data, uint16_t length) {
-  if (this->frame_buffer_.size() > STATUS_FRAME_LENGTH) {
-    ESP_LOGW(TAG, "Maximum response size (%d bytes) exceeded", this->frame_buffer_.size());
-    this->frame_buffer_.clear();
-  }
+bool AntBmsOld::parse_ant_bms_old_byte_(uint8_t byte) {
+  size_t at = this->rx_buffer_.size();
+  this->rx_buffer_.push_back(byte);
+  const uint8_t *raw = &this->rx_buffer_[0];
+  uint16_t frame_len = 140;
 
-  // Flush buffer on every preamble
-  if (data[0] == ANT_PKT_START_1 && data[1] == ANT_PKT_START_2 && data[2] == ANT_PKT_START_3) {
-    this->frame_buffer_.clear();
-  }
+  // 0xAA 0x55 0xAA 0xFF 0x02 0x1D 0x10 0x2A ...
+  //   0    1    2    3  ^^^^^ data ^^^^^^^^
 
-  this->frame_buffer_.insert(this->frame_buffer_.end(), data, data + length);
+  // Byte 0: Ant BMS start byte (match all)
+  if (at == 0) {
+    if (raw[0] != ANT_PKT_START_1) {
+      ESP_LOGW(TAG, "Invalid header: 0x%02X", raw[0]);
 
-  if (this->frame_buffer_.size() == STATUS_FRAME_LENGTH) {
-    const uint8_t *raw = &this->frame_buffer_[0];
-
-    uint8_t function = raw[3];
-    uint16_t computed_crc = chksum_(raw, STATUS_FRAME_LENGTH - 2);
-    uint16_t remote_crc = uint16_t(raw[STATUS_FRAME_LENGTH - 2]) << 8 | (uint16_t(raw[STATUS_FRAME_LENGTH - 1]) << 0);
-    if (computed_crc != remote_crc) {
-      ESP_LOGW(TAG, "CRC check failed! 0x%04X != 0x%04X", computed_crc, remote_crc);
-      this->frame_buffer_.clear();
-      return;
+      // return false to reset buffer
+      return false;
     }
 
-    std::vector<uint8_t> data(this->frame_buffer_.begin(), this->frame_buffer_.end());
-
-    this->on_ant_bms_old_ble_data_(function, data);
-    this->frame_buffer_.clear();
+    return true;
   }
+
+  // Byte 0...3: Header
+  if (at < 3)
+    return true;
+
+  if (raw[0] != ANT_PKT_START_1 || raw[1] != ANT_PKT_START_2 || raw[2] != ANT_PKT_START_3 ||
+      raw[3] != FUNCTION_READ_ALL) {
+    ESP_LOGW(TAG, "Invalid header: 0x%02X 0x%02X 0x%02X 0x%02X", raw[0], raw[1], raw[2], raw[3]);
+
+    // return false to reset buffer
+    return false;
+  }
+
+  // Byte 0...139
+  if (at < frame_len - 1)
+    return true;
+
+  uint16_t computed_crc = chksum_(raw, frame_len - 2);
+  uint16_t remote_crc = uint16_t(raw[frame_len - 2]) << 8 | (uint16_t(raw[frame_len - 1]) << 0);
+  if (computed_crc != remote_crc) {
+    ESP_LOGW(TAG, "CRC check failed! 0x%04X != 0x%04X", computed_crc, remote_crc);
+    return false;
+  }
+
+  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());
+
+  std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
+
+  this->on_ant_bms_old_data(data);
+
+  // return false to reset buffer
+  return false;
 }
 
-void AntBmsOldBle::update() {
+void AntBmsOld::update() {
   this->track_online_status_();
-  if (this->node_state != espbt::ClientState::ESTABLISHED) {
-    ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str().c_str());
-    return;
-  }
-
-  // 0xdb 0xdb 0x00 0x00 0x00 0x00
   this->read_registers_();
 }
 
-void AntBmsOldBle::on_ant_bms_old_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data) {
+void AntBmsOld::on_ant_bms_old_data(const std::vector<uint8_t> &data) {
   this->reset_online_status_tracker_();
 
   if (data.size() == STATUS_FRAME_LENGTH) {
@@ -191,7 +163,7 @@ void AntBmsOldBle::on_ant_bms_old_ble_data_(const uint8_t &function, const std::
            format_hex_pretty(&data.front(), data.size()).c_str());
 }
 
-void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
+void AntBmsOld::on_status_data_(const std::vector<uint8_t> &data) {
   auto ant_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
   };
@@ -203,7 +175,7 @@ void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());
 
   // Status request
-  // -> 0xDB 0xDB 0x00 0x00 0x00 0x00
+  // -> 0x5A 0x5A 0x00 0x00 0x01 0x01
   //
   // Status response
   // <- 0xAA 0x55 0xAA 0xFF: Header
@@ -314,7 +286,7 @@ void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
   //  138   0x0B 0x00: CRC
 }
 
-void AntBmsOldBle::track_online_status_() {
+void AntBmsOld::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
     this->no_response_count_++;
   }
@@ -324,12 +296,12 @@ void AntBmsOldBle::track_online_status_() {
   }
 }
 
-void AntBmsOldBle::reset_online_status_tracker_() {
+void AntBmsOld::reset_online_status_tracker_() {
   this->no_response_count_ = 0;
   this->publish_state_(this->online_status_binary_sensor_, true);
 }
 
-void AntBmsOldBle::publish_device_unavailable_() {
+void AntBmsOld::publish_device_unavailable_() {
   this->publish_state_(this->online_status_binary_sensor_, false);
   this->publish_state_(this->discharge_mosfet_status_text_sensor_, "Offline");
   this->publish_state_(this->charge_mosfet_status_text_sensor_, "Offline");
@@ -363,8 +335,9 @@ void AntBmsOldBle::publish_device_unavailable_() {
   }
 }
 
-void AntBmsOldBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
-  ESP_LOGCONFIG(TAG, "AntBmsOldBle:");
+void AntBmsOld::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
+  ESP_LOGCONFIG(TAG, "AntBmsOld:");
+  ESP_LOGCONFIG(TAG, "  RX timeout: %d ms", this->rx_timeout_);
 
   LOG_SENSOR("", "Battery Strings", this->battery_strings_sensor_);
   LOG_SENSOR("", "Total Voltage", this->total_voltage_sensor_);
@@ -426,43 +399,50 @@ void AntBmsOldBle::dump_config() {  // NOLINT(google-readability-function-size,r
   LOG_TEXT_SENSOR("", "Charge Mosfet Status", this->charge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+
+  this->check_uart_settings(19200);
 }
 
-void AntBmsOldBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+float AntBmsOld::get_setup_priority() const {
+  // After UART bus
+  return setup_priority::BUS - 1.0f;
+}
+
+void AntBmsOld::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
   if (binary_sensor == nullptr)
     return;
 
   binary_sensor->publish_state(state);
 }
 
-void AntBmsOldBle::publish_state_(sensor::Sensor *sensor, float value) {
+void AntBmsOld::publish_state_(sensor::Sensor *sensor, float value) {
   if (sensor == nullptr)
     return;
 
   sensor->publish_state(value);
 }
 
-void AntBmsOldBle::publish_state_(switch_::Switch *obj, const bool &state) {
+void AntBmsOld::publish_state_(switch_::Switch *obj, const bool &state) {
   if (obj == nullptr)
     return;
 
   obj->publish_state(state);
 }
 
-void AntBmsOldBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
+void AntBmsOld::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
   if (text_sensor == nullptr)
     return;
 
   text_sensor->publish_state(state);
 }
 
-void AntBmsOldBle::write_register(uint8_t address, uint16_t value) {
+void AntBmsOld::write_register(uint8_t address, uint16_t value) {
   this->authenticate_();
   this->send_(WRITE_SINGLE_REGISTER, address, value);
   this->send_(WRITE_SINGLE_REGISTER, REGISTER_APPLY_WRITE, 0x00);
 }
 
-void AntBmsOldBle::authenticate_() {
+void AntBmsOld::authenticate_() {
   if (this->password_.empty()) {
     ESP_LOGI(TAG, "Authentication skipped because there was no password provided");
     return;
@@ -475,7 +455,7 @@ void AntBmsOldBle::authenticate_() {
   }
 }
 
-bool AntBmsOldBle::send_(uint8_t function, uint8_t address, uint16_t value) {
+void AntBmsOld::send_(uint8_t function, uint8_t address, uint16_t value) {
   uint8_t frame[6];
   frame[0] = function;    // 0xA5 (write), 0x5A (read), 0xDB (read via BLE)
   frame[1] = function;    // 0xA5 (write), 0x5A (read), 0xDB (read via BLE)
@@ -484,18 +464,11 @@ bool AntBmsOldBle::send_(uint8_t function, uint8_t address, uint16_t value) {
   frame[4] = value >> 0;  // 0x01 (On)
   frame[5] = frame[2] + frame[3] + frame[4];
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
-  auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
-                                         this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
-                                         ESP_GATT_AUTH_REQ_NONE);
-
-  if (status)
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
-
-  return (status == 0);
+  this->write_array(frame, 6);
+  this->flush();
 }
 
-bool AntBmsOldBle::read_registers_() { return this->send_(0xDB, 0x00, 0x0000); }
+void AntBmsOld::read_registers_() { this->send_(0x5A, 0x00, 0x0001); }
 
-}  // namespace ant_bms_old_ble
+}  // namespace ant_bms_old
 }  // namespace esphome
