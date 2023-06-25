@@ -114,12 +114,12 @@ bool AntBmsOld::parse_ant_bms_old_byte_(uint8_t byte) {
   }
 
   // Byte 0...3: Header
-  if (at < 4)
+  if (at < 3)
     return true;
 
   if (raw[0] != ANT_PKT_START_1 || raw[1] != ANT_PKT_START_2 || raw[2] != ANT_PKT_START_3 ||
       raw[3] != FUNCTION_READ_ALL) {
-    ESP_LOGW(TAG, "Invalid header");
+    ESP_LOGW(TAG, "Invalid header: 0x%02X 0x%02X 0x%02X 0x%02X", raw[0], raw[1], raw[2], raw[3]);
 
     // return false to reset buffer
     return false;
