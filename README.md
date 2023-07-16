@@ -16,11 +16,11 @@ ESPHome component to monitor and control a ANT-BMS via UART or BLE
 * 24AHA-TB-24S-200A ([10-24S, 200A, 2021-09-28](https://github.com/syssi/esphome-ant-bms/issues/36#issuecomment-1086251894))
 * ANT 16S 100A ([16S, 100A, 2020](https://github.com/syssi/esphome-ant-bms/issues/28#issuecomment-1069100025))
 * ANT 24S 200A ([8-24S, 200A, 2020](https://github.com/syssi/esphome-ant-bms/issues/36#issuecomment-1086251894))
+* ANT 32S 300A ([8-32S, 300A](https://github.com/syssi/esphome-ant-bms/issues/70))
 
 ## Untested devices
 
 * ANT H-24S 180A
-* ANT 32S 300A
 
 ## Requirements
 
