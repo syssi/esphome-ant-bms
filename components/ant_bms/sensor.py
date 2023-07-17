@@ -212,7 +212,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_BATTERY_CYCLE_CAPACITY): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
             icon=ICON_BATTERY_CYCLE_CAPACITY,
-            accuracy_decimals=2,
+            accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
@@ -233,7 +233,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_AVERAGE_CELL_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
-            accuracy_decimals=2,
+            accuracy_decimals=3,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
