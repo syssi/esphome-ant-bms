@@ -92,7 +92,6 @@ ICON_BATTERY_STRINGS = "mdi:car-battery"
 ICON_CAPACITY_REMAINING = "mdi:battery-50"
 ICON_TOTAL_BATTERY_CAPACITY_SETTING = "mdi:battery-50"
 ICON_BATTERY_CYCLE_CAPACITY = "mdi:battery-50"
-ICON_SOC = "mdi:battery-50"
 ICON_CHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_DISCHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_BALANCER_STATUS_CODE = "mdi:heart-pulse"
@@ -190,7 +189,6 @@ CONFIG_SCHEMA = cv.Schema(
         ),
         cv.Optional(CONF_SOC): sensor.sensor_schema(
             unit_of_measurement=UNIT_PERCENT,
-            icon=ICON_SOC,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_BATTERY,
             state_class=STATE_CLASS_MEASUREMENT,
