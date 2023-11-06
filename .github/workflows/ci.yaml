@@ -199,6 +199,7 @@ jobs:
           esphome -s external_components_source ../components config tests/esp8266-query-data-v2021.yaml
           esphome -s external_components_source ../components config tests/esp8266-query-data.yaml
           esphome -s external_components_source ../components config tests/esp8266-fake-bms-v2021.yaml
+          esphome -s external_components_source ../components config tests/esp8266-test-protocols.yaml
 
   esphome-compile:
     runs-on: ubuntu-latest

@@ -1,0 +1,61 @@
+substitutions:
+  name: ant-bms
+  tx_pin: GPIO4
+  rx_pin: GPIO5
+
+esphome:
+  name: ${name}
+
+esp8266:
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+
+logger:
+  level: DEBUG
+
+api:
+  reboot_timeout: 0s
+
+uart:
+  id: uart_0
+  baud_rate: 19200
+  # baud_rate: 9600
+  tx_pin: ${tx_pin}
+  rx_pin: ${rx_pin}
+  debug:
+    direction: BOTH
+    dummy_receiver: true
+    after:
+      # 100ms ... 750ms
+      timeout: 100ms
+
+interval:
+  - interval: 10s
+    then:
+      - logger.log:
+          level: INFO
+          format: "Testing v2021 status request..."
+      - uart.write: [0x7E, 0xA1, 0x01, 0x00, 0x00, 0xBE, 0x18, 0x55, 0xAA, 0x55]
+      - delay: 1s
+
+      - logger.log:
+          level: INFO
+          format: "Testing old status request..."
+      - uart.write: [0x5A, 0x5A, 0x00, 0x00, 0x01, 0x01]
+      - delay: 1s
+
+      - logger.log:
+          level: INFO
+          format: "Testing different old status request..."
+      - uart.write: [0x5A, 0x5A, 0x00, 0x00, 0x00, 0x00]
+      - delay: 1s
+
+      - logger.log:
+          level: INFO
+          format: "Testing old bluetooth status request..."
+      - uart.write: [0xDB, 0xDB, 0x00, 0x00, 0x00, 0x00]
