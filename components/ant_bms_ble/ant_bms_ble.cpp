@@ -12,7 +12,7 @@ static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 static const uint16_t ANT_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t ANT_BMS_CHARACTERISTIC_UUID = 0xFFE1;  // Handle 0x10
 
-static const uint16_t MAX_RESPONSE_SIZE = 152;
+static const uint16_t MAX_RESPONSE_SIZE = 192;
 
 static const uint8_t ANT_PKT_START_1 = 0x7E;
 static const uint8_t ANT_PKT_START_2 = 0xA1;
