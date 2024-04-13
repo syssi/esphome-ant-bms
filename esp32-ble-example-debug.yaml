@@ -7,8 +7,15 @@ logger:
     ble_client: DEBUG
     esp32_ble: DEBUG
     esp32_ble_tracker: DEBUG
+    ota: INFO
+    wifi: INFO
     scheduler: DEBUG
     component: DEBUG
     sensor: DEBUG
-    api: DEBUG
-    api.service: DEBUG
+    mqtt: INFO
+    mqtt.idf: INFO
+    mqtt.component: INFO
+    mqtt.sensor: INFO
+    mqtt.switch: INFO
+    api.service: INFO
+    api: INFO
