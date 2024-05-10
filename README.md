@@ -27,7 +27,7 @@ ESPHome component to monitor and control a ANT-BMS via UART or BLE
 
 ## Requirements
 
-* [ESPHome 2022.2.0 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2023.7.0 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP32 or ESP8266 board
 
 ## Schematics
