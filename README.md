@@ -12,7 +12,6 @@ ESPHome component to monitor and control a ANT-BMS via UART or BLE
 
 ## Supported devices
 
-
 * ANT-BLE16ZMUB, 16ZMUB00-220501A, 16ZMB0TB120A (by `ant_bms_ble`)
 * ANT-BLE24BHUB, 24BHUB00-211026A, 24BH (by `ant_bms_ble`)
 * 16ZMB-TB-7-16S-300A ([7-16S, 300A, 2021-08-12](https://github.com/esphome/feature-requests/issues/1396#issuecomment-1017462249))
@@ -27,7 +26,7 @@ ESPHome component to monitor and control a ANT-BMS via UART or BLE
 
 ## Requirements
 
-* [ESPHome 2023.7.0 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2024.5.0 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP32 or ESP8266 board
 
 ## Schematics
