@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_FACTORY_RESET, CONF_ICON, CONF_ID
+from esphome.const import CONF_FACTORY_RESET, CONF_ICON, CONF_ID, CONF_RESTART
 
 from .. import CONF_ANT_BMS_ID, AntBms, ant_bms_ns
 from ..const import CONF_BALANCER
@@ -14,7 +14,7 @@ CONF_SHUTDOWN = "shutdown"
 CONF_CLEAR_COUNTER = "clear_counter"
 # CONF_BALANCER = "balancer"
 # CONF_FACTORY_RESET = "factory_reset"
-CONF_RESTART = "restart"
+# CONF_RESTART = "restart"
 
 ICON_SHUTDOWN = "mdi:power"
 ICON_CLEAR_COUNTER = "mdi:delete-clock"
