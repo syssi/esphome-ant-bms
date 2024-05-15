@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_FACTORY_RESET, CONF_ICON, CONF_ID
 
 from .. import CONF_ANT_BMS_BLE_ID, AntBmsBle, ant_bms_ble_ns
 
@@ -11,7 +11,7 @@ CODEOWNERS = ["@syssi"]
 
 CONF_RESTART = "restart"
 CONF_SHUTDOWN = "shutdown"
-CONF_FACTORY_RESET = "factory_reset"
+# CONF_FACTORY_RESET = "factory_reset"
 CONF_CLEAR_SYSTEM_LOG = "clear_system_log"
 
 ICON_RESTART = "mdi:restart"
