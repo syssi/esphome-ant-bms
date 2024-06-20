@@ -5,7 +5,7 @@ substitutions:
   rx_timeout: 50ms
   tx_pin: GPIO4
   rx_pin: GPIO5
-  password: "12345678"
+  password: "1234"
 
 esphome:
   name: ${name}

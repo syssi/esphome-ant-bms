@@ -19,8 +19,8 @@ CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(AntBmsOldBle),
-            cv.Optional(CONF_PASSWORD, default="12345678"): cv.Any(
-                cv.All(cv.string_strict, cv.Length(min=8, max=8)),
+            cv.Optional(CONF_PASSWORD, default="1234"): cv.Any(
+                cv.All(cv.string_strict, cv.Length(min=4, max=4)),
                 cv.All(cv.string_strict, cv.Length(min=0, max=0)),
             ),
         }
