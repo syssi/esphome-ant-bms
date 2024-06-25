@@ -23,8 +23,8 @@ CONFIG_SCHEMA = (
             cv.Optional(
                 CONF_RX_TIMEOUT, default="50ms"
             ): cv.positive_time_period_milliseconds,
-            cv.Optional(CONF_PASSWORD, default="1234"): cv.Any(
-                cv.All(cv.string_strict, cv.Length(min=4, max=4)),
+            cv.Optional(CONF_PASSWORD, default=""): cv.Any(
+                cv.All(cv.string_strict, cv.Length(min=8, max=8)),
                 cv.All(cv.string_strict, cv.Length(min=0, max=0)),
             ),
         }
