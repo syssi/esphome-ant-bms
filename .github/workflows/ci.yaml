@@ -8,6 +8,9 @@ on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: 0 12 * * *
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   yamllint:
     runs-on: ubuntu-latest
@@ -193,38 +196,20 @@ jobs:
       - name: Write secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
-      - name: Validate esp32 example configurations
+      - name: Validate example configurations
         run: |
-          esphome -s external_components_source components config esp32-example.yaml
-          esphome -s external_components_source components config esp32-example-debug.yaml
-          esphome -s external_components_source components config esp32-example-faker.yaml
-          esphome -s external_components_source components config esp32-ble-example.yaml
-          esphome -s external_components_source components config esp32-ble-example-debug.yaml
-          esphome -s external_components_source components config esp32-ble-example-faker.yaml
-          esphome -s external_components_source components config esp32-old-ble-example.yaml
-          esphome -s external_components_source components config esp32-old-ble-example-debug.yaml
-          esphome -s external_components_source components config esp32-old-ble-example-faker.yaml
-          esphome -s external_components_source components config esp32-old-example.yaml
-          esphome -s external_components_source components config esp32-old-example-debug.yaml
-          esphome -s external_components_source components config esp32-old-example-faker.yaml
-      - name: Validate esp8266 example configurations
-        run: |
-          esphome -s external_components_source components config esp8266-example.yaml
-          esphome -s external_components_source components config esp8266-example-debug.yaml
-          esphome -s external_components_source components config esp8266-example-faker.yaml
-          esphome -s external_components_source components config esp8266-old-example.yaml
-          esphome -s external_components_source components config esp8266-old-example-debug.yaml
-          esphome -s external_components_source components config esp8266-old-example-faker.yaml
+          for YAML in esp32-*.yaml esp8266-*.yaml; do
+            esphome -s external_components_source components config $YAML >/dev/null
+          done
       - name: Write tests/secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > tests/secrets.yaml'
       - name: Validate test configurations
         run: |
-          esphome -s external_components_source ../components config tests/esp8266-fake-bms.yaml
-          esphome -s external_components_source ../components config tests/esp8266-query-data-v2021.yaml
-          esphome -s external_components_source ../components config tests/esp8266-query-data.yaml
-          esphome -s external_components_source ../components config tests/esp8266-fake-bms-v2021.yaml
-          esphome -s external_components_source ../components config tests/esp8266-test-protocols.yaml
+          # for YAML in tests/esp32-*.yaml tests/esp8266-*.yaml; do
+          for YAML in tests/esp8266-*.yaml; do
+            esphome -s external_components_source ../components config $YAML >/dev/null
+          done
 
   esphome-compile:
     runs-on: ubuntu-latest
