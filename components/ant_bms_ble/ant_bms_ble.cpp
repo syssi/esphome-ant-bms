@@ -370,7 +370,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   }
 
   // 106   4  0x00 0x00 0x00 0x00    Balanced cell bitmask
-  ESP_LOGI(TAG, "  Balanced cell bitmask: %d", ant_get_32bit(70 + offset));
+  ESP_LOGI(TAG, "  Balanced cell bitmask: %lu", (unsigned long) ant_get_32bit(70 + offset));
 
   // 110   2  0x11 0x10              Maximum cell voltage
   this->publish_state_(this->max_cell_voltage_sensor_, ant_get_16bit(74 + offset) * 0.001f);
