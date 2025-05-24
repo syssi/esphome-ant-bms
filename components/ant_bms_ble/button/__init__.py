@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_FACTORY_RESET, CONF_ICON, CONF_ID, CONF_RESTART
+from esphome.const import CONF_FACTORY_RESET, CONF_ID, CONF_RESTART
 
 from .. import CONF_ANT_BMS_BLE_ID, AntBmsBle, ant_bms_ble_ns
 
@@ -54,29 +54,17 @@ AntButton = ant_bms_ble_ns.class_("AntButton", button.Button, cg.Component)
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_ANT_BMS_BLE_ID): cv.use_id(AntBmsBle),
-        cv.Optional(CONF_SHUTDOWN): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntButton),
-                cv.Optional(CONF_ICON, default=ICON_SHUTDOWN): cv.icon,
-            }
+        cv.Optional(CONF_SHUTDOWN): button.button_schema(
+            AntButton, icon=ICON_SHUTDOWN
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_CLEAR_SYSTEM_LOG): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntButton),
-                cv.Optional(CONF_ICON, default=ICON_CLEAR_SYSTEM_LOG): cv.icon,
-            }
+        cv.Optional(CONF_CLEAR_SYSTEM_LOG): button.button_schema(
+            AntButton, icon=ICON_CLEAR_SYSTEM_LOG
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_FACTORY_RESET): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntButton),
-                cv.Optional(CONF_ICON, default=ICON_FACTORY_RESET): cv.icon,
-            }
+        cv.Optional(CONF_FACTORY_RESET): button.button_schema(
+            AntButton, icon=ICON_FACTORY_RESET
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RESTART): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntButton),
-                cv.Optional(CONF_ICON, default=ICON_RESTART): cv.icon,
-            }
+        cv.Optional(CONF_RESTART): button.button_schema(
+            AntButton, icon=ICON_RESTART
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )

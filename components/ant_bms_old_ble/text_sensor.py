@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID, ICON_TIMELAPSE
+from esphome.const import CONF_ID, ICON_TIMELAPSE
 
 from . import CONF_ANT_BMS_OLD_BLE_ID, AntBmsOldBle
 
@@ -28,33 +28,17 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_ANT_BMS_OLD_BLE_ID): cv.use_id(AntBmsOldBle),
-        cv.Optional(CONF_CHARGE_MOSFET_STATUS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_CHARGE_MOSFET_STATUS): cv.icon,
-            }
+        cv.Optional(CONF_CHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_CHARGE_MOSFET_STATUS
         ),
-        cv.Optional(
-            CONF_DISCHARGE_MOSFET_STATUS
-        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_DISCHARGE_MOSFET_STATUS): cv.icon,
-            }
+        cv.Optional(CONF_DISCHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_DISCHARGE_MOSFET_STATUS
         ),
-        cv.Optional(CONF_BALANCER_STATUS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_BALANCER_STATUS): cv.icon,
-            }
+        cv.Optional(CONF_BALANCER_STATUS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_BALANCER_STATUS
         ),
-        cv.Optional(
-            CONF_TOTAL_RUNTIME_FORMATTED
-        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default=ICON_TIMELAPSE): cv.icon,
-            }
+        cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor, icon=ICON_TIMELAPSE
         ),
     }
 )

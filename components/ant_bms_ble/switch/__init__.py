@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from .. import CONF_ANT_BMS_BLE_ID, AntBmsBle, ant_bms_ble_ns
 from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
@@ -46,35 +46,20 @@ AntSwitch = ant_bms_ble_ns.class_("AntSwitch", switch.Switch, cg.Component)
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_ANT_BMS_BLE_ID): cv.use_id(AntBmsBle),
-        cv.Optional(CONF_DISCHARGING): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_DISCHARGING): cv.icon,
-            }
+        cv.Optional(CONF_DISCHARGING): switch.switch_schema(
+            AntSwitch, icon=ICON_DISCHARGING
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_CHARGING): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_CHARGING): cv.icon,
-            }
+        cv.Optional(CONF_CHARGING): switch.switch_schema(
+            AntSwitch, icon=ICON_CHARGING
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_BALANCER): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_BALANCER): cv.icon,
-            }
+        cv.Optional(CONF_BALANCER): switch.switch_schema(
+            AntSwitch, icon=ICON_BALANCER
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_BLUETOOTH): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_BLUETOOTH): cv.icon,
-            }
+        cv.Optional(CONF_BLUETOOTH): switch.switch_schema(
+            AntSwitch, icon=ICON_BLUETOOTH
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_BUZZER): switch.SWITCH_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AntSwitch),
-                cv.Optional(CONF_ICON, default=ICON_BUZZER): cv.icon,
-            }
+        cv.Optional(CONF_BUZZER): switch.switch_schema(
+            AntSwitch, icon=ICON_BUZZER
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )
