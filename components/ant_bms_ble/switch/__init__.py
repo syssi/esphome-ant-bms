@@ -1,7 +1,12 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-from esphome.const import CONF_BLUETOOTH, CONF_ID
+from esphome.const import CONF_ID
+
+try:
+    from esphome.const import CONF_BLUETOOTH
+except ImportError:
+    CONF_BLUETOOTH = "bluetooth"
 
 from .. import CONF_ANT_BMS_BLE_ID, AntBmsBle, ant_bms_ble_ns
 from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING

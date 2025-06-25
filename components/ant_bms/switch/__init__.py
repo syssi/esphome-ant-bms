@@ -1,7 +1,12 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-from esphome.const import CONF_BLUETOOTH, CONF_ID
+from esphome.const import CONF_ID
+
+try:
+    from esphome.const import CONF_BLUETOOTH
+except ImportError:
+    CONF_BLUETOOTH = "bluetooth"
 
 from .. import CONF_ANT_BMS_ID, AntBms, ant_bms_ns
 from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
@@ -14,6 +19,7 @@ CODEOWNERS = ["@syssi"]
 # CONF_DISCHARGING = "discharging"
 # CONF_BALANCER = "balancer"
 # CONF_BLUETOOTH = "bluetooth"
+
 CONF_BUZZER = "buzzer"
 
 ICON_DISCHARGING = "mdi:battery-charging-50"
