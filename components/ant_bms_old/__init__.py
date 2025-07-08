@@ -16,6 +16,12 @@ CONF_SUPPORTS_NEW_COMMANDS = "supports_new_commands"
 ant_bms_old_ns = cg.esphome_ns.namespace("ant_bms_old")
 AntBmsOld = ant_bms_old_ns.class_("AntBmsOld", cg.PollingComponent, uart.UARTDevice)
 
+ANT_BMS_OLD_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_ANT_BMS_OLD_ID): cv.use_id(AntBmsOld),
+    }
+)
+
 CONFIG_SCHEMA = (
     cv.Schema(
         {

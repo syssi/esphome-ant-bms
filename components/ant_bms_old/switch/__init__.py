@@ -3,7 +3,7 @@ from esphome.components import switch
 import esphome.config_validation as cv
 from esphome.const import CONF_ID
 
-from .. import CONF_ANT_BMS_OLD_ID, AntBmsOld, ant_bms_old_ns
+from .. import ANT_BMS_OLD_COMPONENT_SCHEMA, CONF_ANT_BMS_OLD_ID, ant_bms_old_ns
 from ..const import CONF_CHARGING, CONF_DISCHARGING
 
 DEPENDENCIES = ["ant_bms_old"]
@@ -24,9 +24,8 @@ SWITCHES = {
 
 AntSwitch = ant_bms_old_ns.class_("AntSwitch", switch.Switch, cg.Component)
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = ANT_BMS_OLD_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_ANT_BMS_OLD_ID): cv.use_id(AntBmsOld),
         cv.Optional(CONF_DISCHARGING): switch.switch_schema(
             AntSwitch, icon=ICON_DISCHARGING
         ).extend(cv.COMPONENT_SCHEMA),

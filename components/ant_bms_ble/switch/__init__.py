@@ -8,7 +8,7 @@ try:
 except ImportError:
     CONF_BLUETOOTH = "bluetooth"
 
-from .. import CONF_ANT_BMS_BLE_ID, AntBmsBle, ant_bms_ble_ns
+from .. import ANT_BMS_BLE_COMPONENT_SCHEMA, CONF_ANT_BMS_BLE_ID, ant_bms_ble_ns
 from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
 
 DEPENDENCIES = ["ant_bms_ble"]
@@ -48,9 +48,8 @@ SWITCHES = {
 
 AntSwitch = ant_bms_ble_ns.class_("AntSwitch", switch.Switch, cg.Component)
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_ANT_BMS_BLE_ID): cv.use_id(AntBmsBle),
         cv.Optional(CONF_DISCHARGING): switch.switch_schema(
             AntSwitch, icon=ICON_DISCHARGING
         ).extend(cv.COMPONENT_SCHEMA),

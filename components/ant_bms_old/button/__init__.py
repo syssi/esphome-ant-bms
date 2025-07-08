@@ -3,7 +3,7 @@ from esphome.components import button
 import esphome.config_validation as cv
 from esphome.const import CONF_FACTORY_RESET, CONF_ID, CONF_RESTART
 
-from .. import CONF_ANT_BMS_OLD_ID, AntBmsOld, ant_bms_old_ns
+from .. import ANT_BMS_OLD_COMPONENT_SCHEMA, CONF_ANT_BMS_OLD_ID, ant_bms_old_ns
 from ..const import CONF_BALANCER
 
 DEPENDENCIES = ["ant_bms_old"]
@@ -38,9 +38,8 @@ BUTTONS = {
 
 AntButton = ant_bms_old_ns.class_("AntButton", button.Button, cg.Component)
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = ANT_BMS_OLD_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_ANT_BMS_OLD_ID): cv.use_id(AntBmsOld),
         cv.Optional(CONF_SHUTDOWN): button.button_schema(
             AntButton, icon=ICON_SHUTDOWN
         ).extend(cv.COMPONENT_SCHEMA),
