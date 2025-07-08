@@ -3,7 +3,7 @@ from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, ICON_TIMELAPSE
 
-from . import CONF_ANT_BMS_BLE_ID, AntBmsBle
+from . import ANT_BMS_BLE_COMPONENT_SCHEMA, CONF_ANT_BMS_BLE_ID
 
 DEPENDENCIES = ["ant_bms_ble"]
 
@@ -32,9 +32,8 @@ TEXT_SENSORS = [
     CONF_TOTAL_RUNTIME_FORMATTED,
 ]
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_ANT_BMS_BLE_ID): cv.use_id(AntBmsBle),
         cv.Optional(CONF_CHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
             text_sensor.TextSensor, icon=ICON_CHARGE_MOSFET_STATUS
         ),

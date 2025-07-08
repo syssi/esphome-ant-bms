@@ -15,6 +15,12 @@ AntBmsBle = ant_bms_ble_ns.class_(
     "AntBmsBle", ble_client.BLEClientNode, cg.PollingComponent
 )
 
+ANT_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_ANT_BMS_BLE_ID): cv.use_id(AntBmsBle),
+    }
+)
+
 CONFIG_SCHEMA = (
     cv.Schema(
         {
