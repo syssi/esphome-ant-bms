@@ -35,6 +35,13 @@ CONFIG_SCHEMA = (
 )
 
 
+ANT_BMS_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_ANT_BMS_ID): cv.use_id(AntBms),
+    }
+)
+
+
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)

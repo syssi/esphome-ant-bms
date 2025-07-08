@@ -22,7 +22,7 @@ from esphome.const import (
     UNIT_WATT,
 )
 
-from . import CONF_ANT_BMS_ID, AntBms
+from . import CONF_ANT_BMS_ID, ANT_BMS_COMPONENT_SCHEMA, AntBms
 
 DEPENDENCIES = ["ant_bms"]
 
@@ -170,9 +170,8 @@ SENSORS = [
 ]
 
 # pylint: disable=too-many-function-args
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = ANT_BMS_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_ANT_BMS_ID): cv.use_id(AntBms),
         cv.Optional(CONF_BATTERY_STRINGS): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_BATTERY_STRINGS,
