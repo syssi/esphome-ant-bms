@@ -22,7 +22,7 @@ from esphome.const import (
     UNIT_WATT,
 )
 
-from . import CONF_ANT_BMS_ID, ANT_BMS_COMPONENT_SCHEMA, AntBms
+from . import ANT_BMS_COMPONENT_SCHEMA, CONF_ANT_BMS_ID
 
 DEPENDENCIES = ["ant_bms"]
 

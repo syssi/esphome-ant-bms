@@ -8,7 +8,7 @@ try:
 except ImportError:
     CONF_BLUETOOTH = "bluetooth"
 
-from .. import CONF_ANT_BMS_ID, ANT_BMS_COMPONENT_SCHEMA, AntBms, ant_bms_ns
+from .. import ANT_BMS_COMPONENT_SCHEMA, CONF_ANT_BMS_ID, ant_bms_ns
 from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
 
 DEPENDENCIES = ["ant_bms"]

@@ -3,7 +3,7 @@ from esphome.components import button
 import esphome.config_validation as cv
 from esphome.const import CONF_FACTORY_RESET, CONF_ID, CONF_RESTART
 
-from .. import CONF_ANT_BMS_ID, ANT_BMS_COMPONENT_SCHEMA, AntBms, ant_bms_ns
+from .. import ANT_BMS_COMPONENT_SCHEMA, CONF_ANT_BMS_ID, ant_bms_ns
 from ..const import CONF_BALANCER
 
 DEPENDENCIES = ["ant_bms"]

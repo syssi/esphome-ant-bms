@@ -3,7 +3,7 @@ from esphome.components import binary_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
-from . import CONF_ANT_BMS_ID, ANT_BMS_COMPONENT_SCHEMA, AntBms
+from . import ANT_BMS_COMPONENT_SCHEMA, CONF_ANT_BMS_ID
 
 DEPENDENCIES = ["ant_bms"]
 

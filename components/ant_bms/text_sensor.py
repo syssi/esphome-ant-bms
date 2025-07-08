@@ -3,7 +3,7 @@ from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, ICON_TIMELAPSE
 
-from . import CONF_ANT_BMS_ID, ANT_BMS_COMPONENT_SCHEMA, AntBms
+from . import ANT_BMS_COMPONENT_SCHEMA, CONF_ANT_BMS_ID
 
 DEPENDENCIES = ["ant_bms"]
 
