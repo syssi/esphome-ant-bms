@@ -429,6 +429,9 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_SENSOR("", "Charge Mosfet Status Code", this->charge_mosfet_status_code_sensor_);
   LOG_SENSOR("", "Discharge Mosfet Status Code", this->discharge_mosfet_status_code_sensor_);
   LOG_SENSOR("", "Balancer Status Code", this->balancer_status_code_sensor_);
+  LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
+
+  LOG_BINARY_SENSOR("", "Online Status", this->online_status_binary_sensor_);
 
   LOG_TEXT_SENSOR("", "Discharge Mosfet Status", this->discharge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Charge Mosfet Status", this->charge_mosfet_status_text_sensor_);
