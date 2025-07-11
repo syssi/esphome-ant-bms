@@ -392,6 +392,7 @@ void AntBmsOldBle::dump_config() {  // NOLINT(google-readability-function-size,r
   LOG_SENSOR("", "Maximum cell voltage", this->max_cell_voltage_sensor_);
   LOG_SENSOR("", "Min Voltage Cell", this->min_voltage_cell_sensor_);
   LOG_SENSOR("", "Max Voltage Cell", this->max_voltage_cell_sensor_);
+  LOG_SENSOR("", "Delta Cell Voltage", this->delta_cell_voltage_sensor_);
   LOG_SENSOR("", "Temperature 1", this->temperatures_[0].temperature_sensor_);
   LOG_SENSOR("", "Temperature 2", this->temperatures_[1].temperature_sensor_);
   LOG_SENSOR("", "Temperature 3", this->temperatures_[2].temperature_sensor_);
