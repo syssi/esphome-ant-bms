@@ -27,8 +27,13 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
+
 ota:
   platform: esphome
+  on_begin:
+    then:
+      - switch.turn_off: ble_client_switch0
+      - logger.log: "BLE connection suspended for OTA update"
 
 logger:
   level: VERY_VERBOSE
@@ -208,6 +213,11 @@ switch:
       name: "${name} charging"
     discharging:
       name: "${name} discharging"
+
+  - platform: ble_client
+    ble_client_id: client0
+    id: ble_client_switch0
+    name: "${name} enable bluetooth connection"
 
 button:
   - platform: ant_bms_old_ble
