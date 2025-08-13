@@ -14,6 +14,7 @@ ESPHome component to monitor and control a ANT-BMS via UART or BLE
 
 * ANT-BLE16ZMUB, 16ZMUB00-220501A, 16ZMB0TB120A (by `ant_bms_ble`)
 * ANT-BLE24BHUB, 24BHUB00-211026A, 24BH (by `ant_bms_ble`)
+* ANT-BLE04DMUB, 04DMUB00-240122B, 04DMA0TB120A (by `ant_bms_ble`, [4S, 120A, 2024](https://github.com/syssi/esphome-ant-bms/issues/119))
 * 16ZMB-TB-7-16S-300A ([7-16S, 300A, 2021-08-12](https://github.com/esphome/feature-requests/issues/1396#issuecomment-1017462249))
 * 24AHA-TB-24S-200A ([10-24S, 200A, 2021-09-28](https://github.com/syssi/esphome-ant-bms/issues/36#issuecomment-1086251894))
 * ANT 16S 100A ([16S, 100A, 2020](https://github.com/syssi/esphome-ant-bms/issues/28#issuecomment-1069100025))
