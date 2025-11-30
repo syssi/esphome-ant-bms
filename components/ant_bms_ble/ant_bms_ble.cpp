@@ -1,6 +1,13 @@
 #include "ant_bms_ble.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
+#include "esphome/core/version.h"
+
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
+#define ADDR_STR(x) x
+#else
+#define ADDR_STR(x) (x).c_str()
+#endif
 
 namespace esphome {
 namespace ant_bms_ble {
@@ -126,7 +133,8 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
 
       auto *characteristic = this->parent_->get_characteristic(ANT_BMS_SERVICE_UUID, ANT_BMS_CHARACTERISTIC_UUID);
       if (characteristic == nullptr) {
-        ESP_LOGE(TAG, "[%s] No notify service found at device, not an ANT BMS..?", this->parent_->address_str());
+        ESP_LOGE(TAG, "[%s] No notify service found at device, not an ANT BMS..?",
+                 ADDR_STR(this->parent_->address_str()));
         break;
       }
       this->characteristic_handle_ = characteristic->handle;
@@ -208,7 +216,7 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
 void AntBmsBle::update() {
   this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
-    ESP_LOGW(TAG, "[%s] Not connected", this->parent_->address_str());
+    ESP_LOGW(TAG, "[%s] Not connected", ADDR_STR(this->parent_->address_str()));
     return;
   }
 
@@ -636,7 +644,7 @@ bool AntBmsBle::authenticate_() {
                                          ESP_GATT_AUTH_REQ_NONE);
 
   if (status)
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str(), status);
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
 
   return (status == 0);
 }
@@ -659,7 +667,7 @@ bool AntBmsBle::authenticate_variable_(const uint8_t *data, uint8_t data_len) {
                                          ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
   if (status)
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str(), status);
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
 
   return (status == 0);
 }
@@ -688,7 +696,7 @@ bool AntBmsBle::send_(uint8_t function, uint16_t address, uint8_t value, bool au
                                          ESP_GATT_AUTH_REQ_NONE);
 
   if (status)
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str(), status);
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
 
   return (status == 0);
 }
