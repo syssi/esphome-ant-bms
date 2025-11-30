@@ -121,7 +121,8 @@ void AntBmsOldBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t
       auto *characteristic =
           this->parent_->get_characteristic(ANT_BMS_OLD_SERVICE_UUID, ANT_BMS_OLD_CHARACTERISTIC_UUID);
       if (characteristic == nullptr) {
-        ESP_LOGE(TAG, "[%s] No notify service found at device, not an ANT BMS..?", ADDR_STR(this->parent_->address_str()));
+        ESP_LOGE(TAG, "[%s] No notify service found at device, not an ANT BMS..?",
+                 ADDR_STR(this->parent_->address_str()));
         break;
       }
       this->characteristic_handle_ = characteristic->handle;
