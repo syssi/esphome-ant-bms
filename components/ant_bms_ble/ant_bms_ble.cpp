@@ -606,7 +606,7 @@ void AntBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::
 }
 
 void AntBmsBle::write_register(uint16_t address, uint8_t value) {
-  this->send_(ANT_COMMAND_WRITE_REGISTER, address, value, true);
+  this->send_(ANT_COMMAND_WRITE_REGISTER, address, value, false);
 }
 
 bool AntBmsBle::authenticate_() {
