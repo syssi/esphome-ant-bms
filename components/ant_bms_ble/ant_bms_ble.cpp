@@ -161,7 +161,7 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
         break;
 
       ESP_LOGVV(TAG, "Notification received: %s",
-                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
+                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());  // NOLINT
 
       this->assemble(param->notify.value, param->notify.value_len);
 
@@ -236,7 +236,7 @@ void AntBmsBle::on_ant_bms_ble_data_(const uint8_t &function, const std::vector<
       break;
     default:
       ESP_LOGW(TAG, "Unhandled response received (function 0x%02X): %s", function,
-               format_hex_pretty(&data.front(), data.size()).c_str());
+               format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
   }
 }
 
@@ -249,7 +249,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%d bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   if (data.size() != (6 + data[5] + 4)) {
     ESP_LOGW(TAG, "Skipping status frame because of invalid length");
@@ -433,7 +433,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
 
 void AntBmsBle::on_device_info_data_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Device info frame (%d bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   // Status request
   // -> 0x7e 0xa1 0x02 0x6c 0x02 0x20 0x58 0xc4 0xaa 0x55
@@ -638,7 +638,7 @@ bool AntBmsBle::authenticate_() {
   frame[20] = 0xaa;
   frame[21] = 0x55;
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
                                          ESP_GATT_AUTH_REQ_NONE);
@@ -661,7 +661,7 @@ bool AntBmsBle::authenticate_variable_(const uint8_t *data, uint8_t data_len) {
   frame.push_back(0xAA);
   frame.push_back(0x55);
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(&frame.front(), frame.size()).c_str());
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(&frame.front(), frame.size()).c_str());  // NOLINT
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, frame.size(), &frame.front(),
                                          ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
@@ -690,7 +690,7 @@ bool AntBmsBle::send_(uint8_t function, uint16_t address, uint8_t value, bool au
   frame[8] = 0xaa;      // footer
   frame[9] = 0x55;      // footer
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
                                          ESP_GATT_AUTH_REQ_NONE);
