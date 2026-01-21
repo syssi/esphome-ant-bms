@@ -133,7 +133,7 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
   // head add  func val  val  len  data data crc  crc  end  end
   if (address == 0x7E) {
     // Discard new protocol frame for now
-    ESP_LOGVV(TAG, "New protocol response frame discarded: %s", format_hex_pretty(raw, at + 1).c_str());
+    ESP_LOGVV(TAG, "New protocol response frame discarded: %s", format_hex_pretty(raw, at + 1).c_str());  // NOLINT
     return false;
   }
 
@@ -144,7 +144,7 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
     return false;
   }
 
-  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());
+  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());  // NOLINT
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
@@ -163,7 +163,7 @@ void AntBms::on_ant_bms_data(const std::vector<uint8_t> &data) {
   }
 
   ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());
+           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 }
 
 void AntBms::on_status_data_(const std::vector<uint8_t> &data) {

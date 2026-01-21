@@ -144,7 +144,7 @@ void AntBmsOldBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t
         break;
 
       ESP_LOGVV(TAG, "Notification received: %s",
-                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
+                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());  // NOLINT
 
       this->assemble(param->notify.value, param->notify.value_len);
 
@@ -207,7 +207,7 @@ void AntBmsOldBle::on_ant_bms_old_ble_data_(const uint8_t &function, const std::
   }
 
   ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());
+           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 }
 
 void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
@@ -219,7 +219,7 @@ void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%d bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   // Status request
   // -> 0xDB 0xDB 0x00 0x00 0x00 0x00
@@ -504,7 +504,7 @@ bool AntBmsOldBle::send_(uint8_t function, uint8_t address, uint16_t value) {
   frame[4] = value >> 0;  // 0x01 (On)
   frame[5] = frame[2] + frame[3] + frame[4];
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
                                          ESP_GATT_AUTH_REQ_NONE);

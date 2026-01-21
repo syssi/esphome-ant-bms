@@ -136,7 +136,7 @@ bool AntBmsOld::parse_ant_bms_old_byte_(uint8_t byte) {
     return false;
   }
 
-  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());
+  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());  // NOLINT
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
@@ -160,7 +160,7 @@ void AntBmsOld::on_ant_bms_old_data(const std::vector<uint8_t> &data) {
   }
 
   ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());
+           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 }
 
 void AntBmsOld::on_status_data_(const std::vector<uint8_t> &data) {
@@ -172,7 +172,7 @@ void AntBmsOld::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%d bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   // Status request
   // -> 0x5A 0x5A 0x00 0x00 0x01 0x01
