@@ -21,14 +21,15 @@ ANT_BMS_BLE_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-CONFIG_SCHEMA = (
+CONFIG_SCHEMA = cv.All(
+    cv.require_esphome_version(2024, 12, 0),
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(AntBmsBle),
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
-    .extend(cv.polling_component_schema("2s"))
+    .extend(cv.polling_component_schema("2s")),
 )
 
 
