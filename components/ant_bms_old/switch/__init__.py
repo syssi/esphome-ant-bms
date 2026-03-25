@@ -28,10 +28,8 @@ CONFIG_SCHEMA = ANT_BMS_OLD_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_DISCHARGING): switch.switch_schema(
             AntSwitch, icon=ICON_DISCHARGING
-        ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_CHARGING): switch.switch_schema(
-            AntSwitch, icon=ICON_CHARGING
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
+        cv.Optional(CONF_CHARGING): switch.switch_schema(AntSwitch, icon=ICON_CHARGING),
     }
 )
 

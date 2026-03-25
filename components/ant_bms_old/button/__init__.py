@@ -40,21 +40,15 @@ AntButton = ant_bms_old_ns.class_("AntButton", button.Button, cg.Component)
 
 CONFIG_SCHEMA = ANT_BMS_OLD_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_SHUTDOWN): button.button_schema(
-            AntButton, icon=ICON_SHUTDOWN
-        ).extend(cv.COMPONENT_SCHEMA),
+        cv.Optional(CONF_SHUTDOWN): button.button_schema(AntButton, icon=ICON_SHUTDOWN),
         cv.Optional(CONF_CLEAR_COUNTER): button.button_schema(
             AntButton, icon=ICON_CLEAR_COUNTER
-        ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_BALANCER): button.button_schema(
-            AntButton, icon=ICON_BALANCER
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
+        cv.Optional(CONF_BALANCER): button.button_schema(AntButton, icon=ICON_BALANCER),
         cv.Optional(CONF_FACTORY_RESET): button.button_schema(
             AntButton, icon=ICON_FACTORY_RESET
-        ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RESTART): button.button_schema(
-            AntButton, icon=ICON_RESTART
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
+        cv.Optional(CONF_RESTART): button.button_schema(AntButton, icon=ICON_RESTART),
     }
 )
 
