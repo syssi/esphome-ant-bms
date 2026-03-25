@@ -55,16 +55,16 @@ CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_SHUTDOWN): button.button_schema(
             AntButton, icon=ICON_SHUTDOWN
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_CLEAR_SYSTEM_LOG): button.button_schema(
             AntButton, icon=ICON_CLEAR_SYSTEM_LOG
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_FACTORY_RESET): button.button_schema(
             AntButton, icon=ICON_FACTORY_RESET
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RESTART): button.button_schema(
             AntButton, icon=ICON_RESTART
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
     }
 )
 
