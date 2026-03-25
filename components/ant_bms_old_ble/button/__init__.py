@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_FACTORY_RESET, CONF_RESTART
+from esphome.const import CONF_FACTORY_RESET, CONF_RESTART, DEVICE_CLASS_RESTART
 
 from .. import (
     ANT_BMS_OLD_BLE_COMPONENT_SCHEMA,
@@ -59,10 +59,12 @@ CONFIG_SCHEMA = ANT_BMS_OLD_BLE_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_FACTORY_RESET): button.button_schema(
             AntButton,
             icon=ICON_FACTORY_RESET,
+            device_class=DEVICE_CLASS_RESTART,
         ),
         cv.Optional(CONF_RESTART): button.button_schema(
             AntButton,
             icon=ICON_RESTART,
+            device_class=DEVICE_CLASS_RESTART,
         ),
     }
 )
