@@ -103,37 +103,37 @@ class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingCo
   void write_register(uint8_t address, uint16_t value);
 
  protected:
-  binary_sensor::BinarySensor *online_status_binary_sensor_;
+  binary_sensor::BinarySensor *online_status_binary_sensor_{nullptr};
 
-  sensor::Sensor *battery_strings_sensor_;
-  sensor::Sensor *current_sensor_;
-  sensor::Sensor *soc_sensor_;
-  sensor::Sensor *total_battery_capacity_setting_sensor_;
-  sensor::Sensor *capacity_remaining_sensor_;
-  sensor::Sensor *battery_cycle_capacity_sensor_;
-  sensor::Sensor *total_voltage_sensor_;
-  sensor::Sensor *total_runtime_sensor_;
-  sensor::Sensor *average_cell_voltage_sensor_;
-  sensor::Sensor *power_sensor_;
-  sensor::Sensor *min_cell_voltage_sensor_;
-  sensor::Sensor *max_cell_voltage_sensor_;
-  sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cell_sensor_;
-  sensor::Sensor *delta_cell_voltage_sensor_;
-  sensor::Sensor *charge_mosfet_status_code_sensor_;
-  sensor::Sensor *discharge_mosfet_status_code_sensor_;
-  sensor::Sensor *balancer_status_code_sensor_;
+  sensor::Sensor *battery_strings_sensor_{nullptr};
+  sensor::Sensor *current_sensor_{nullptr};
+  sensor::Sensor *soc_sensor_{nullptr};
+  sensor::Sensor *total_battery_capacity_setting_sensor_{nullptr};
+  sensor::Sensor *capacity_remaining_sensor_{nullptr};
+  sensor::Sensor *battery_cycle_capacity_sensor_{nullptr};
+  sensor::Sensor *total_voltage_sensor_{nullptr};
+  sensor::Sensor *total_runtime_sensor_{nullptr};
+  sensor::Sensor *average_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *power_sensor_{nullptr};
+  sensor::Sensor *min_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *max_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *min_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *max_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *delta_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *charge_mosfet_status_code_sensor_{nullptr};
+  sensor::Sensor *discharge_mosfet_status_code_sensor_{nullptr};
+  sensor::Sensor *balancer_status_code_sensor_{nullptr};
 
-  switch_::Switch *charging_switch_;
-  switch_::Switch *discharging_switch_;
-  switch_::Switch *balancer_switch_;
-  switch_::Switch *bluetooth_switch_;
-  switch_::Switch *buzzer_switch_;
+  switch_::Switch *charging_switch_{nullptr};
+  switch_::Switch *discharging_switch_{nullptr};
+  switch_::Switch *balancer_switch_{nullptr};
+  switch_::Switch *bluetooth_switch_{nullptr};
+  switch_::Switch *buzzer_switch_{nullptr};
 
-  text_sensor::TextSensor *charge_mosfet_status_text_sensor_;
-  text_sensor::TextSensor *discharge_mosfet_status_text_sensor_;
-  text_sensor::TextSensor *balancer_status_text_sensor_;
-  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
+  text_sensor::TextSensor *charge_mosfet_status_text_sensor_{nullptr};
+  text_sensor::TextSensor *discharge_mosfet_status_text_sensor_{nullptr};
+  text_sensor::TextSensor *balancer_status_text_sensor_{nullptr};
+  text_sensor::TextSensor *total_runtime_formatted_text_sensor_{nullptr};
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
