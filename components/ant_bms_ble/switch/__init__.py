@@ -1,7 +1,6 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-
 from esphome.const import CONF_BLUETOOTH
 
 from .. import ANT_BMS_BLE_COMPONENT_SCHEMA, CONF_ANT_BMS_BLE_ID, ant_bms_ble_ns
