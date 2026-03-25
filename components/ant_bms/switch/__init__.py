@@ -44,12 +44,8 @@ CONFIG_SCHEMA = ANT_BMS_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_DISCHARGING): switch.switch_schema(
             AntSwitch, icon=ICON_DISCHARGING
         ),
-        cv.Optional(CONF_CHARGING): switch.switch_schema(
-            AntSwitch, icon=ICON_CHARGING
-        ),
-        cv.Optional(CONF_BALANCER): switch.switch_schema(
-            AntSwitch, icon=ICON_BALANCER
-        ),
+        cv.Optional(CONF_CHARGING): switch.switch_schema(AntSwitch, icon=ICON_CHARGING),
+        cv.Optional(CONF_BALANCER): switch.switch_schema(AntSwitch, icon=ICON_BALANCER),
         # cv.Optional(CONF_BLUETOOTH): switch.switch_schema(
         #     AntSwitch, icon=ICON_BLUETOOTH
         # ),
