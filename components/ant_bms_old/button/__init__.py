@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_FACTORY_RESET, CONF_ID, CONF_RESTART
+from esphome.const import CONF_FACTORY_RESET, CONF_RESTART, DEVICE_CLASS_RESTART
 
 from .. import ANT_BMS_OLD_COMPONENT_SCHEMA, CONF_ANT_BMS_OLD_ID, ant_bms_old_ns
 from ..const import CONF_BALANCER
@@ -46,9 +46,11 @@ CONFIG_SCHEMA = ANT_BMS_OLD_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_BALANCER): button.button_schema(AntButton, icon=ICON_BALANCER),
         cv.Optional(CONF_FACTORY_RESET): button.button_schema(
-            AntButton, icon=ICON_FACTORY_RESET
+            AntButton, icon=ICON_FACTORY_RESET, device_class=DEVICE_CLASS_RESTART
         ),
-        cv.Optional(CONF_RESTART): button.button_schema(AntButton, icon=ICON_RESTART),
+        cv.Optional(CONF_RESTART): button.button_schema(
+            AntButton, icon=ICON_RESTART, device_class=DEVICE_CLASS_RESTART
+        ),
     }
 )
 
@@ -58,8 +60,7 @@ async def to_code(config):
     for key, address in BUTTONS.items():
         if key in config:
             conf = config[key]
-            var = cg.new_Pvariable(conf[CONF_ID])
+            var = await button.new_button(conf)
             await cg.register_component(var, conf)
-            await button.register_button(var, conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))

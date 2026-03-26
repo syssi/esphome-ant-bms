@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-from esphome.const import CONF_BLUETOOTH, CONF_ID, ENTITY_CATEGORY_CONFIG
+from esphome.const import CONF_BLUETOOTH, ENTITY_CATEGORY_CONFIG
 
 from .. import ANT_BMS_BLE_COMPONENT_SCHEMA, CONF_ANT_BMS_BLE_ID, ant_bms_ble_ns
 from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
@@ -69,9 +69,8 @@ async def to_code(config):
     for key, address in SWITCHES.items():
         if key in config:
             conf = config[key]
-            var = cg.new_Pvariable(conf[CONF_ID])
+            var = await switch.new_switch(conf)
             await cg.register_component(var, conf)
-            await switch.register_switch(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
             cg.add(var.set_turn_on_register(address[0]))
