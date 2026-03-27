@@ -28,16 +28,16 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = ANT_BMS_OLD_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_CHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_CHARGE_MOSFET_STATUS
+            icon=ICON_CHARGE_MOSFET_STATUS
         ),
         cv.Optional(CONF_DISCHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_DISCHARGE_MOSFET_STATUS
+            icon=ICON_DISCHARGE_MOSFET_STATUS
         ),
         cv.Optional(CONF_BALANCER_STATUS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_BALANCER_STATUS
+            icon=ICON_BALANCER_STATUS
         ),
         cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_TIMELAPSE
+            icon=ICON_TIMELAPSE
         ),
     }
 )

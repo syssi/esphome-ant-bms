@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import ICON_TIMELAPSE
+from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC, ICON_TIMELAPSE
 
 from . import ANT_BMS_BLE_COMPONENT_SCHEMA, CONF_ANT_BMS_BLE_ID
 
@@ -35,22 +35,24 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_CHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_CHARGE_MOSFET_STATUS
+            icon=ICON_CHARGE_MOSFET_STATUS
         ),
         cv.Optional(CONF_DISCHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_DISCHARGE_MOSFET_STATUS
+            icon=ICON_DISCHARGE_MOSFET_STATUS
         ),
         cv.Optional(CONF_BALANCER_STATUS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_BALANCER_STATUS
+            icon=ICON_BALANCER_STATUS
         ),
         cv.Optional(CONF_DEVICE_MODEL): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_DEVICE_MODEL
+            icon=ICON_DEVICE_MODEL,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_SOFTWARE_VERSION): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_SOFTWARE_VERSION
+            icon=ICON_SOFTWARE_VERSION,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_TIMELAPSE
+            icon=ICON_TIMELAPSE
         ),
     }
 )
