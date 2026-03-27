@@ -147,7 +147,7 @@ class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingCo
 
   std::vector<uint8_t> frame_buffer_;
   uint8_t no_response_count_{0};
-  uint16_t characteristic_handle_;
+  uint16_t characteristic_handle_{0};
 
   void on_ant_bms_old_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
