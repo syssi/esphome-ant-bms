@@ -446,10 +446,15 @@ void AntBmsBle::on_device_info_data_(const std::vector<uint8_t> &data) {
   //   3   2  0x6C 0x02   Address
   //   5   1  0x20        Data length (32 bytes!)
   //   6  16  0x31 0x36 0x5A 0x4D 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00    Hardware version
-  this->publish_state_(this->device_model_text_sensor_, std::string(data.begin() + 6, data.begin() + 6 + 16));
+  auto device_model_begin = data.begin() + 6;
+  this->publish_state_(this->device_model_text_sensor_,
+                       std::string(device_model_begin, std::find(device_model_begin, data.begin() + 6 + 16, '\0')));
 
   //  22  16  0x31 0x36 0x5A 0x4D 0x55 0x42 0x30 0x30 0x2D 0x32 0x31 0x31 0x30 0x32 0x36 0x41    Software version
-  this->publish_state_(this->software_version_text_sensor_, std::string(data.begin() + 22, data.begin() + 22 + 16));
+  auto software_version_begin = data.begin() + 22;
+  this->publish_state_(
+      this->software_version_text_sensor_,
+      std::string(software_version_begin, std::find(software_version_begin, data.begin() + 22 + 16, '\0')));
 
   //  38   2  0x72 0x08   CRC
   //  40   1  0xFF        Reserved
