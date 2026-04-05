@@ -41,7 +41,7 @@ static const uint8_t ANT_COMMAND_DEVICE_INFO = 0x02;
 static const uint8_t ANT_COMMAND_WRITE_REGISTER = 0x51;
 
 static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 16;
-static const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
+static constexpr const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
     "Off",                           // 0x00
     "On",                            // 0x01
     "Overcharge protection",         // 0x02
@@ -61,7 +61,7 @@ static const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
 };
 
 static const uint8_t DISCHARGE_MOSFET_STATUS_SIZE = 16;
-static const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STATUS_SIZE] = {
+static constexpr const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STATUS_SIZE] = {
     "Off",                           // 0x00
     "On",                            // 0x01
     "Overdischarge protection",      // 0x02
@@ -81,7 +81,7 @@ static const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STATUS_SIZE] =
 };
 
 static const uint8_t BALANCER_STATUS_SIZE = 11;
-static const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
+static constexpr const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
     "Off",                                   // 0x00
     "Exceeds the limit equilibrium",         // 0x01
     "Charge differential pressure balance",  // 0x02
