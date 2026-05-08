@@ -94,6 +94,7 @@ static constexpr const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
     "Motherboard over temperature",          // 0x0A
 };
 
+#ifdef USE_ESP32
 void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                     esp_ble_gattc_cb_param_t *param) {
   switch (event) {
@@ -171,6 +172,8 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
   }
 }
 
+#endif  // USE_ESP32
+
 void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Maximum response size (%d bytes) exceeded", this->frame_buffer_.size());
@@ -212,6 +215,7 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
   }
 }
 
+#ifdef USE_ESP32
 void AntBmsBle::update() {
   this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
@@ -222,6 +226,8 @@ void AntBmsBle::update() {
   // 0x7e 0xa1 0x01 0x00 0x00 0xbe 0x18 0x55 0xaa 0x55
   this->send_(ANT_COMMAND_STATUS, 0x0000, 0xbe, false);
 }
+
+#endif  // USE_ESP32
 
 void AntBmsBle::on_ant_bms_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data) {
   this->reset_online_status_tracker_();
@@ -609,6 +615,7 @@ void AntBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::
   text_sensor->publish_state(state);
 }
 
+#ifdef USE_ESP32
 void AntBmsBle::write_register(uint16_t address, uint8_t value) {
   this->send_(ANT_COMMAND_WRITE_REGISTER, address, value, true);
 }
@@ -704,5 +711,7 @@ bool AntBmsBle::send_(uint8_t function, uint16_t address, uint8_t value, bool au
 
   return (status == 0);
 }
+
+#endif  // USE_ESP32
 
 }  // namespace esphome::ant_bms_ble
