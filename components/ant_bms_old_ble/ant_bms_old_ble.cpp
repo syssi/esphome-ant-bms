@@ -9,8 +9,7 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
-namespace esphome {
-namespace ant_bms_old_ble {
+namespace esphome::ant_bms_old_ble {
 
 static const char *const TAG = "ant_bms_old_ble";
 
@@ -517,5 +516,4 @@ bool AntBmsOldBle::send_(uint8_t function, uint8_t address, uint16_t value) {
 
 bool AntBmsOldBle::read_registers_() { return this->send_(0xDB, 0x00, 0x0000); }
 
-}  // namespace ant_bms_old_ble
-}  // namespace esphome
+}  // namespace esphome::ant_bms_old_ble

@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/button/button.h"
 
-namespace esphome {
-namespace ant_bms_old_ble {
+namespace esphome::ant_bms_old_ble {
 
 class AntBmsOldBle;
 class AntButton : public button::Button, public Component {
@@ -22,5 +21,4 @@ class AntButton : public button::Button, public Component {
   uint8_t holding_register_;
 };
 
-}  // namespace ant_bms_old_ble
-}  // namespace esphome
+}  // namespace esphome::ant_bms_old_ble

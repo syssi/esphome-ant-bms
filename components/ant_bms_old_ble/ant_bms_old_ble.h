@@ -12,8 +12,7 @@
 
 #include <esp_gattc_api.h>
 
-namespace esphome {
-namespace ant_bms_old_ble {
+namespace esphome::ant_bms_old_ble {
 
 namespace espbt = esphome::esp32_ble_tracker;
 
@@ -191,7 +190,6 @@ class AntBmsOldBle : public esphome::ble_client::BLEClientNode, public PollingCo
   }
 };
 
-}  // namespace ant_bms_old_ble
-}  // namespace esphome
+}  // namespace esphome::ant_bms_old_ble
 
 #endif

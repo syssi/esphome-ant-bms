@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/switch/switch.h"
 
-namespace esphome {
-namespace ant_bms_old {
+namespace esphome::ant_bms_old {
 
 class AntBmsOld;
 class AntSwitch : public switch_::Switch, public Component {
@@ -23,5 +22,4 @@ class AntSwitch : public switch_::Switch, public Component {
   void write_state(bool state) override;
 };
 
-}  // namespace ant_bms_old
-}  // namespace esphome
+}  // namespace esphome::ant_bms_old

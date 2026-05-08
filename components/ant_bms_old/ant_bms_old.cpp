@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
-namespace esphome {
-namespace ant_bms_old {
+namespace esphome::ant_bms_old {
 
 static const char *const TAG = "ant_bms_old";
 
@@ -471,5 +470,4 @@ void AntBmsOld::send_(uint8_t function, uint8_t address, uint16_t value) {
 
 void AntBmsOld::read_registers_() { this->send_(0x5A, 0x00, 0x0001); }
 
-}  // namespace ant_bms_old
-}  // namespace esphome
+}  // namespace esphome::ant_bms_old
