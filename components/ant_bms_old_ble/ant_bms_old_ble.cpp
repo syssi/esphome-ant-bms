@@ -201,6 +201,8 @@ void AntBmsOldBle::update() {
   this->read_registers_();
 }
 
+#else
+void AntBmsOldBle::update() {}
 #endif  // USE_ESP32
 
 void AntBmsOldBle::on_ant_bms_old_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data) {

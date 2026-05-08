@@ -227,6 +227,8 @@ void AntBmsBle::update() {
   this->send_(ANT_COMMAND_STATUS, 0x0000, 0xbe, false);
 }
 
+#else
+void AntBmsBle::update() {}
 #endif  // USE_ESP32
 
 void AntBmsBle::on_ant_bms_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data) {
