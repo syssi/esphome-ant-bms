@@ -263,7 +263,7 @@ TEST(AntBmsStatusDataTest, MosfetStatusText8S) {
 
 TEST(AntBmsStatusDataTest, SwitchStates8S) {
   TestableAntBms bms;
-  switch_::Switch charging, discharging, balancer;
+  TestableSwitch charging, discharging, balancer;
   bms.set_charging_switch(&charging);
   bms.set_discharging_switch(&discharging);
   bms.set_balancer_switch(&balancer);

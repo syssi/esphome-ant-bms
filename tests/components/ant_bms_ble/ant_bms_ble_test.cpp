@@ -148,7 +148,7 @@ TEST(AntBmsBleStatusDataTest, MosfetStatus) {
   TestableAntBmsBle bms;
   text_sensor::TextSensor charge_txt, discharge_txt, balancer_txt;
   sensor::Sensor charge_code, discharge_code, balancer_code;
-  switch_::Switch charging, discharging, balancer;
+  TestableSwitch charging, discharging, balancer;
   bms.set_charge_mosfet_status_text_sensor(&charge_txt);
   bms.set_discharge_mosfet_status_text_sensor(&discharge_txt);
   bms.set_balancer_status_text_sensor(&balancer_txt);
