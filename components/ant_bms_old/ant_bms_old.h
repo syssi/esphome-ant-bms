@@ -7,8 +7,7 @@
 #include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/components/uart/uart.h"
 
-namespace esphome {
-namespace ant_bms_old {
+namespace esphome::ant_bms_old {
 
 class AntBmsOld : public uart::UARTDevice, public PollingComponent {
  public:
@@ -188,5 +187,4 @@ class AntBmsOld : public uart::UARTDevice, public PollingComponent {
   }
 };
 
-}  // namespace ant_bms_old
-}  // namespace esphome
+}  // namespace esphome::ant_bms_old
