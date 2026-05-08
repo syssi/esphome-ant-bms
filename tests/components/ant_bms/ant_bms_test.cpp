@@ -75,8 +75,8 @@ TEST(AntBmsStatusDataTest, CellVoltageStats8S) {
 
   EXPECT_NEAR(min_v.state, 3.338f, 0.001f);
   EXPECT_NEAR(max_v.state, 3.340f, 0.001f);
-  EXPECT_FLOAT_EQ(min_cell.state, 4.0f);   // cell 4
-  EXPECT_FLOAT_EQ(max_cell.state, 1.0f);   // cell 1
+  EXPECT_FLOAT_EQ(min_cell.state, 4.0f);  // cell 4
+  EXPECT_FLOAT_EQ(max_cell.state, 1.0f);  // cell 1
   EXPECT_NEAR(delta.state, 0.002f, 0.001f);
   EXPECT_NEAR(avg.state, 3.339f, 0.001f);
 }
@@ -240,9 +240,9 @@ TEST(AntBmsStatusDataTest, MosfetStatusCodes8S) {
 
   bms.on_ant_bms_data(STATUS_FRAME_8S);
 
-  EXPECT_FLOAT_EQ(charge_code.state, 1.0f);    // On
-  EXPECT_FLOAT_EQ(discharge_code.state, 1.0f); // On
-  EXPECT_FLOAT_EQ(balancer_code.state, 0.0f);  // Off
+  EXPECT_FLOAT_EQ(charge_code.state, 1.0f);     // On
+  EXPECT_FLOAT_EQ(discharge_code.state, 1.0f);  // On
+  EXPECT_FLOAT_EQ(balancer_code.state, 0.0f);   // Off
 }
 
 TEST(AntBmsStatusDataTest, MosfetStatusText8S) {
