@@ -1,25 +1,30 @@
 #pragma once
 
 #include "esphome/core/component.h"
-#include "esphome/components/ble_client/ble_client.h"
-#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
 #ifdef USE_ESP32
-
+#include "esphome/components/ble_client/ble_client.h"
+#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include <esp_gattc_api.h>
+namespace espbt = esphome::esp32_ble_tracker;
+#endif
 
 namespace esphome::ant_bms_ble {
 
-namespace espbt = esphome::esp32_ble_tracker;
-
-class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingComponent {
+class AntBmsBle :
+#ifdef USE_ESP32
+    public esphome::ble_client::BLEClientNode,
+#endif
+    public PollingComponent {
  public:
+#ifdef USE_ESP32
   void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                            esp_ble_gattc_cb_param_t *param) override;
+#endif
   void dump_config() override;
   void update() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
@@ -211,5 +216,3 @@ class AntBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
 };
 
 }  // namespace esphome::ant_bms_ble
-
-#endif
