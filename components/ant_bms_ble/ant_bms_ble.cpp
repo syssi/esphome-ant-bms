@@ -176,7 +176,7 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
 
 void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
-    ESP_LOGW(TAG, "Maximum response size (%d bytes) exceeded", this->frame_buffer_.size());
+    ESP_LOGW(TAG, "Maximum response size (%zu bytes) exceeded", this->frame_buffer_.size());
     this->frame_buffer_.clear();
   }
 
@@ -255,7 +255,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
     return (uint32_t(ant_get_16bit(i + 2)) << 16) | (uint32_t(ant_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Status frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   if (data.size() != (6 + data[5] + 4)) {
@@ -439,7 +439,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
 }
 
 void AntBmsBle::on_device_info_data_(const std::vector<uint8_t> &data) {
-  ESP_LOGI(TAG, "Device info frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Device info frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   // Status request
