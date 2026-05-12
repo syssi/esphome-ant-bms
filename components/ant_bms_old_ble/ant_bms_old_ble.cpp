@@ -159,7 +159,7 @@ void AntBmsOldBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t
 
 void AntBmsOldBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() > STATUS_FRAME_LENGTH) {
-    ESP_LOGW(TAG, "Maximum response size (%d bytes) exceeded", this->frame_buffer_.size());
+    ESP_LOGW(TAG, "Maximum response size (%zu bytes) exceeded", this->frame_buffer_.size());
     this->frame_buffer_.clear();
   }
 
@@ -225,7 +225,7 @@ void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
     return (uint32_t(ant_get_16bit(i + 0)) << 16) | (uint32_t(ant_get_16bit(i + 2)) << 0);
   };
 
-  ESP_LOGI(TAG, "Status frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   // Status request

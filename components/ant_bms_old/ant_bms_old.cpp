@@ -170,7 +170,7 @@ void AntBmsOld::on_status_data_(const std::vector<uint8_t> &data) {
     return (uint32_t(ant_get_16bit(i + 0)) << 16) | (uint32_t(ant_get_16bit(i + 2)) << 0);
   };
 
-  ESP_LOGI(TAG, "Status frame (%d bytes):", data.size());
+  ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 
   // Status request
