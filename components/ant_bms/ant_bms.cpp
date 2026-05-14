@@ -1,6 +1,7 @@
 #include "ant_bms.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
+#include <array>
 
 namespace esphome::ant_bms {
 
@@ -144,7 +145,7 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
 
   uint8_t function = raw[2];
 
-  uint16_t computed_crc = crc16_(raw + 1, frame_len - 5);
+  uint16_t computed_crc = crc16(raw + 1, frame_len - 5);
   uint16_t remote_crc = uint16_t(raw[frame_len - 3]) << 8 | (uint16_t(raw[frame_len - 4]) << 0);
   if (computed_crc != remote_crc) {
     ESP_LOGW(TAG, "CRC check failed! 0x%04X != 0x%04X", computed_crc, remote_crc);
@@ -385,7 +386,7 @@ void AntBms::update() {
   this->read_registers_();
 }
 
-void AntBms::write_register(uint8_t address, uint16_t value) { this->send_v2021_(0x51, address, value); }
+void AntBms::write_register(uint8_t address, uint16_t value) { this->send_(0x51, address, value); }
 
 void AntBms::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
@@ -568,7 +569,7 @@ void AntBms::read_registers_() {
   frame[3] = 0x00;
   frame[4] = 0x00;
   frame[5] = 0xbe;
-  auto crc = crc16_(frame + 1, 5);
+  auto crc = crc16(frame + 1, 5);
   frame[6] = crc >> 0;
   frame[7] = crc >> 8;
   frame[8] = 0xaa;
@@ -578,7 +579,7 @@ void AntBms::read_registers_() {
   this->flush();
 }
 
-void AntBms::authenticate_v2021_() {
+void AntBms::authenticate_() {
   uint8_t frame[22];
 
   frame[0] = 0x7e;  // header
@@ -600,7 +601,7 @@ void AntBms::authenticate_v2021_() {
   frame[16] = 0x62;  // b
   frame[17] = 0x63;  // c
 
-  auto crc = crc16_(frame + 1, 17);
+  auto crc = crc16(frame + 1, 17);
   frame[18] = crc >> 0;  // CRC
   frame[19] = crc >> 8;  // CRC
 
@@ -611,13 +612,13 @@ void AntBms::authenticate_v2021_() {
   this->flush();
 }
 
-void AntBms::authenticate_v2021_variable_(const uint8_t *data, uint8_t data_len) {
+void AntBms::authenticate_variable_(const uint8_t *data, uint8_t data_len) {
   std::vector<uint8_t> frame = {0x7E, 0xA1, 0x23, 0x6A, 0x01};
   frame.push_back(data_len);
   for (int i = 0; i < data_len; i++) {
     frame.push_back(data[i]);
   }
-  auto crc = crc16_(frame.data() + 1, frame.size());
+  auto crc = crc16(frame.data() + 1, frame.size());
   frame.push_back(crc >> 0);
   frame.push_back(crc >> 8);
   frame.push_back(0xAA);
@@ -627,23 +628,26 @@ void AntBms::authenticate_v2021_variable_(const uint8_t *data, uint8_t data_len)
   this->flush();
 }
 
-void AntBms::send_v2021_(uint8_t function, uint8_t address, uint16_t value) {
-  this->authenticate_v2021_();
+std::array<uint8_t, 10> AntBms::build_frame(uint8_t function, uint8_t address, uint16_t value) {
+  std::array<uint8_t, 10> frame{};
+  frame[0] = 0x7e;
+  frame[1] = 0xa1;
+  frame[2] = function;
+  frame[3] = address;
+  frame[4] = value >> 8;
+  frame[5] = value >> 0;
+  auto crc = crc16(frame.data() + 1, 5);
+  frame[6] = crc >> 0;
+  frame[7] = crc >> 8;
+  frame[8] = 0xaa;
+  frame[9] = 0x55;
+  return frame;
+}
 
-  uint8_t frame[10];
-  frame[0] = 0x7e;        // header
-  frame[1] = 0xa1;        // header
-  frame[2] = function;    // control
-  frame[3] = address;     // address
-  frame[4] = value >> 8;  // value
-  frame[5] = value >> 0;  // value
-  auto crc = crc16_(frame + 1, 5);
-  frame[6] = crc >> 0;  // CRC
-  frame[7] = crc >> 8;  // CRC
-  frame[8] = 0xaa;      // footer
-  frame[9] = 0x55;      // footer
-
-  this->write_array(frame, 10);
+void AntBms::send_(uint8_t function, uint8_t address, uint16_t value) {
+  this->authenticate_();
+  auto frame = build_frame(function, address, value);
+  this->write_array(frame.data(), frame.size());
   this->flush();
 }
 

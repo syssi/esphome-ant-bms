@@ -118,13 +118,13 @@ class TestSwitchConstants:
         assert switch.CONF_DISCHARGING in switch.SWITCHES
         assert switch.CONF_CHARGING in switch.SWITCHES
         assert switch.CONF_BALANCER in switch.SWITCHES
-        assert len(switch.SWITCHES) == 5
+        assert len(switch.SWITCHES) == 4
 
     def test_ble_switches_dict(self):
         assert ble_switch.CONF_DISCHARGING in ble_switch.SWITCHES
         assert ble_switch.CONF_CHARGING in ble_switch.SWITCHES
         assert ble_switch.CONF_BALANCER in ble_switch.SWITCHES
-        assert len(ble_switch.SWITCHES) == 5
+        assert len(ble_switch.SWITCHES) == 4
 
 
 class TestButtonConstants:
@@ -135,7 +135,13 @@ class TestButtonConstants:
         assert CONF_RESTART in button.BUTTONS
         assert CONF_FACTORY_RESET in button.BUTTONS
         assert button.CONF_CLEAR_SYSTEM_LOG in button.BUTTONS
-        assert len(button.BUTTONS) == 4
+        assert button.CONF_CURRENT_ZERO in button.BUTTONS
+        assert button.CONF_RESET_HARDWARE in button.BUTTONS
+        assert button.CONF_BLUETOOTH_INITIALIZATION in button.BUTTONS
+        assert button.CONF_SAVE_CUSTOMER_DATA in button.BUTTONS
+        assert button.CONF_BLUETOOTH_ON in button.BUTTONS
+        assert button.CONF_BLUETOOTH_OFF in button.BUTTONS
+        assert len(button.BUTTONS) == 16
 
     def test_button_addresses_are_unique(self):
         addresses = list(button.BUTTONS.values())
@@ -147,4 +153,6 @@ class TestButtonConstants:
         assert ble_button.CONF_SHUTDOWN in ble_button.BUTTONS
         assert CONF_RESTART in ble_button.BUTTONS
         assert CONF_FACTORY_RESET in ble_button.BUTTONS
-        assert len(ble_button.BUTTONS) == 4
+        assert ble_button.CONF_BLUETOOTH_ON in ble_button.BUTTONS
+        assert ble_button.CONF_BLUETOOTH_OFF in ble_button.BUTTONS
+        assert len(ble_button.BUTTONS) == 16

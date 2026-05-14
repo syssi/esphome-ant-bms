@@ -229,6 +229,8 @@ switch:
 button:
   - platform: ant_bms
     ant_bms_id: bms0
+    current_zero:
+      name: "current zero"
     shutdown:
       name: "shutdown"
     clear_system_log:
@@ -237,3 +239,25 @@ button:
       name: "factory reset"
     restart:
       name: "restart"
+    bluetooth_initialization:
+      name: "bluetooth initialization"
+    bluetooth_off:
+      name: "bluetooth off"
+    bluetooth_on:
+      name: "bluetooth on"
+    clear_discharge_cycle_ah:
+      name: "clear discharge cycle ah"
+    clear_charge_cycle_ah:
+      name: "clear charge cycle ah"
+    clear_discharge_time:
+      name: "clear discharge time"
+    clear_charge_time:
+      name: "clear charge time"
+    clear_running_time:
+      name: "clear running time"
+    clear_protect_time:
+      name: "clear protect time"
+    reset_hardware:
+      name: "reset hardware"
+    save_customer_data:
+      name: "save customer data"

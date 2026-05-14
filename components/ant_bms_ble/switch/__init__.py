@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
-from esphome.const import CONF_BLUETOOTH, ENTITY_CATEGORY_CONFIG
+from esphome.const import ENTITY_CATEGORY_CONFIG
 
 from .. import ANT_BMS_BLE_COMPONENT_SCHEMA, CONF_ANT_BMS_BLE_ID, ant_bms_ble_ns
 from ..const import CONF_BALANCER, CONF_CHARGING, CONF_DISCHARGING
@@ -16,7 +16,6 @@ CONF_BUZZER = "buzzer"
 ICON_DISCHARGING = "mdi:battery-charging-50"
 ICON_CHARGING = "mdi:battery-charging-50"
 ICON_BALANCER = "mdi:seesaw"
-ICON_BLUETOOTH = "mdi:bluetooth"
 ICON_BUZZER = "mdi:volume-high"
 
 SWITCHES = {
@@ -24,7 +23,6 @@ SWITCHES = {
     CONF_DISCHARGING: [0x0003, 0x0001],
     CONF_CHARGING: [0x0006, 0x0004],
     CONF_BALANCER: [0x000D, 0x000E],
-    CONF_BLUETOOTH: [0x001D, 0x001C],
     CONF_BUZZER: [0x001E, 0x001F],
 }
 
@@ -50,11 +48,6 @@ CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_CHARGING): switch.switch_schema(AntSwitch, icon=ICON_CHARGING),
         cv.Optional(CONF_BALANCER): switch.switch_schema(AntSwitch, icon=ICON_BALANCER),
-        cv.Optional(CONF_BLUETOOTH): switch.switch_schema(
-            AntSwitch,
-            icon=ICON_BLUETOOTH,
-            entity_category=ENTITY_CATEGORY_CONFIG,
-        ),
         cv.Optional(CONF_BUZZER): switch.switch_schema(
             AntSwitch,
             icon=ICON_BUZZER,

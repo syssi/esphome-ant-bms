@@ -98,3 +98,97 @@ sensor:
     ant_bms_old_ble_id: bms3
     total_voltage:
       name: "ant_bms_old_ble total voltage"
+
+switch:
+  - platform: ant_bms_ble
+    ant_bms_ble_id: bms0
+    charging:
+      name: "ant_bms_ble charging"
+    discharging:
+      name: "ant_bms_ble discharging"
+    balancer:
+      name: "ant_bms_ble balancer"
+    buzzer:
+      name: "ant_bms_ble buzzer"
+
+  - platform: ant_bms
+    ant_bms_id: bms1
+    charging:
+      name: "ant_bms charging"
+    discharging:
+      name: "ant_bms discharging"
+    balancer:
+      name: "ant_bms balancer"
+    buzzer:
+      name: "ant_bms buzzer"
+
+button:
+  - platform: ant_bms_ble
+    ant_bms_ble_id: bms0
+    current_zero:
+      name: "ant_bms_ble current zero"
+    shutdown:
+      name: "ant_bms_ble shutdown"
+    clear_system_log:
+      name: "ant_bms_ble clear system log"
+    factory_reset:
+      name: "ant_bms_ble factory reset"
+    restart:
+      name: "ant_bms_ble restart"
+    bluetooth_initialization:
+      name: "ant_bms_ble bluetooth initialization"
+    bluetooth_off:
+      name: "ant_bms_ble bluetooth off"
+    bluetooth_on:
+      name: "ant_bms_ble bluetooth on"
+    clear_discharge_cycle_ah:
+      name: "ant_bms_ble clear discharge cycle ah"
+    clear_charge_cycle_ah:
+      name: "ant_bms_ble clear charge cycle ah"
+    clear_discharge_time:
+      name: "ant_bms_ble clear discharge time"
+    clear_charge_time:
+      name: "ant_bms_ble clear charge time"
+    clear_running_time:
+      name: "ant_bms_ble clear running time"
+    clear_protect_time:
+      name: "ant_bms_ble clear protect time"
+    reset_hardware:
+      name: "ant_bms_ble reset hardware"
+    save_customer_data:
+      name: "ant_bms_ble save customer data"
+
+  - platform: ant_bms
+    ant_bms_id: bms1
+    current_zero:
+      name: "ant_bms current zero"
+    shutdown:
+      name: "ant_bms shutdown"
+    clear_system_log:
+      name: "ant_bms clear system log"
+    factory_reset:
+      name: "ant_bms factory reset"
+    restart:
+      name: "ant_bms restart"
+    bluetooth_initialization:
+      name: "ant_bms bluetooth initialization"
+    bluetooth_off:
+      name: "ant_bms bluetooth off"
+    bluetooth_on:
+      name: "ant_bms bluetooth on"
+    clear_discharge_cycle_ah:
+      name: "ant_bms clear discharge cycle ah"
+    clear_charge_cycle_ah:
+      name: "ant_bms clear charge cycle ah"
+    clear_discharge_time:
+      name: "ant_bms clear discharge time"
+    clear_charge_time:
+      name: "ant_bms clear charge time"
+    clear_running_time:
+      name: "ant_bms clear running time"
+    clear_protect_time:
+      name: "ant_bms clear protect time"
+    reset_hardware:
+      name: "ant_bms reset hardware"
+    save_customer_data:
+      name: "ant_bms save customer data"
