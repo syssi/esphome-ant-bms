@@ -5,6 +5,7 @@
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/text_sensor/text_sensor.h"
+#include <array>
 
 #ifdef USE_ESP32
 #include "esphome/components/ble_client/ble_client.h"
@@ -139,12 +140,12 @@ class AntBmsBle :
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
-  void set_bluetooth_switch(switch_::Switch *bluetooth_switch) { bluetooth_switch_ = bluetooth_switch; }
   void set_buzzer_switch(switch_::Switch *buzzer_switch) { buzzer_switch_ = buzzer_switch; }
 
   void set_password(const std::string &password) { this->password_ = password; }
 
   void assemble(const uint8_t *data, uint16_t length);
+  static std::array<uint8_t, 10> build_frame(uint8_t function, uint16_t address, uint8_t value);
   void write_register(uint16_t address, uint8_t value);
 
  protected:
@@ -179,7 +180,6 @@ class AntBmsBle :
   switch_::Switch *charging_switch_{nullptr};
   switch_::Switch *discharging_switch_{nullptr};
   switch_::Switch *balancer_switch_{nullptr};
-  switch_::Switch *bluetooth_switch_{nullptr};
   switch_::Switch *buzzer_switch_{nullptr};
 
   text_sensor::TextSensor *charge_mosfet_status_text_sensor_{nullptr};
@@ -220,7 +220,7 @@ class AntBmsBle :
   void reset_online_status_tracker_();
   void track_online_status_();
 
-  uint16_t crc16_(const uint8_t *data, uint8_t len) {
+  static uint16_t crc16(const uint8_t *data, uint8_t len) {
     uint16_t crc = 0xFFFF;
     while (len--) {
       crc ^= *data++;

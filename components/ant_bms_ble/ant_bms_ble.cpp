@@ -2,6 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 #include "esphome/core/version.h"
+#include <array>
 
 #if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
 #define ADDR_STR(x) x
@@ -219,7 +220,7 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
       return;
     }
 
-    uint16_t computed_crc = crc16_(raw + 1, frame_len - 5);
+    uint16_t computed_crc = crc16(raw + 1, frame_len - 5);
     uint16_t remote_crc = uint16_t(raw[frame_len - 3]) << 8 | (uint16_t(raw[frame_len - 4]) << 0);
     if (computed_crc != remote_crc) {
       ESP_LOGW(TAG, "CRC Check failed! %04X != %04X", computed_crc, remote_crc);
@@ -666,6 +667,22 @@ void AntBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::
   text_sensor->publish_state(state);
 }
 
+std::array<uint8_t, 10> AntBmsBle::build_frame(uint8_t function, uint16_t address, uint8_t value) {
+  std::array<uint8_t, 10> frame{};
+  frame[0] = 0x7e;
+  frame[1] = 0xa1;
+  frame[2] = function;
+  frame[3] = address >> 0;
+  frame[4] = address >> 8;
+  frame[5] = value;
+  auto crc = crc16(frame.data() + 1, 5);
+  frame[6] = crc >> 0;
+  frame[7] = crc >> 8;
+  frame[8] = 0xaa;
+  frame[9] = 0x55;
+  return frame;
+}
+
 #ifdef USE_ESP32
 void AntBmsBle::write_register(uint16_t address, uint8_t value) {
   this->send_(ANT_COMMAND_WRITE_REGISTER, address, value, true);
@@ -693,7 +710,7 @@ bool AntBmsBle::authenticate_() {
   frame[16] = 0x62;  // b
   frame[17] = 0x63;  // c
 
-  auto crc = crc16_(frame + 1, 17);
+  auto crc = crc16(frame + 1, 17);
   frame[18] = crc >> 0;  // CRC
   frame[19] = crc >> 8;  // CRC
 
@@ -717,7 +734,7 @@ bool AntBmsBle::authenticate_variable_(const uint8_t *data, uint8_t data_len) {
   for (int i = 0; i < data_len; i++) {
     frame.push_back(data[i]);
   }
-  auto crc = crc16_(frame.data() + 1, frame.size());
+  auto crc = crc16(frame.data() + 1, frame.size());
   frame.push_back(crc >> 0);
   frame.push_back(crc >> 8);
   frame.push_back(0xAA);
@@ -734,28 +751,17 @@ bool AntBmsBle::authenticate_variable_(const uint8_t *data, uint8_t data_len) {
   return (status == 0);
 }
 
-bool AntBmsBle::send_(uint8_t function, uint16_t address, uint8_t value, bool authenticate = true) {
+bool AntBmsBle::send_(uint8_t function, uint16_t address, uint8_t value, bool authenticate) {
   if (authenticate) {
     this->authenticate_();
   }
 
-  uint8_t frame[10];
-  frame[0] = 0x7e;          // header
-  frame[1] = 0xa1;          // header
-  frame[2] = function;      // control
-  frame[3] = address >> 0;  // address
-  frame[4] = address >> 8;  // address
-  frame[5] = value;         // value
-  auto crc = crc16_(frame + 1, 5);
-  frame[6] = crc >> 0;  // CRC
-  frame[7] = crc >> 8;  // CRC
-  frame[8] = 0xaa;      // footer
-  frame[9] = 0x55;      // footer
+  auto frame = build_frame(function, address, value);
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
-                                         this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
-                                         ESP_GATT_AUTH_REQ_NONE);
+                                         this->characteristic_handle_, frame.size(), frame.data(),
+                                         ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
   if (status)
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
