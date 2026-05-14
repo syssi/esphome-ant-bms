@@ -16,7 +16,7 @@ static const uint8_t ANT_FRAME_TYPE_DEVICE_INFO = 0x12;
 
 static const uint8_t ANT_COMMAND_STATUS = 0x01;
 
-static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 16;
+static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 21;
 static constexpr const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
     "Off",                           // 0x00
     "On",                            // 0x01
@@ -29,20 +29,25 @@ static constexpr const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZ
     "Abnormal current",              // 0x08
     "Balanced line dropped string",  // 0x09
     "Motherboard over temperature",  // 0x0A
-    "Unknown",                       // 0x0B
-    "Unknown",                       // 0x0C
+    "Reserved",                      // 0x0B
+    "Open failed",                   // 0x0C
     "Discharge MOSFET abnormality",  // 0x0D
-    "Unknown",                       // 0x0E
+    "Waiting",                       // 0x0E
     "Manually turned off",           // 0x0F
+    "Two level exceed voltage",      // 0x10
+    "Low temperature protection",    // 0x11
+    "Voltage difference exceeded",   // 0x12
+    "Reserved",                      // 0x13
+    "Self detect error",             // 0x14
 };
 
-static const uint8_t DISCHARGE_MOSFET_STATUS_SIZE = 16;
+static const uint8_t DISCHARGE_MOSFET_STATUS_SIZE = 20;
 static constexpr const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STATUS_SIZE] = {
     "Off",                           // 0x00
     "On",                            // 0x01
     "Overdischarge protection",      // 0x02
     "Over current protection",       // 0x03
-    "Unknown",                       // 0x04
+    "Two current exceeded",          // 0x04
     "Total pressure undervoltage",   // 0x05
     "Battery over temperature",      // 0x06
     "MOSFET over temperature",       // 0x07
@@ -52,8 +57,12 @@ static constexpr const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STAT
     "Charge MOSFET on",              // 0x0B
     "Short circuit protection",      // 0x0C
     "Discharge MOSFET abnormality",  // 0x0D
-    "Start exception",               // 0x0E
+    "Open failed",                   // 0x0E
     "Manually turned off",           // 0x0F
+    "Two level low voltage",         // 0x10
+    "Low temperature protection",    // 0x11
+    "Voltage difference exceeded",   // 0x12
+    "Self detect error",             // 0x13
 };
 
 static const uint8_t BATTERY_STATUS_SIZE = 6;
