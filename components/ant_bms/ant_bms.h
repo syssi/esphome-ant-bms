@@ -71,7 +71,34 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void set_balancer_status_code_sensor(sensor::Sensor *balancer_status_code_sensor) {
     balancer_status_code_sensor_ = balancer_status_code_sensor;
   }
+  void set_state_of_health_sensor(sensor::Sensor *state_of_health_sensor) {
+    state_of_health_sensor_ = state_of_health_sensor;
+  }
+  void set_battery_status_code_sensor(sensor::Sensor *battery_status_code_sensor) {
+    battery_status_code_sensor_ = battery_status_code_sensor;
+  }
+  void set_total_discharging_capacity_sensor(sensor::Sensor *total_discharging_capacity_sensor) {
+    total_discharging_capacity_sensor_ = total_discharging_capacity_sensor;
+  }
+  void set_total_charging_capacity_sensor(sensor::Sensor *total_charging_capacity_sensor) {
+    total_charging_capacity_sensor_ = total_charging_capacity_sensor;
+  }
+  void set_total_discharging_time_sensor(sensor::Sensor *total_discharging_time_sensor) {
+    total_discharging_time_sensor_ = total_discharging_time_sensor;
+  }
+  void set_total_charging_time_sensor(sensor::Sensor *total_charging_time_sensor) {
+    total_charging_time_sensor_ = total_charging_time_sensor;
+  }
+  void set_balanced_cell_bitmask_sensor(sensor::Sensor *balanced_cell_bitmask_sensor) {
+    balanced_cell_bitmask_sensor_ = balanced_cell_bitmask_sensor;
+  }
 
+  void set_device_model_text_sensor(text_sensor::TextSensor *device_model_text_sensor) {
+    device_model_text_sensor_ = device_model_text_sensor;
+  }
+  void set_software_version_text_sensor(text_sensor::TextSensor *software_version_text_sensor) {
+    software_version_text_sensor_ = software_version_text_sensor;
+  }
   void set_charge_mosfet_status_text_sensor(text_sensor::TextSensor *charge_mosfet_status_text_sensor) {
     charge_mosfet_status_text_sensor_ = charge_mosfet_status_text_sensor;
   }
@@ -84,6 +111,17 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
   }
+  void set_battery_status_text_sensor(text_sensor::TextSensor *battery_status_text_sensor) {
+    battery_status_text_sensor_ = battery_status_text_sensor;
+  }
+  void set_total_discharging_time_formatted_text_sensor(
+      text_sensor::TextSensor *total_discharging_time_formatted_text_sensor) {
+    total_discharging_time_formatted_text_sensor_ = total_discharging_time_formatted_text_sensor;
+  }
+  void set_total_charging_time_formatted_text_sensor(
+      text_sensor::TextSensor *total_charging_time_formatted_text_sensor) {
+    total_charging_time_formatted_text_sensor_ = total_charging_time_formatted_text_sensor;
+  }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
@@ -91,13 +129,10 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void set_bluetooth_switch(switch_::Switch *bluetooth_switch) { bluetooth_switch_ = bluetooth_switch; }
   void set_buzzer_switch(switch_::Switch *buzzer_switch) { buzzer_switch_ = buzzer_switch; }
 
-  void set_password(const std::string &password) { this->password_ = password; }
-  void set_supports_new_commands(bool supports_new_commands) { supports_new_commands_ = supports_new_commands; }
+  void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
 
   void on_ant_bms_data(const std::vector<uint8_t> &data);
-  void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
   void write_register(uint8_t address, uint16_t value);
-  bool supports_new_commands() { return supports_new_commands_; }
 
  protected:
   binary_sensor::BinarySensor *online_status_binary_sensor_{nullptr};
@@ -120,6 +155,13 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   sensor::Sensor *charge_mosfet_status_code_sensor_{nullptr};
   sensor::Sensor *discharge_mosfet_status_code_sensor_{nullptr};
   sensor::Sensor *balancer_status_code_sensor_{nullptr};
+  sensor::Sensor *state_of_health_sensor_{nullptr};
+  sensor::Sensor *battery_status_code_sensor_{nullptr};
+  sensor::Sensor *total_discharging_capacity_sensor_{nullptr};
+  sensor::Sensor *total_charging_capacity_sensor_{nullptr};
+  sensor::Sensor *total_discharging_time_sensor_{nullptr};
+  sensor::Sensor *total_charging_time_sensor_{nullptr};
+  sensor::Sensor *balanced_cell_bitmask_sensor_{nullptr};
 
   switch_::Switch *charging_switch_{nullptr};
   switch_::Switch *discharging_switch_{nullptr};
@@ -131,6 +173,11 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   text_sensor::TextSensor *discharge_mosfet_status_text_sensor_{nullptr};
   text_sensor::TextSensor *balancer_status_text_sensor_{nullptr};
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_{nullptr};
+  text_sensor::TextSensor *battery_status_text_sensor_{nullptr};
+  text_sensor::TextSensor *total_discharging_time_formatted_text_sensor_{nullptr};
+  text_sensor::TextSensor *total_charging_time_formatted_text_sensor_{nullptr};
+  text_sensor::TextSensor *device_model_text_sensor_{nullptr};
+  text_sensor::TextSensor *software_version_text_sensor_{nullptr};
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -140,17 +187,15 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
     sensor::Sensor *temperature_sensor_{nullptr};
   } temperatures_[6];
 
-  bool supports_new_commands_;
-  std::string password_;
-
   std::vector<uint8_t> rx_buffer_;
   uint8_t no_response_count_{0};
   uint32_t last_byte_{0};
   uint16_t rx_timeout_{50};
 
+  void on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
+  void on_device_info_data_(const std::vector<uint8_t> &data);
   bool parse_ant_bms_byte_(uint8_t byte);
-  void authenticate_();
   void authenticate_v2021_();
   void authenticate_v2021_variable_(const uint8_t *data, uint8_t data_len);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
@@ -158,19 +203,10 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   void read_registers_();
-  void send_(uint8_t function, uint8_t address, uint16_t value);
   void send_v2021_(uint8_t function, uint8_t address, uint16_t value);
   void publish_device_unavailable_();
   void reset_online_status_tracker_();
   void track_online_status_();
-
-  uint16_t chksum_(const uint8_t data[], const uint16_t len) {
-    uint16_t checksum = 0;
-    for (uint16_t i = 4; i < len; i++) {
-      checksum = checksum + data[i];
-    }
-    return checksum;
-  }
 
   uint16_t crc16_(const uint8_t *data, uint8_t len) {
     uint16_t crc = 0xFFFF;

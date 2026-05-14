@@ -4,47 +4,59 @@ import esphome.config_validation as cv
 from esphome.const import CONF_FACTORY_RESET, CONF_RESTART, DEVICE_CLASS_RESTART
 
 from .. import ANT_BMS_COMPONENT_SCHEMA, CONF_ANT_BMS_ID, ant_bms_ns
-from ..const import CONF_BALANCER
 
 DEPENDENCIES = ["ant_bms"]
 
 CODEOWNERS = ["@syssi"]
 
-CONF_SHUTDOWN = "shutdown"
-CONF_CLEAR_COUNTER = "clear_counter"
-# CONF_BALANCER = "balancer"
-# CONF_FACTORY_RESET = "factory_reset"
 # CONF_RESTART = "restart"
+CONF_SHUTDOWN = "shutdown"
+# CONF_FACTORY_RESET = "factory_reset"
+CONF_CLEAR_SYSTEM_LOG = "clear_system_log"
 
-ICON_SHUTDOWN = "mdi:power"
-ICON_CLEAR_COUNTER = "mdi:delete-clock"
-ICON_BALANCER = "mdi:seesaw"
-ICON_FACTORY_RESET = "mdi:factory"
 ICON_RESTART = "mdi:restart"
+ICON_SHUTDOWN = "mdi:power"
+ICON_FACTORY_RESET = "mdi:factory"
+ICON_CLEAR_SYSTEM_LOG = "mdi:delete-clock"
 
-# 0xEF 0x1A 0x01    Request upgrade command
-# 0xF0 0x00 0x00    Apply LTO settings
-# 0xF6 0x00 0x00    Change MAC address (randomize?)
-# 0xFB 0x00 0x00    Apply LiFePo4 settings
+# Not implemented yet
 #
-# https://github.com/klotztech/VBMS/wiki/Serial-protocol#control-addresses
+# Current Zero                7e a1 51 08 00 00 08 e7 aa 55
+# Bluetooth initialization    7e a1 51 10 00 00 88 e0 aa 55
+# Clear Discharge Cycle Ah    7e a1 51 20 00 00 88 ef aa 55
+# Clear Charge Cycle Ah       7e a1 51 21 00 00 d9 2f aa 55
+# Clear Discharge Time        7e a1 51 22 00 00 29 2f aa 55
+# Clear Charge Time           7e a1 51 23 00 00 78 ef aa 55
+# Clear Running Time          7e a1 51 24 00 00 c9 2e aa 55
+# Clear Protect Time          7e a1 51 25 00 00 98 ee aa 55
+# Reset hardware              7e a1 51 2a 00 00 a8 ed aa 55
+# Save Customer Data          7e a1 51 2c 00 00 48 ec aa 55
+#
+# https://github.com/syssi/esphome-ant-bms/issues/20
+# https://github.com/syssi/esphome-ant-bms/issues/29
+
 BUTTONS = {
-    CONF_SHUTDOWN: 0xF7,
-    CONF_CLEAR_COUNTER: 0xF8,
-    CONF_BALANCER: 0xFC,
-    CONF_FACTORY_RESET: 0xFD,
-    CONF_RESTART: 0xFE,
+    CONF_RESTART: 0x0009,
+    CONF_SHUTDOWN: 0x000B,
+    CONF_FACTORY_RESET: 0x000C,
+    CONF_CLEAR_SYSTEM_LOG: 0x000F,
 }
+
+# Available as button entities
+#
+# Restart                     7e a1 51 09 00 00 59 27 aa 55
+# Shutdown                    7e a1 51 0b 00 00 f8 e7 aa 55
+# Factory reset               7e a1 51 0c 00 00 49 26 aa 55
+# Clear System Log            7e a1 51 0f 00 00 b9 26 aa 55
 
 AntButton = ant_bms_ns.class_("AntButton", button.Button, cg.Component)
 
 CONFIG_SCHEMA = ANT_BMS_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_SHUTDOWN): button.button_schema(AntButton, icon=ICON_SHUTDOWN),
-        cv.Optional(CONF_CLEAR_COUNTER): button.button_schema(
-            AntButton, icon=ICON_CLEAR_COUNTER
+        cv.Optional(CONF_CLEAR_SYSTEM_LOG): button.button_schema(
+            AntButton, icon=ICON_CLEAR_SYSTEM_LOG
         ),
-        cv.Optional(CONF_BALANCER): button.button_schema(AntButton, icon=ICON_BALANCER),
         cv.Optional(CONF_FACTORY_RESET): button.button_schema(
             AntButton, icon=ICON_FACTORY_RESET, device_class=DEVICE_CLASS_RESTART
         ),

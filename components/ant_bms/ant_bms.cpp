@@ -8,9 +8,13 @@ static const char *const TAG = "ant_bms";
 
 static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 
-static const uint8_t FUNCTION_READ_ALL = 0xFF;
-static const uint8_t WRITE_SINGLE_REGISTER = 0xA5;
-static const uint8_t REGISTER_APPLY_WRITE = 0xFF;
+static const uint8_t ANT_PKT_START_1 = 0x7E;
+static const uint8_t ANT_PKT_START_2 = 0xA1;
+
+static const uint8_t ANT_FRAME_TYPE_STATUS = 0x11;
+static const uint8_t ANT_FRAME_TYPE_DEVICE_INFO = 0x12;
+
+static const uint8_t ANT_COMMAND_STATUS = 0x01;
 
 static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 16;
 static constexpr const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
@@ -52,6 +56,16 @@ static constexpr const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STAT
     "Manually turned off",           // 0x0F
 };
 
+static const uint8_t BATTERY_STATUS_SIZE = 6;
+static constexpr const char *const BATTERY_STATUS[BATTERY_STATUS_SIZE] = {
+    "Unknown",    // 0x00
+    "Idle",       // 0x01
+    "Charge",     // 0x02
+    "Discharge",  // 0x03
+    "Standby",    // 0x04
+    "Error",      // 0x05
+};
+
 static const uint8_t BALANCER_STATUS_SIZE = 11;
 static constexpr const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
     "Off",                                   // 0x00
@@ -85,28 +99,28 @@ void AntBms::loop() {
   }
 }
 
+// New protocol response frame
+//
+// 0x7E 0xA1 0x43 0x6A 0x01 0x02 0x05 0x00 0x1E 0x5C 0xAA 0x55    Password ACK
+// 0x7E 0xA1 0x61 0x04 0x00 0x02 0x01 0x00 0xF2 0x2B 0xAA 0x55    Register 0x04 ACK
+// 0x7E 0xA1 0x61 0x06 0x00 0x02 0x01 0x00 0x8B 0xEB 0xAA 0x55    Register 0x06 ACK
+//  0    1    2    3    4    5    6    7    8    9    10   11
+// head add  func val  val  len  data data crc  crc  end  end
+
 bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
   size_t at = this->rx_buffer_.size();
   this->rx_buffer_.push_back(byte);
   const uint8_t *raw = &this->rx_buffer_[0];
-  uint16_t frame_len = 140;
 
-  // 0xAA 0x55 0xAA 0xFF 0x02 0x1D 0x10 0x2A ...
-  //   0    1    2    3  ^^^^^ data ^^^^^^^^
-
-  // Byte 0: Ant BMS start byte (match all)
   if (at == 0)
     return true;
-  uint8_t address = raw[0];
 
   // Byte 0...3: Header
   if (at < 4)
     return true;
 
-  if ((raw[0] != 0xAA || raw[1] != 0x55 || raw[2] != 0xAA || raw[3] != 0xFF) && (raw[0] != 0x7E || raw[1] != 0xA1)) {
+  if (raw[0] != ANT_PKT_START_1 || raw[1] != ANT_PKT_START_2) {
     ESP_LOGW(TAG, "Invalid header");
-
-    // return false to reset buffer
     return false;
   }
 
@@ -114,30 +128,15 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
   if (at < 6)
     return true;
 
-  // Calculate new protocol frame length
-  if (address == 0x7E) {
-    frame_len = 6 + raw[5] + 4;
-  }
+  uint16_t frame_len = 6 + raw[5] + 4;
 
-  // Byte 0...139
   if (at < frame_len - 1)
     return true;
 
-  // New protocol response frame
-  //
-  // 0x7E 0xA1 0x43 0x6A 0x01 0x02 0x05 0x00 0x1E 0x5C 0xAA 0x55    Password ACK
-  // 0x7E 0xA1 0x61 0x04 0x00 0x02 0x01 0x00 0xF2 0x2B 0xAA 0x55    Register 0x04 ACK
-  // 0x7E 0xA1 0x61 0x06 0x00 0x02 0x01 0x00 0x8B 0xEB 0xAA 0x55    Register 0x06 ACK
-  //  0    1    2    3    4    5    6    7    8    9    10   11
-  // head add  func val  val  len  data data crc  crc  end  end
-  if (address == 0x7E) {
-    // Discard new protocol frame for now
-    ESP_LOGVV(TAG, "New protocol response frame discarded: %s", format_hex_pretty(raw, at + 1).c_str());  // NOLINT
-    return false;
-  }
+  uint8_t function = raw[2];
 
-  uint16_t computed_crc = chksum_(raw, frame_len - 2);
-  uint16_t remote_crc = uint16_t(raw[frame_len - 2]) << 8 | (uint16_t(raw[frame_len - 1]) << 0);
+  uint16_t computed_crc = crc16_(raw + 1, frame_len - 5);
+  uint16_t remote_crc = uint16_t(raw[frame_len - 3]) << 8 | (uint16_t(raw[frame_len - 4]) << 0);
   if (computed_crc != remote_crc) {
     ESP_LOGW(TAG, "CRC check failed! 0x%04X != 0x%04X", computed_crc, remote_crc);
     return false;
@@ -147,88 +146,120 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
-  this->on_ant_bms_data(data);
+  this->on_ant_bms_data_(function, data);
 
   // return false to reset buffer
   return false;
 }
 
 void AntBms::on_ant_bms_data(const std::vector<uint8_t> &data) {
+  if (data.size() < 3)
+    return;
+  this->on_ant_bms_data_(data[2], data);
+}
+
+void AntBms::on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data) {
   this->reset_online_status_tracker_();
 
-  if (data.size() == 140) {
-    this->on_status_data_(data);
-    return;
+  switch (function) {
+    case ANT_FRAME_TYPE_STATUS:
+      this->on_status_data_(data);
+      break;
+    case ANT_FRAME_TYPE_DEVICE_INFO:
+      this->on_device_info_data_(data);
+      break;
+    default:
+      ESP_LOGW(TAG, "Unhandled response received (function 0x%02X): %s", function,
+               format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
   }
-
-  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
 }
 
 void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   auto ant_get_16bit = [&](size_t i) -> uint16_t {
-    return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
+    return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
   };
   auto ant_get_32bit = [&](size_t i) -> uint32_t {
-    return (uint32_t(ant_get_16bit(i + 0)) << 16) | (uint32_t(ant_get_16bit(i + 2)) << 0);
+    return (uint32_t(ant_get_16bit(i + 2)) << 16) | (uint32_t(ant_get_16bit(i + 0)) << 0);
   };
 
-  ESP_LOGI(TAG, "Status frame received");
+  ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+
+  if (data.size() < 6 || data.size() != (6 + data[5] + 4)) {
+    ESP_LOGW(TAG, "Skipping status frame because of invalid length");
+    return;
+  }
 
   // Status request
-  // -> 0x5A 0x5A 0x00 0x00 0x01 0x01
+  // -> 0x7e 0xa1 0x01 0x00 0x00 0xbe 0x18 0x55 0xaa 0x55
   //
   // Status response
-  // <- 0xAA 0x55 0xAA 0xFF: Header
-  //      0    1    2    3
-  // *Data*
   //
-  // Byte   Address Content: Description      Decoded content                         Coeff./Unit
+  // Byte Len Payload     Description                      Unit  Precision
+  //   0   2  0x7E 0xA1   Start of frame
+  //   2   1  0x11        Function
+  //   3   2  0x00 0x00   Address
+  //   5   1  0x8E        Data length
+  //   6   1  0x05        Permissions
+  ESP_LOGI(TAG, "  Permissions: %d", data[6]);
 
-  //   4    0x02 0x1D: Total voltage         541 * 0.1 = 54.1V                        0.1 V
-  float total_voltage = ant_get_16bit(4) * 0.1f;
-  this->publish_state_(this->total_voltage_sensor_, total_voltage);
-  //   6    0x10 0x2A: Cell voltage 1        4138 * 0.001 = 4.138V                    0.001 V
-  //   8    0x10 0x2A: Cell voltage 2                4138 * 0.001 = 4.138V            0.001 V
-  //  10    0x10 0x27: Cell voltage 3                4135 * 0.001 = 4.135V            0.001 V
-  //  12    0x10 0x2A: Cell voltage 4                                                 0.001 V
-  //  ...
-  //  ...
-  //  66    0x00 0x00: Cell voltage 31                                                0.001 V
-  //  68    0x00 0x00: Cell voltage 32                                                0.001 V
-  uint8_t cells = data[123];
+  //   7   1  0x01        Battery status (0: Unknown, 1: Idle, 2: Charge, 3: Discharge, 4: Standby, 5: Error)
+  uint8_t raw_battery_status = data[7];
+  this->publish_state_(this->battery_status_code_sensor_, (float) raw_battery_status);
+  if (raw_battery_status < BATTERY_STATUS_SIZE) {
+    this->publish_state_(this->battery_status_text_sensor_, BATTERY_STATUS[raw_battery_status]);
+  } else {
+    this->publish_state_(this->battery_status_text_sensor_, "Unknown");
+  }
+
+  //   8   1  0x04        Number of temperature sensors       max 4.
+  uint8_t temperature_sensors = data[8];
+  ESP_LOGI(TAG, "  Number of temperature sensors: %d", temperature_sensors);
+
+  //   9   1  0x0E        Number of cells (14)                max 32
+  uint8_t cells = data[9];
+  this->publish_state_(this->battery_strings_sensor_, cells * 1.0f);
+
+  //  10   8  0x02 0x00 0x00 0x00 0x00 0x00 0x00 0x00   Protection bitmask
+  //  18   8  0x00 0x00 0x00 0x01 0x00 0x00 0x00 0x00   Warning bitmask
+  //  26   8  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00   Balancing? bitmask
+
+  //  34   2  Cell voltage 1             uint16_t
   for (uint8_t i = 0; i < cells; i++) {
-    this->publish_state_(this->cells_[i].cell_voltage_sensor_, (float) ant_get_16bit(i * 2 + 6) * 0.001f);
-  }
-  //  70    0x00 0x00 0x00 0x00: Current               0.0 A                          0.1 A
-  float current = ((int32_t) ant_get_32bit(70)) * 0.1f;
-  this->publish_state_(this->current_sensor_, current);
-  //  74    0x64: SOC                                  100 %                          1.0 %
-  this->publish_state_(this->soc_sensor_, (float) data[74]);
-  //  75    0x02 0x53 0x17 0xC0: Total Battery Capacity Setting   39000000            0.000001 Ah
-  this->publish_state_(this->total_battery_capacity_setting_sensor_, (float) ant_get_32bit(75) * 0.000001f);
-  //  79    0x02 0x53 0x06 0x11: Battery Capacity Remaining                           0.000001 Ah
-  this->publish_state_(this->capacity_remaining_sensor_, (float) ant_get_32bit(79) * 0.000001f);
-  //  83    0x00 0x08 0xC7 0x8E: Battery Cycle Capacity                               0.001 Ah
-  this->publish_state_(this->battery_cycle_capacity_sensor_, (float) ant_get_32bit(83) * 0.001f);
-  //  87    0x00 0x08 0x57 0x20: Uptime in seconds     546.592s                       1.0 s
-  this->publish_state_(this->total_runtime_sensor_, (float) ant_get_32bit(87));
-
-  if (this->total_runtime_formatted_text_sensor_ != nullptr) {
-    this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(ant_get_32bit(87)));
-  }
-  //  91    0x00 0x15: Temperature 1                   21°C                           1.0 °C
-  //  93    0x00 0x15: Temperature 2                   21°C                           1.0 °C
-  //  95    0x00 0x14: Temperature 3                   20°C                           1.0 °C
-  //  97    0x00 0x14: Temperature 4                   20°C                           1.0 °C
-  //  99    0x00 0x14: Temperature 5                   20°C                           1.0 °C
-  //  101   0x00 0x14: Temperature 6                   20°C                           1.0 °C
-  for (uint8_t i = 0; i < 6; i++) {
-    this->publish_state_(this->temperatures_[i].temperature_sensor_, (float) ((int16_t) ant_get_16bit(i * 2 + 91)));
+    this->publish_state_(this->cells_[i].cell_voltage_sensor_, ant_get_16bit(i * 2 + 34) * 0.001f);
   }
 
-  //  103   0x01: Charge MOSFET Status
-  uint8_t raw_charge_mosfet_status = data[103];
+  uint8_t offset = cells * 2;
+
+  for (uint8_t i = 0; i < temperature_sensors; i++) {
+    this->publish_state_(this->temperatures_[i].temperature_sensor_,
+                         ((int16_t) ant_get_16bit(i * 2 + 34 + offset)) * 1.0f);
+  }
+
+  offset = offset + (temperature_sensors * 2);
+
+  //  Mosfet temperature          int16_t
+  this->publish_state_(this->temperatures_[temperature_sensors].temperature_sensor_,
+                       ((int16_t) ant_get_16bit(34 + offset)) * 1.0f);
+
+  //  Balancer temperature        int16_t
+  this->publish_state_(this->temperatures_[temperature_sensors + 1].temperature_sensor_,
+                       ((int16_t) ant_get_16bit(36 + offset)) * 1.0f);
+
+  //  Total voltage              uint16_t
+  this->publish_state_(this->total_voltage_sensor_, ant_get_16bit(38 + offset) * 0.01f);
+
+  //  Current                     int16_t
+  this->publish_state_(this->current_sensor_, ((int16_t) ant_get_16bit(40 + offset)) * 0.1f);
+
+  //  State of charge            uint16_t
+  this->publish_state_(this->soc_sensor_, ((int16_t) ant_get_16bit(42 + offset)) * 1.0f);
+
+  //  State of health            uint16_t
+  this->publish_state_(this->state_of_health_sensor_, ant_get_16bit(44 + offset) * 1.0f);
+
+  //  Charge MOS status
+  uint8_t raw_charge_mosfet_status = data[46 + offset];
   this->publish_state_(this->charge_mosfet_status_code_sensor_, (float) raw_charge_mosfet_status);
   if (raw_charge_mosfet_status < CHARGE_MOSFET_STATUS_SIZE) {
     this->publish_state_(this->charge_mosfet_status_text_sensor_, CHARGE_MOSFET_STATUS[raw_charge_mosfet_status]);
@@ -237,8 +268,8 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   }
   this->publish_state_(this->charging_switch_, (bool) (raw_charge_mosfet_status == 0x01));
 
-  //  104   0x01: Discharge MOSFET Status
-  uint8_t raw_discharge_mosfet_status = data[104];
+  //  Discharge MOS status
+  uint8_t raw_discharge_mosfet_status = data[47 + offset];
   this->publish_state_(this->discharge_mosfet_status_code_sensor_, (float) raw_discharge_mosfet_status);
   if (raw_discharge_mosfet_status < DISCHARGE_MOSFET_STATUS_SIZE) {
     this->publish_state_(this->discharge_mosfet_status_text_sensor_,
@@ -248,8 +279,8 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   }
   this->publish_state_(this->discharging_switch_, (bool) (raw_discharge_mosfet_status == 0x01));
 
-  //  105   0x00: Balancer Status
-  uint8_t raw_balancer_status = data[105];
+  //  Balancer status
+  uint8_t raw_balancer_status = data[48 + offset];
   this->publish_state_(this->balancer_status_code_sensor_, (float) raw_balancer_status);
   this->publish_state_(this->balancer_switch_, (bool) (raw_balancer_status == 0x04));
   if (raw_balancer_status < BALANCER_STATUS_SIZE) {
@@ -258,37 +289,86 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
     this->publish_state_(this->balancer_status_text_sensor_, "Unknown");
   }
 
-  //  106   0x03 0xE8: Tire length                                                    mm
-  //  108   0x00 0x17: Number of pulses per week
-  //  110   0x01: Relay switch
-  //  111   0x00 0x00 0x00 0x00: Current power         0W                             1.0 W
-  if (this->supports_new_commands_) {
-    this->publish_state_(this->power_sensor_, total_voltage * current);
-  } else {
-    this->publish_state_(this->power_sensor_, (float) (int32_t) ant_get_32bit(111));
+  //  Reserved
+  //  Battery capacity            uint32_t
+  this->publish_state_(this->total_battery_capacity_setting_sensor_, ant_get_32bit(50 + offset) * 0.000001f);
+
+  //  Battery capacity remaining  uint32_t
+  this->publish_state_(this->capacity_remaining_sensor_, ant_get_32bit(54 + offset) * 0.000001f);
+
+  //  Total battery cycles capacity     uint32_t
+  this->publish_state_(this->battery_cycle_capacity_sensor_, ant_get_32bit(58 + offset) * 0.001f);
+
+  //  Power
+  this->publish_state_(this->power_sensor_, ((int32_t) ant_get_32bit(62 + offset)) * 1.0f);
+
+  //  Total runtime
+  uint32_t raw_total_runtime = ant_get_32bit(66 + offset);
+  this->publish_state_(this->total_runtime_sensor_, (float) raw_total_runtime);
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(raw_total_runtime));
+
+  //  Balanced cell bitmask
+  this->publish_state_(this->balanced_cell_bitmask_sensor_, (float) ant_get_32bit(70 + offset));
+
+  //  Maximum cell voltage
+  this->publish_state_(this->max_cell_voltage_sensor_, ant_get_16bit(74 + offset) * 0.001f);
+
+  //  Maximum voltage cell
+  this->publish_state_(this->max_voltage_cell_sensor_, ant_get_16bit(76 + offset) * 1.0f);
+
+  //  Minimum cell voltage
+  this->publish_state_(this->min_cell_voltage_sensor_, ant_get_16bit(78 + offset) * 0.001f);
+
+  //  Minimum voltage cell
+  this->publish_state_(this->min_voltage_cell_sensor_, ant_get_16bit(80 + offset) * 1.0f);
+
+  //  Delta cell voltage
+  this->publish_state_(this->delta_cell_voltage_sensor_, ant_get_16bit(82 + offset) * 0.001f);
+
+  //  Average cell voltage
+  this->publish_state_(this->average_cell_voltage_sensor_, ant_get_16bit(84 + offset) * 0.001f);
+
+  //  Discharge MOSFET, voltage between D-S
+  //  Drive voltage (discharge MOSFET)
+  //  Drive voltage (charge MOSFET)
+  //  F40com
+  //  Battery type
+  //  Total discharging capacity
+  this->publish_state_(this->total_discharging_capacity_sensor_, ant_get_32bit(96 + offset) * 0.001f);
+
+  //  Total charging capacity
+  this->publish_state_(this->total_charging_capacity_sensor_, ant_get_32bit(100 + offset) * 0.001f);
+
+  //  Total discharging time
+  uint32_t raw_total_discharging_time = ant_get_32bit(104 + offset);
+  this->publish_state_(this->total_discharging_time_sensor_, (float) raw_total_discharging_time);
+  this->publish_state_(this->total_discharging_time_formatted_text_sensor_,
+                       format_total_runtime_(raw_total_discharging_time));
+
+  //  Total charging time
+  uint32_t raw_total_charging_time = ant_get_32bit(108 + offset);
+  this->publish_state_(this->total_charging_time_sensor_, (float) raw_total_charging_time);
+  this->publish_state_(this->total_charging_time_formatted_text_sensor_,
+                       format_total_runtime_(raw_total_charging_time));
+}
+
+void AntBms::on_device_info_data_(const std::vector<uint8_t> &data) {
+  ESP_LOGI(TAG, "Device info frame (%zu bytes):", data.size());
+  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+
+  if (data.size() < 38) {
+    ESP_LOGW(TAG, "Skipping device info frame because of invalid length");
+    return;
   }
-  //  115   0x0D: Cell with the highest voltage        Cell 13
-  this->publish_state_(this->max_voltage_cell_sensor_, (float) data[115]);
-  //  116   0x10 0x2C: Maximum cell voltage            4140 * 0.001 = 4.140V          0.001 V
-  float max_cell_voltage = ant_get_16bit(116) * 0.001f;
-  this->publish_state_(this->max_cell_voltage_sensor_, max_cell_voltage);
-  //  118   0x09: Cell with the lowest voltage         Cell 9
-  this->publish_state_(this->min_voltage_cell_sensor_, (float) data[118]);
-  //  119   0x10 0x26: Minimum cell voltage            4134 * 0.001 = 4.134V          0.001 V
-  float min_cell_voltage = ant_get_16bit(119) * 0.001f;
-  this->publish_state_(this->min_cell_voltage_sensor_, min_cell_voltage);
-  this->publish_state_(this->delta_cell_voltage_sensor_, max_cell_voltage - min_cell_voltage);
-  //  121   0x10 0x28: Average cell voltage            4136 * 0.001 = 4.136V          0.001 V
-  this->publish_state_(this->average_cell_voltage_sensor_, ant_get_16bit(121) * 0.001f);
-  //  123   0x0D: Battery strings                      13
-  this->publish_state_(this->battery_strings_sensor_, (float) data[123]);
-  //  124   0x00 0x00: Discharge MOSFET, voltage between D-S                          0.1 V
-  //  126   0x00 0x73: Drive voltage (discharge MOSFET)                               0.1 V
-  //  128   0x00 0x6F: Drive voltage (charge MOSFET)                                  0.1 V
-  //  130   0x02 0xA7: When the detected current is 0, the initial value of the comparator
-  //  132   0x00 0x00 0x00 0x00: Battery is in balance bitmask (Bit 1 = Cell 1, Bit 2 = Cell 2, ...)
-  //  136   0x11 0x62: System log / overall status bitmask?
-  //  138   0x0B 0x00: CRC
+
+  auto device_model_begin = data.begin() + 6;
+  this->publish_state_(this->device_model_text_sensor_,
+                       std::string(device_model_begin, std::find(device_model_begin, data.begin() + 6 + 16, '\0')));
+
+  auto software_version_begin = data.begin() + 22;
+  this->publish_state_(
+      this->software_version_text_sensor_,
+      std::string(software_version_begin, std::find(software_version_begin, data.begin() + 22 + 16, '\0')));
 }
 
 void AntBms::update() {
@@ -296,29 +376,7 @@ void AntBms::update() {
   this->read_registers_();
 }
 
-void AntBms::write_register(uint8_t address, uint16_t value) {
-  if (this->supports_new_commands_) {
-    this->send_v2021_(0x51, address, value);
-    return;
-  }
-
-  this->authenticate_();
-  this->send_(WRITE_SINGLE_REGISTER, address, value);
-  this->send_(WRITE_SINGLE_REGISTER, REGISTER_APPLY_WRITE, 0x00);
-}
-
-void AntBms::authenticate_() {
-  if (this->password_.empty()) {
-    ESP_LOGI(TAG, "Authentication skipped because there was no password provided");
-    return;
-  }
-
-  ESP_LOGD(TAG, "Authenticate write command");
-  const uint8_t *password = reinterpret_cast<const uint8_t *>(this->password_.c_str());
-  for (uint8_t i = 0; i < 4; i++) {
-    this->send_(WRITE_SINGLE_REGISTER, 0xF1 + i, (uint16_t(password[i * 2]) << 8) | uint16_t(password[(i * 2) + 1]));
-  }
-}
+void AntBms::write_register(uint8_t address, uint16_t value) { this->send_v2021_(0x51, address, value); }
 
 void AntBms::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
@@ -341,6 +399,9 @@ void AntBms::publish_device_unavailable_() {
   this->publish_state_(this->charge_mosfet_status_text_sensor_, "Offline");
   this->publish_state_(this->balancer_status_text_sensor_, "Offline");
   this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
+  this->publish_state_(this->battery_status_text_sensor_, "Offline");
+  this->publish_state_(this->total_discharging_time_formatted_text_sensor_, "Offline");
+  this->publish_state_(this->total_charging_time_formatted_text_sensor_, "Offline");
 
   this->publish_state_(battery_strings_sensor_, NAN);
   this->publish_state_(current_sensor_, NAN);
@@ -359,6 +420,13 @@ void AntBms::publish_device_unavailable_() {
   this->publish_state_(charge_mosfet_status_code_sensor_, NAN);
   this->publish_state_(discharge_mosfet_status_code_sensor_, NAN);
   this->publish_state_(balancer_status_code_sensor_, NAN);
+  this->publish_state_(state_of_health_sensor_, NAN);
+  this->publish_state_(battery_status_code_sensor_, NAN);
+  this->publish_state_(total_discharging_capacity_sensor_, NAN);
+  this->publish_state_(total_charging_capacity_sensor_, NAN);
+  this->publish_state_(total_discharging_time_sensor_, NAN);
+  this->publish_state_(total_charging_time_sensor_, NAN);
+  this->publish_state_(balanced_cell_bitmask_sensor_, NAN);
 
   for (auto &temperature : this->temperatures_) {
     this->publish_state_(temperature.temperature_sensor_, NAN);
@@ -429,11 +497,23 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_SENSOR("", "Charge Mosfet Status Code", this->charge_mosfet_status_code_sensor_);
   LOG_SENSOR("", "Discharge Mosfet Status Code", this->discharge_mosfet_status_code_sensor_);
   LOG_SENSOR("", "Balancer Status Code", this->balancer_status_code_sensor_);
+  LOG_SENSOR("", "State Of Health", this->state_of_health_sensor_);
+  LOG_SENSOR("", "Battery Status Code", this->battery_status_code_sensor_);
+  LOG_SENSOR("", "Total Discharging Capacity", this->total_discharging_capacity_sensor_);
+  LOG_SENSOR("", "Total Charging Capacity", this->total_charging_capacity_sensor_);
+  LOG_SENSOR("", "Total Discharging Time", this->total_discharging_time_sensor_);
+  LOG_SENSOR("", "Total Charging Time", this->total_charging_time_sensor_);
+  LOG_SENSOR("", "Balanced Cell Bitmask", this->balanced_cell_bitmask_sensor_);
 
   LOG_TEXT_SENSOR("", "Discharge Mosfet Status", this->discharge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Charge Mosfet Status", this->charge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Battery Status", this->battery_status_text_sensor_);
+  LOG_TEXT_SENSOR("", "Total Discharging Time Formatted", this->total_discharging_time_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Total Charging Time Formatted", this->total_charging_time_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
+  LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
 
   this->check_uart_settings(19200);
 }
@@ -471,29 +551,21 @@ void AntBms::publish_state_(text_sensor::TextSensor *text_sensor, const std::str
   text_sensor->publish_state(state);
 }
 
-void AntBms::send_(uint8_t function, uint8_t address, uint16_t value) {
-  uint8_t frame[6];
-  frame[0] = 0xA5;
-  frame[1] = function;    // 0xA5
-  frame[2] = address;     // 0xFA (Charge MOSFET)
-  frame[3] = value >> 8;  // 0x00
-  frame[4] = value >> 0;  // 0x01 (On)
-  frame[5] = frame[2] + frame[3] + frame[4];
-
-  this->write_array(frame, 6);
-  this->flush();
-}
-
 void AntBms::read_registers_() {
-  uint8_t frame[6];
-  frame[0] = 0x5A;
-  frame[1] = 0x5A;
-  frame[2] = 0x00;
+  uint8_t frame[10];
+  frame[0] = 0x7e;
+  frame[1] = 0xa1;
+  frame[2] = ANT_COMMAND_STATUS;
   frame[3] = 0x00;
-  frame[4] = 0x01;
-  frame[5] = 0x01;
+  frame[4] = 0x00;
+  frame[5] = 0xbe;
+  auto crc = crc16_(frame + 1, 5);
+  frame[6] = crc >> 0;
+  frame[7] = crc >> 8;
+  frame[8] = 0xaa;
+  frame[9] = 0x55;
 
-  this->write_array(frame, 6);
+  this->write_array(frame, 10);
   this->flush();
 }
 
