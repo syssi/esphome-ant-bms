@@ -93,7 +93,7 @@ class TestTextSensorConstants:
         assert ble_text_sensor.CONF_CHARGE_MOSFET_STATUS in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_DEVICE_MODEL in ble_text_sensor.TEXT_SENSORS
         assert ble_text_sensor.CONF_SOFTWARE_VERSION in ble_text_sensor.TEXT_SENSORS
-        assert len(ble_text_sensor.TEXT_SENSORS) == 6
+        assert len(ble_text_sensor.TEXT_SENSORS) == 9
 
 
 class TestSwitchConstants:

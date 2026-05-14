@@ -79,6 +79,16 @@ static constexpr const char *const DISCHARGE_MOSFET_STATUS[DISCHARGE_MOSFET_STAT
     "Manually turned off",           // 0x0F
 };
 
+static const uint8_t BATTERY_STATUS_SIZE = 6;
+static constexpr const char *const BATTERY_STATUS[BATTERY_STATUS_SIZE] = {
+    "Unknown",    // 0x00
+    "Idle",       // 0x01
+    "Charge",     // 0x02
+    "Discharge",  // 0x03
+    "Standby",    // 0x04
+    "Error",      // 0x05
+};
+
 static const uint8_t BALANCER_STATUS_SIZE = 11;
 static constexpr const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
     "Off",                                   // 0x00
@@ -277,7 +287,13 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "  Permissions: %d", data[6]);
 
   //   7   1  0x01        Battery status (0: Unknown, 1: Idle, 2: Charge, 3: Discharge, 4: Standby, 5: Error)
-  ESP_LOGI(TAG, "  Battery status: %d", data[7]);
+  uint8_t raw_battery_status = data[7];
+  this->publish_state_(this->battery_status_code_sensor_, (float) raw_battery_status);
+  if (raw_battery_status < BATTERY_STATUS_SIZE) {
+    this->publish_state_(this->battery_status_text_sensor_, BATTERY_STATUS[raw_battery_status]);
+  } else {
+    this->publish_state_(this->battery_status_text_sensor_, "Unknown");
+  }
 
   //   8   1  0x04        Number of temperature sensors       max 4.
   uint8_t temperature_sensors = data[8];
@@ -342,7 +358,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->soc_sensor_, ((int16_t) ant_get_16bit(42 + offset)) * 1.0f);
 
   //  80   2  0x64 0x00   State of health            uint16_t
-  ESP_LOGI(TAG, "  State of health: %.0f %%", ant_get_16bit(44 + offset) * 1.0f);
+  this->publish_state_(this->state_of_health_sensor_, ant_get_16bit(44 + offset) * 1.0f);
 
   //  82   1  0x01        Charge MOS status
   uint8_t raw_charge_mosfet_status = data[46 + offset];
@@ -389,14 +405,12 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   this->publish_state_(this->power_sensor_, ((int32_t) ant_get_32bit(62 + offset)) * 1.0f);
 
   // 102   4  0x6B 0x28 0x12 0x00    Total runtime
-  this->publish_state_(this->total_runtime_sensor_, (float) ant_get_32bit(66 + offset));
-
-  if (this->total_runtime_formatted_text_sensor_ != nullptr) {
-    this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(ant_get_32bit(66 + offset)));
-  }
+  uint32_t raw_total_runtime = ant_get_32bit(66 + offset);
+  this->publish_state_(this->total_runtime_sensor_, (float) raw_total_runtime);
+  this->publish_state_(this->total_runtime_formatted_text_sensor_, format_total_runtime_(raw_total_runtime));
 
   // 106   4  0x00 0x00 0x00 0x00    Balanced cell bitmask
-  ESP_LOGI(TAG, "  Balanced cell bitmask: %lu", (unsigned long) ant_get_32bit(70 + offset));
+  this->publish_state_(this->balanced_cell_bitmask_sensor_, (float) ant_get_32bit(70 + offset));
 
   // 110   2  0x11 0x10              Maximum cell voltage
   this->publish_state_(this->max_cell_voltage_sensor_, ant_get_16bit(74 + offset) * 0.001f);
@@ -422,17 +436,23 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   // 128   2  0xAC 0x02              F40com
   // 130   2  0xF1 0xFA              Battery type (0xfaf1: Ternary Lithium, 0xfaf2: Lithium Iron Phosphate,
   //                                               0xfaf3: Lithium Titanate, 0xfaf4: Custom)
-  // 132   4  0x7D 0x2E 0x00 0x00    Accumulated discharging capacity
-  ESP_LOGI(TAG, "  Accumulated discharging capacity: %.2f Ah", ant_get_32bit(96 + offset) * 0.001f);
+  // 132   4  0x7D 0x2E 0x00 0x00    Total discharging capacity
+  this->publish_state_(this->total_discharging_capacity_sensor_, ant_get_32bit(96 + offset) * 0.001f);
 
-  // 136   4  0x94 0x77 0x00 0x00    Accumulated charging capacity
-  ESP_LOGI(TAG, "  Accumulated charging capacity: %.2f Ah", ant_get_32bit(100 + offset) * 0.001f);
+  // 136   4  0x94 0x77 0x00 0x00    Total charging capacity
+  this->publish_state_(this->total_charging_capacity_sensor_, ant_get_32bit(100 + offset) * 0.001f);
 
-  // 140   4  0xDE 0x07 0x00 0x00    Accumulated discharging time
-  ESP_LOGI(TAG, "  Accumulated discharging time: %s", this->format_total_runtime_(ant_get_32bit(104 + offset)).c_str());
+  // 140   4  0xDE 0x07 0x00 0x00    Total discharging time
+  uint32_t raw_total_discharging_time = ant_get_32bit(104 + offset);
+  this->publish_state_(this->total_discharging_time_sensor_, (float) raw_total_discharging_time);
+  this->publish_state_(this->total_discharging_time_formatted_text_sensor_,
+                       format_total_runtime_(raw_total_discharging_time));
 
-  // 144   4  0x77 0x76 0x00 0x00    Accumulated charging time
-  ESP_LOGI(TAG, "  Accumulated charging time: %s", this->format_total_runtime_(ant_get_32bit(108 + offset)).c_str());
+  // 144   4  0x77 0x76 0x00 0x00    Total charging time
+  uint32_t raw_total_charging_time = ant_get_32bit(108 + offset);
+  this->publish_state_(this->total_charging_time_sensor_, (float) raw_total_charging_time);
+  this->publish_state_(this->total_charging_time_formatted_text_sensor_,
+                       format_total_runtime_(raw_total_charging_time));
 
   // 148   2  0x35 0xE2              CRC
   // 150   2  0xAA 0x55              End of frame
@@ -493,6 +513,9 @@ void AntBmsBle::publish_device_unavailable_() {
   this->publish_state_(this->charge_mosfet_status_text_sensor_, "Offline");
   this->publish_state_(this->balancer_status_text_sensor_, "Offline");
   this->publish_state_(this->total_runtime_formatted_text_sensor_, "Offline");
+  this->publish_state_(this->battery_status_text_sensor_, "Offline");
+  this->publish_state_(this->total_discharging_time_formatted_text_sensor_, "Offline");
+  this->publish_state_(this->total_charging_time_formatted_text_sensor_, "Offline");
 
   this->publish_state_(battery_strings_sensor_, NAN);
   this->publish_state_(current_sensor_, NAN);
@@ -511,6 +534,13 @@ void AntBmsBle::publish_device_unavailable_() {
   this->publish_state_(charge_mosfet_status_code_sensor_, NAN);
   this->publish_state_(discharge_mosfet_status_code_sensor_, NAN);
   this->publish_state_(balancer_status_code_sensor_, NAN);
+  this->publish_state_(state_of_health_sensor_, NAN);
+  this->publish_state_(battery_status_code_sensor_, NAN);
+  this->publish_state_(total_discharging_capacity_sensor_, NAN);
+  this->publish_state_(total_charging_capacity_sensor_, NAN);
+  this->publish_state_(total_discharging_time_sensor_, NAN);
+  this->publish_state_(total_charging_time_sensor_, NAN);
+  this->publish_state_(balanced_cell_bitmask_sensor_, NAN);
 
   for (auto &temperature : this->temperatures_) {
     this->publish_state_(temperature.temperature_sensor_, NAN);
@@ -580,11 +610,21 @@ void AntBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_SENSOR("", "Charge Mosfet Status Code", this->charge_mosfet_status_code_sensor_);
   LOG_SENSOR("", "Discharge Mosfet Status Code", this->discharge_mosfet_status_code_sensor_);
   LOG_SENSOR("", "Balancer Status Code", this->balancer_status_code_sensor_);
+  LOG_SENSOR("", "State Of Health", this->state_of_health_sensor_);
+  LOG_SENSOR("", "Battery Status Code", this->battery_status_code_sensor_);
+  LOG_SENSOR("", "Total Discharging Capacity", this->total_discharging_capacity_sensor_);
+  LOG_SENSOR("", "Total Charging Capacity", this->total_charging_capacity_sensor_);
+  LOG_SENSOR("", "Total Discharging Time", this->total_discharging_time_sensor_);
+  LOG_SENSOR("", "Total Charging Time", this->total_charging_time_sensor_);
+  LOG_SENSOR("", "Balanced Cell Bitmask", this->balanced_cell_bitmask_sensor_);
 
   LOG_TEXT_SENSOR("", "Discharge Mosfet Status", this->discharge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Charge Mosfet Status", this->charge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Battery Status", this->battery_status_text_sensor_);
+  LOG_TEXT_SENSOR("", "Total Discharging Time Formatted", this->total_discharging_time_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Total Charging Time Formatted", this->total_charging_time_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
 }

@@ -84,6 +84,27 @@ class AntBmsBle :
   void set_balancer_status_code_sensor(sensor::Sensor *balancer_status_code_sensor) {
     balancer_status_code_sensor_ = balancer_status_code_sensor;
   }
+  void set_state_of_health_sensor(sensor::Sensor *state_of_health_sensor) {
+    state_of_health_sensor_ = state_of_health_sensor;
+  }
+  void set_battery_status_code_sensor(sensor::Sensor *battery_status_code_sensor) {
+    battery_status_code_sensor_ = battery_status_code_sensor;
+  }
+  void set_total_discharging_capacity_sensor(sensor::Sensor *total_discharging_capacity_sensor) {
+    total_discharging_capacity_sensor_ = total_discharging_capacity_sensor;
+  }
+  void set_total_charging_capacity_sensor(sensor::Sensor *total_charging_capacity_sensor) {
+    total_charging_capacity_sensor_ = total_charging_capacity_sensor;
+  }
+  void set_total_discharging_time_sensor(sensor::Sensor *total_discharging_time_sensor) {
+    total_discharging_time_sensor_ = total_discharging_time_sensor;
+  }
+  void set_total_charging_time_sensor(sensor::Sensor *total_charging_time_sensor) {
+    total_charging_time_sensor_ = total_charging_time_sensor;
+  }
+  void set_balanced_cell_bitmask_sensor(sensor::Sensor *balanced_cell_bitmask_sensor) {
+    balanced_cell_bitmask_sensor_ = balanced_cell_bitmask_sensor;
+  }
 
   void set_device_model_text_sensor(text_sensor::TextSensor *device_model_text_sensor) {
     device_model_text_sensor_ = device_model_text_sensor;
@@ -102,6 +123,17 @@ class AntBmsBle :
   }
   void set_total_runtime_formatted_text_sensor(text_sensor::TextSensor *total_runtime_formatted_text_sensor) {
     total_runtime_formatted_text_sensor_ = total_runtime_formatted_text_sensor;
+  }
+  void set_battery_status_text_sensor(text_sensor::TextSensor *battery_status_text_sensor) {
+    battery_status_text_sensor_ = battery_status_text_sensor;
+  }
+  void set_total_discharging_time_formatted_text_sensor(
+      text_sensor::TextSensor *total_discharging_time_formatted_text_sensor) {
+    total_discharging_time_formatted_text_sensor_ = total_discharging_time_formatted_text_sensor;
+  }
+  void set_total_charging_time_formatted_text_sensor(
+      text_sensor::TextSensor *total_charging_time_formatted_text_sensor) {
+    total_charging_time_formatted_text_sensor_ = total_charging_time_formatted_text_sensor;
   }
 
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
@@ -136,6 +168,13 @@ class AntBmsBle :
   sensor::Sensor *charge_mosfet_status_code_sensor_{nullptr};
   sensor::Sensor *discharge_mosfet_status_code_sensor_{nullptr};
   sensor::Sensor *balancer_status_code_sensor_{nullptr};
+  sensor::Sensor *state_of_health_sensor_{nullptr};
+  sensor::Sensor *battery_status_code_sensor_{nullptr};
+  sensor::Sensor *total_discharging_capacity_sensor_{nullptr};
+  sensor::Sensor *total_charging_capacity_sensor_{nullptr};
+  sensor::Sensor *total_discharging_time_sensor_{nullptr};
+  sensor::Sensor *total_charging_time_sensor_{nullptr};
+  sensor::Sensor *balanced_cell_bitmask_sensor_{nullptr};
 
   switch_::Switch *charging_switch_{nullptr};
   switch_::Switch *discharging_switch_{nullptr};
@@ -147,6 +186,9 @@ class AntBmsBle :
   text_sensor::TextSensor *discharge_mosfet_status_text_sensor_{nullptr};
   text_sensor::TextSensor *balancer_status_text_sensor_{nullptr};
   text_sensor::TextSensor *total_runtime_formatted_text_sensor_{nullptr};
+  text_sensor::TextSensor *battery_status_text_sensor_{nullptr};
+  text_sensor::TextSensor *total_discharging_time_formatted_text_sensor_{nullptr};
+  text_sensor::TextSensor *total_charging_time_formatted_text_sensor_{nullptr};
   text_sensor::TextSensor *device_model_text_sensor_{nullptr};
   text_sensor::TextSensor *software_version_text_sensor_{nullptr};
 
