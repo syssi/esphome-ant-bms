@@ -9,8 +9,6 @@ substitutions:
   rx_pin_uart_0: GPIO17
   tx_pin_uart_1: GPIO14
   rx_pin_uart_1: GPIO4
-  password: "12345678"
-
 esphome:
   name: ${name}
   friendly_name: ${name}
@@ -70,14 +68,10 @@ ant_bms:
     uart_id: uart_0
     update_interval: 10s
     rx_timeout: ${rx_timeout}
-    supports_new_commands: true
-    password: "${password}"
   - id: bms1
     uart_id: uart_1
     update_interval: 10s
     rx_timeout: ${rx_timeout}
-    supports_new_commands: true
-    password: "${password}"
 
 binary_sensor:
   - platform: ant_bms
@@ -263,6 +257,27 @@ sensor:
     balancer_status_code:
       name: "balancer status code"
       device_id: device0
+    state_of_health:
+      name: "state of health"
+      device_id: device0
+    battery_status_code:
+      name: "battery status code"
+      device_id: device0
+    total_discharging_capacity:
+      name: "accumulated discharging capacity"
+      device_id: device0
+    total_charging_capacity:
+      name: "accumulated charging capacity"
+      device_id: device0
+    total_discharging_time:
+      name: "accumulated discharging time"
+      device_id: device0
+    total_charging_time:
+      name: "accumulated charging time"
+      device_id: device0
+    balanced_cell_bitmask:
+      name: "balanced cell bitmask"
+      device_id: device0
 
   - platform: ant_bms
     ant_bms_id: bms1
@@ -434,6 +449,27 @@ sensor:
     balancer_status_code:
       name: "balancer status code"
       device_id: device1
+    state_of_health:
+      name: "state of health"
+      device_id: device1
+    battery_status_code:
+      name: "battery status code"
+      device_id: device1
+    total_discharging_capacity:
+      name: "accumulated discharging capacity"
+      device_id: device1
+    total_charging_capacity:
+      name: "accumulated charging capacity"
+      device_id: device1
+    total_discharging_time:
+      name: "accumulated discharging time"
+      device_id: device1
+    total_charging_time:
+      name: "accumulated charging time"
+      device_id: device1
+    balanced_cell_bitmask:
+      name: "balanced cell bitmask"
+      device_id: device1
 
 text_sensor:
   - platform: ant_bms
@@ -450,6 +486,21 @@ text_sensor:
     total_runtime_formatted:
       name: "total runtime formatted"
       device_id: device0
+    battery_status:
+      name: "battery status"
+      device_id: device0
+    total_discharging_time_formatted:
+      name: "accumulated discharging time formatted"
+      device_id: device0
+    total_charging_time_formatted:
+      name: "accumulated charging time formatted"
+      device_id: device0
+    device_model:
+      name: "device model"
+      device_id: device0
+    software_version:
+      name: "software version"
+      device_id: device0
 
   - platform: ant_bms
     ant_bms_id: bms1
@@ -465,6 +516,21 @@ text_sensor:
     total_runtime_formatted:
       name: "total runtime formatted"
       device_id: device1
+    battery_status:
+      name: "battery status"
+      device_id: device1
+    total_discharging_time_formatted:
+      name: "accumulated discharging time formatted"
+      device_id: device1
+    total_charging_time_formatted:
+      name: "accumulated charging time formatted"
+      device_id: device1
+    device_model:
+      name: "device model"
+      device_id: device1
+    software_version:
+      name: "software version"
+      device_id: device1
 
 switch:
   - platform: ant_bms
@@ -475,10 +541,11 @@ switch:
     discharging:
       name: "discharging"
       device_id: device0
-    # BMS version 2021 only
-    # Please enable supports_new_commands
     balancer:
       name: "balancer"
+      device_id: device0
+    buzzer:
+      name: "buzzer"
       device_id: device0
 
   - platform: ant_bms
@@ -489,10 +556,11 @@ switch:
     discharging:
       name: "discharging"
       device_id: device1
-    # BMS version 2021 only
-    # Please enable supports_new_commands
     balancer:
       name: "balancer"
+      device_id: device1
+    buzzer:
+      name: "buzzer"
       device_id: device1
 
 button:
@@ -501,11 +569,8 @@ button:
     shutdown:
       name: "shutdown"
       device_id: device0
-    clear_counter:
-      name: "clear counter"
-      device_id: device0
-    balancer:
-      name: "balancer"
+    clear_system_log:
+      name: "clear system log"
       device_id: device0
     factory_reset:
       name: "factory reset"
@@ -519,11 +584,8 @@ button:
     shutdown:
       name: "shutdown"
       device_id: device1
-    clear_counter:
-      name: "clear counter"
-      device_id: device1
-    balancer:
-      name: "balancer"
+    clear_system_log:
+      name: "clear system log"
       device_id: device1
     factory_reset:
       name: "factory reset"

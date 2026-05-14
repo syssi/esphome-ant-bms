@@ -70,8 +70,6 @@ ant_bms:
     uart_id: uart_0
     update_interval: 10s
     rx_timeout: 50ms
-    supports_new_commands: true
-    password: "12345678"
 
 ant_bms_old:
   - id: bms2

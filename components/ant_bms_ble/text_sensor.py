@@ -42,16 +42,16 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_CHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
-            icon=ICON_CHARGE_MOSFET_STATUS
+            icon=ICON_CHARGE_MOSFET_STATUS,
         ),
         cv.Optional(CONF_DISCHARGE_MOSFET_STATUS): text_sensor.text_sensor_schema(
-            icon=ICON_DISCHARGE_MOSFET_STATUS
+            icon=ICON_DISCHARGE_MOSFET_STATUS,
         ),
         cv.Optional(CONF_BALANCER_STATUS): text_sensor.text_sensor_schema(
-            icon=ICON_BALANCER_STATUS
+            icon=ICON_BALANCER_STATUS,
         ),
         cv.Optional(CONF_BATTERY_STATUS): text_sensor.text_sensor_schema(
-            icon=ICON_BATTERY_STATUS
+            icon=ICON_BATTERY_STATUS,
         ),
         cv.Optional(CONF_DEVICE_MODEL): text_sensor.text_sensor_schema(
             icon=ICON_DEVICE_MODEL,
@@ -62,13 +62,15 @@ CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_TOTAL_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
-            icon=ICON_TIMELAPSE
+            icon=ICON_TIMELAPSE,
         ),
         cv.Optional(
             CONF_TOTAL_DISCHARGING_TIME_FORMATTED
-        ): text_sensor.text_sensor_schema(icon=ICON_TIMELAPSE),
+        ): text_sensor.text_sensor_schema(
+            icon=ICON_TIMELAPSE,
+        ),
         cv.Optional(CONF_TOTAL_CHARGING_TIME_FORMATTED): text_sensor.text_sensor_schema(
-            icon=ICON_TIMELAPSE
+            icon=ICON_TIMELAPSE,
         ),
     }
 )

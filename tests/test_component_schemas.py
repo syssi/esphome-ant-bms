@@ -61,7 +61,14 @@ class TestSensorLists:
         assert sensor.CONF_MAX_CELL_VOLTAGE in sensor.SENSOR_DEFS
         assert sensor.CONF_DELTA_CELL_VOLTAGE in sensor.SENSOR_DEFS
         assert sensor.CONF_SOC in sensor.SENSOR_DEFS
-        assert len(sensor.SENSOR_DEFS) == 18
+        assert sensor.CONF_STATE_OF_HEALTH in sensor.SENSOR_DEFS
+        assert sensor.CONF_BATTERY_STATUS_CODE in sensor.SENSOR_DEFS
+        assert sensor.CONF_TOTAL_DISCHARGING_CAPACITY in sensor.SENSOR_DEFS
+        assert sensor.CONF_TOTAL_CHARGING_CAPACITY in sensor.SENSOR_DEFS
+        assert sensor.CONF_TOTAL_DISCHARGING_TIME in sensor.SENSOR_DEFS
+        assert sensor.CONF_TOTAL_CHARGING_TIME in sensor.SENSOR_DEFS
+        assert sensor.CONF_BALANCED_CELL_BITMASK in sensor.SENSOR_DEFS
+        assert len(sensor.SENSOR_DEFS) == 25
 
     def test_no_cell_keys_in_sensor_defs(self):
         for key in sensor.SENSOR_DEFS:
@@ -87,7 +94,17 @@ class TestTextSensorConstants:
         assert text_sensor.CONF_DISCHARGE_MOSFET_STATUS in text_sensor.TEXT_SENSORS
         assert text_sensor.CONF_BALANCER_STATUS in text_sensor.TEXT_SENSORS
         assert text_sensor.CONF_TOTAL_RUNTIME_FORMATTED in text_sensor.TEXT_SENSORS
-        assert len(text_sensor.TEXT_SENSORS) == 4
+        assert text_sensor.CONF_BATTERY_STATUS in text_sensor.TEXT_SENSORS
+        assert text_sensor.CONF_DEVICE_MODEL in text_sensor.TEXT_SENSORS
+        assert text_sensor.CONF_SOFTWARE_VERSION in text_sensor.TEXT_SENSORS
+        assert (
+            text_sensor.CONF_TOTAL_DISCHARGING_TIME_FORMATTED
+            in text_sensor.TEXT_SENSORS
+        )
+        assert (
+            text_sensor.CONF_TOTAL_CHARGING_TIME_FORMATTED in text_sensor.TEXT_SENSORS
+        )
+        assert len(text_sensor.TEXT_SENSORS) == 9
 
     def test_ble_text_sensors_list(self):
         assert ble_text_sensor.CONF_CHARGE_MOSFET_STATUS in ble_text_sensor.TEXT_SENSORS
@@ -117,7 +134,8 @@ class TestButtonConstants:
         assert button.CONF_SHUTDOWN in button.BUTTONS
         assert CONF_RESTART in button.BUTTONS
         assert CONF_FACTORY_RESET in button.BUTTONS
-        assert len(button.BUTTONS) == 5
+        assert button.CONF_CLEAR_SYSTEM_LOG in button.BUTTONS
+        assert len(button.BUTTONS) == 4
 
     def test_button_addresses_are_unique(self):
         addresses = list(button.BUTTONS.values())
