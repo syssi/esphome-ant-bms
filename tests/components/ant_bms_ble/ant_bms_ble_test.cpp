@@ -269,97 +269,97 @@ TEST(AntBmsBleStatusDataTest, NullSensorsDoNotCrash) {
 // -- Frame builder ------------------------------------------------------------
 
 TEST(AntBmsBleFrameBuilderTest, CurrentZero) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0008, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0008, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x08, 0x00, 0x00, 0x08, 0xe7, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, Restart) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0009, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0009, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x09, 0x00, 0x00, 0x59, 0x27, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, Shutdown) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x000b, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x000b, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x0b, 0x00, 0x00, 0xf8, 0xe7, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, BluetoothOff) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x001c, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x001c, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x1c, 0x00, 0x00, 0x48, 0xe3, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, BluetoothOn) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x001d, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x001d, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x1d, 0x00, 0x00, 0x19, 0x23, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ResetHardware) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x002a, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x002a, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x2a, 0x00, 0x00, 0xa8, 0xed, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, SaveCustomerData) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x002c, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x002c, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x2c, 0x00, 0x00, 0x48, 0xec, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, FactoryReset) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x000c, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x000c, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x0c, 0x00, 0x00, 0x49, 0x26, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ClearSystemLog) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x000f, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x000f, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x0f, 0x00, 0x00, 0xb9, 0x26, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, BluetoothInitialization) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0010, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0010, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x10, 0x00, 0x00, 0x88, 0xe0, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ClearDischargeCycleAh) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0020, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0020, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x20, 0x00, 0x00, 0x88, 0xef, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ClearChargeCycleAh) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0021, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0021, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x21, 0x00, 0x00, 0xd9, 0x2f, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ClearDischargeTime) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0022, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0022, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x22, 0x00, 0x00, 0x29, 0x2f, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ClearChargeTime) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0023, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0023, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x23, 0x00, 0x00, 0x78, 0xef, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ClearRunningTime) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0024, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0024, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x24, 0x00, 0x00, 0xc9, 0x2e, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
 
 TEST(AntBmsBleFrameBuilderTest, ClearProtectTime) {
-  auto frame = AntBmsBle::build_frame_(0x51, 0x0025, 0x00);
+  auto frame = AntBmsBle::build_frame(0x51, 0x0025, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x25, 0x00, 0x00, 0x98, 0xee, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
 }
