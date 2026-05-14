@@ -6,6 +6,7 @@
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/components/uart/uart.h"
+#include <array>
 
 namespace esphome::ant_bms {
 
@@ -126,12 +127,12 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void set_charging_switch(switch_::Switch *charging_switch) { charging_switch_ = charging_switch; }
   void set_discharging_switch(switch_::Switch *discharging_switch) { discharging_switch_ = discharging_switch; }
   void set_balancer_switch(switch_::Switch *balancer_switch) { balancer_switch_ = balancer_switch; }
-  void set_bluetooth_switch(switch_::Switch *bluetooth_switch) { bluetooth_switch_ = bluetooth_switch; }
   void set_buzzer_switch(switch_::Switch *buzzer_switch) { buzzer_switch_ = buzzer_switch; }
 
   void set_rx_timeout(uint16_t rx_timeout) { rx_timeout_ = rx_timeout; }
 
   void on_ant_bms_data(const std::vector<uint8_t> &data);
+  static std::array<uint8_t, 10> build_frame(uint8_t function, uint8_t address, uint16_t value);
   void write_register(uint8_t address, uint16_t value);
 
  protected:
@@ -166,7 +167,6 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   switch_::Switch *charging_switch_{nullptr};
   switch_::Switch *discharging_switch_{nullptr};
   switch_::Switch *balancer_switch_{nullptr};
-  switch_::Switch *bluetooth_switch_{nullptr};
   switch_::Switch *buzzer_switch_{nullptr};
 
   text_sensor::TextSensor *charge_mosfet_status_text_sensor_{nullptr};
@@ -196,19 +196,19 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void on_status_data_(const std::vector<uint8_t> &data);
   void on_device_info_data_(const std::vector<uint8_t> &data);
   bool parse_ant_bms_byte_(uint8_t byte);
-  void authenticate_v2021_();
-  void authenticate_v2021_variable_(const uint8_t *data, uint8_t data_len);
+  void authenticate_();
+  void authenticate_variable_(const uint8_t *data, uint8_t data_len);
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(switch_::Switch *obj, const bool &state);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
   void read_registers_();
-  void send_v2021_(uint8_t function, uint8_t address, uint16_t value);
+  void send_(uint8_t function, uint8_t address, uint16_t value);
   void publish_device_unavailable_();
   void reset_online_status_tracker_();
   void track_online_status_();
 
-  uint16_t crc16_(const uint8_t *data, uint8_t len) {
+  static uint16_t crc16(const uint8_t *data, uint8_t len) {
     uint16_t crc = 0xFFFF;
     while (len--) {
       crc ^= *data++;

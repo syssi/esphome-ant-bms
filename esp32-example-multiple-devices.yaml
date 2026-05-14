@@ -566,6 +566,9 @@ switch:
 button:
   - platform: ant_bms
     ant_bms_id: bms0
+    current_zero:
+      name: "current zero"
+      device_id: device0
     shutdown:
       name: "shutdown"
       device_id: device0
@@ -577,10 +580,46 @@ button:
       device_id: device0
     restart:
       name: "restart"
+      device_id: device0
+    bluetooth_initialization:
+      name: "bluetooth initialization"
+      device_id: device0
+    bluetooth_off:
+      name: "bluetooth off"
+      device_id: device0
+    bluetooth_on:
+      name: "bluetooth on"
+      device_id: device0
+    clear_discharge_cycle_ah:
+      name: "clear discharge cycle ah"
+      device_id: device0
+    clear_charge_cycle_ah:
+      name: "clear charge cycle ah"
+      device_id: device0
+    clear_discharge_time:
+      name: "clear discharge time"
+      device_id: device0
+    clear_charge_time:
+      name: "clear charge time"
+      device_id: device0
+    clear_running_time:
+      name: "clear running time"
+      device_id: device0
+    clear_protect_time:
+      name: "clear protect time"
+      device_id: device0
+    reset_hardware:
+      name: "reset hardware"
+      device_id: device0
+    save_customer_data:
+      name: "save customer data"
       device_id: device0
 
   - platform: ant_bms
     ant_bms_id: bms1
+    current_zero:
+      name: "current zero"
+      device_id: device1
     shutdown:
       name: "shutdown"
       device_id: device1
@@ -592,4 +631,37 @@ button:
       device_id: device1
     restart:
       name: "restart"
+      device_id: device1
+    bluetooth_initialization:
+      name: "bluetooth initialization"
+      device_id: device1
+    bluetooth_off:
+      name: "bluetooth off"
+      device_id: device1
+    bluetooth_on:
+      name: "bluetooth on"
+      device_id: device1
+    clear_discharge_cycle_ah:
+      name: "clear discharge cycle ah"
+      device_id: device1
+    clear_charge_cycle_ah:
+      name: "clear charge cycle ah"
+      device_id: device1
+    clear_discharge_time:
+      name: "clear discharge time"
+      device_id: device1
+    clear_charge_time:
+      name: "clear charge time"
+      device_id: device1
+    clear_running_time:
+      name: "clear running time"
+      device_id: device1
+    clear_protect_time:
+      name: "clear protect time"
+      device_id: device1
+    reset_hardware:
+      name: "reset hardware"
+      device_id: device1
+    save_customer_data:
+      name: "save customer data"
       device_id: device1
