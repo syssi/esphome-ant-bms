@@ -5,7 +5,6 @@ substitutions:
   rx_timeout: 50ms
   tx_pin: GPIO4
   rx_pin: GPIO5
-  password: "12345678"
 
 esphome:
   name: ${name}
@@ -54,8 +53,6 @@ ant_bms:
     uart_id: uart_0
     update_interval: 10s
     rx_timeout: ${rx_timeout}
-    supports_new_commands: true
-    password: "${password}"
 
 binary_sensor:
   - platform: ant_bms
@@ -178,6 +175,20 @@ sensor:
       name: "discharge mosfet status code"
     balancer_status_code:
       name: "balancer status code"
+    state_of_health:
+      name: "state of health"
+    battery_status_code:
+      name: "battery status code"
+    total_discharging_capacity:
+      name: "accumulated discharging capacity"
+    total_charging_capacity:
+      name: "accumulated charging capacity"
+    total_discharging_time:
+      name: "accumulated discharging time"
+    total_charging_time:
+      name: "accumulated charging time"
+    balanced_cell_bitmask:
+      name: "balanced cell bitmask"
 
 text_sensor:
   - platform: ant_bms
@@ -190,6 +201,16 @@ text_sensor:
       name: "balancer status"
     total_runtime_formatted:
       name: "total runtime formatted"
+    battery_status:
+      name: "battery status"
+    total_discharging_time_formatted:
+      name: "accumulated discharging time formatted"
+    total_charging_time_formatted:
+      name: "accumulated charging time formatted"
+    device_model:
+      name: "device model"
+    software_version:
+      name: "software version"
 
 switch:
   - platform: ant_bms
@@ -198,20 +219,18 @@ switch:
       name: "charging"
     discharging:
       name: "discharging"
-    # BMS version 2021 only
-    # Please enable supports_new_commands
     balancer:
       name: "balancer"
+    buzzer:
+      name: "buzzer"
 
 button:
   - platform: ant_bms
     ant_bms_id: bms0
     shutdown:
       name: "shutdown"
-    clear_counter:
-      name: "clear counter"
-    balancer:
-      name: "balancer"
+    clear_system_log:
+      name: "clear system log"
     factory_reset:
       name: "factory reset"
     restart:

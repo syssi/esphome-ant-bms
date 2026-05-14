@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import uart
 import esphome.config_validation as cv
-from esphome.const import CONF_ID, CONF_PASSWORD
+from esphome.const import CONF_ID
 
 CODEOWNERS = ["@syssi"]
 
@@ -11,7 +11,6 @@ MULTI_CONF = True
 
 CONF_ANT_BMS_ID = "ant_bms_id"
 CONF_RX_TIMEOUT = "rx_timeout"
-CONF_SUPPORTS_NEW_COMMANDS = "supports_new_commands"
 
 ant_bms_ns = cg.esphome_ns.namespace("ant_bms")
 AntBms = ant_bms_ns.class_("AntBms", cg.PollingComponent, uart.UARTDevice)
@@ -30,10 +29,9 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(
                 CONF_RX_TIMEOUT, default="50ms"
             ): cv.positive_time_period_milliseconds,
-            cv.Optional(CONF_SUPPORTS_NEW_COMMANDS, default=False): cv.boolean,
-            cv.Optional(CONF_PASSWORD, default=""): cv.Any(
-                cv.All(cv.string_strict, cv.Length(min=8, max=8)),
-                cv.All(cv.string_strict, cv.Length(min=0, max=0)),
+            cv.Optional("supports_new_commands"): cv.invalid(
+                "The ant_bms component no longer supports the old 0xAA protocol. "
+                "Remove this option. If your device uses the old protocol, switch to ant_bms_old."
             ),
         }
     )
@@ -48,9 +46,3 @@ async def to_code(config):
     await uart.register_uart_device(var, config)
 
     cg.add(var.set_rx_timeout(config[CONF_RX_TIMEOUT]))
-    cg.add(var.set_supports_new_commands(config[CONF_SUPPORTS_NEW_COMMANDS]))
-
-    if CONF_PASSWORD in config:
-        cg.add(var.set_password(config[CONF_PASSWORD]))
-    else:
-        cg.add(var.set_password(""))
