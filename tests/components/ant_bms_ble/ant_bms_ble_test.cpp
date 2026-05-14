@@ -172,6 +172,78 @@ TEST(AntBmsBleStatusDataTest, MosfetStatus) {
   EXPECT_FALSE(balancer.state);
 }
 
+// ── Battery status ────────────────────────────────────────────────────────────
+
+TEST(AntBmsBleStatusDataTest, BatteryStatus) {
+  TestableAntBmsBle bms;
+  sensor::Sensor code;
+  text_sensor::TextSensor txt;
+  bms.set_battery_status_code_sensor(&code);
+  bms.set_battery_status_text_sensor(&txt);
+
+  bms.assemble(STATUS_FRAME_16S.data(), STATUS_FRAME_16S.size());
+
+  EXPECT_FLOAT_EQ(code.state, 1.0f);
+  EXPECT_EQ(txt.state, "Idle");
+}
+
+// ── State of health ───────────────────────────────────────────────────────────
+
+TEST(AntBmsBleStatusDataTest, StateOfHealth) {
+  TestableAntBmsBle bms;
+  sensor::Sensor soh;
+  bms.set_state_of_health_sensor(&soh);
+
+  bms.assemble(STATUS_FRAME_16S.data(), STATUS_FRAME_16S.size());
+
+  EXPECT_FLOAT_EQ(soh.state, 100.0f);
+}
+
+// ── Balanced cell bitmask ─────────────────────────────────────────────────────
+
+TEST(AntBmsBleStatusDataTest, BalancedCellBitmask) {
+  TestableAntBmsBle bms;
+  sensor::Sensor bitmask;
+  bms.set_balanced_cell_bitmask_sensor(&bitmask);
+
+  bms.assemble(STATUS_FRAME_16S.data(), STATUS_FRAME_16S.size());
+
+  EXPECT_FLOAT_EQ(bitmask.state, 0.0f);
+}
+
+// ── Total capacity ──────────────────────────────────────────────────────
+
+TEST(AntBmsBleStatusDataTest, AccumulatedCapacity) {
+  TestableAntBmsBle bms;
+  sensor::Sensor dis_cap, chg_cap;
+  bms.set_total_discharging_capacity_sensor(&dis_cap);
+  bms.set_total_charging_capacity_sensor(&chg_cap);
+
+  bms.assemble(STATUS_FRAME_16S.data(), STATUS_FRAME_16S.size());
+
+  EXPECT_NEAR(dis_cap.state, 3902.649f, 0.01f);
+  EXPECT_NEAR(chg_cap.state, 5822.651f, 0.01f);
+}
+
+// ── Total time ──────────────────────────────────────────────────────────
+
+TEST(AntBmsBleStatusDataTest, AccumulatedTime) {
+  TestableAntBmsBle bms;
+  sensor::Sensor dis_time, chg_time;
+  text_sensor::TextSensor dis_fmt, chg_fmt;
+  bms.set_total_discharging_time_sensor(&dis_time);
+  bms.set_total_charging_time_sensor(&chg_time);
+  bms.set_total_discharging_time_formatted_text_sensor(&dis_fmt);
+  bms.set_total_charging_time_formatted_text_sensor(&chg_fmt);
+
+  bms.assemble(STATUS_FRAME_16S.data(), STATUS_FRAME_16S.size());
+
+  EXPECT_FLOAT_EQ(dis_time.state, 4402650.0f);
+  EXPECT_FLOAT_EQ(chg_time.state, 4830952.0f);
+  EXPECT_EQ(dis_fmt.state, "50d 22h");
+  EXPECT_EQ(chg_fmt.state, "55d 21h");
+}
+
 // ── Device info ───────────────────────────────────────────────────────────────
 
 TEST(AntBmsBleDeviceInfoTest, DeviceModel) {

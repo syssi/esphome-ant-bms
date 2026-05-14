@@ -46,6 +46,13 @@ CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_CHARGE_MOSFET_STATUS_CODE = "charge_mosfet_status_code"
 CONF_DISCHARGE_MOSFET_STATUS_CODE = "discharge_mosfet_status_code"
 CONF_BALANCER_STATUS_CODE = "balancer_status_code"
+CONF_STATE_OF_HEALTH = "state_of_health"
+CONF_BATTERY_STATUS_CODE = "battery_status_code"
+CONF_TOTAL_DISCHARGING_CAPACITY = "total_discharging_capacity"
+CONF_TOTAL_CHARGING_CAPACITY = "total_charging_capacity"
+CONF_TOTAL_DISCHARGING_TIME = "total_discharging_time"
+CONF_TOTAL_CHARGING_TIME = "total_charging_time"
+CONF_BALANCED_CELL_BITMASK = "balanced_cell_bitmask"
 
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_BATTERY_STRINGS = "mdi:car-battery"
@@ -55,6 +62,14 @@ ICON_BATTERY_CYCLE_CAPACITY = "mdi:battery-50"
 ICON_CHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_DISCHARGE_MOSFET_STATUS_CODE = "mdi:heart-pulse"
 ICON_BALANCER_STATUS_CODE = "mdi:heart-pulse"
+
+ICON_STATE_OF_HEALTH = "mdi:battery-heart"
+ICON_BATTERY_STATUS_CODE = "mdi:heart-pulse"
+ICON_TOTAL_DISCHARGING_CAPACITY = "mdi:battery-minus"
+ICON_TOTAL_CHARGING_CAPACITY = "mdi:battery-plus"
+ICON_TOTAL_DISCHARGING_TIME = "mdi:timer-outline"
+ICON_TOTAL_CHARGING_TIME = "mdi:timer-outline"
+ICON_BALANCED_CELL_BITMASK = "mdi:battery-sync"
 
 ICON_MIN_CELL_VOLTAGE = "mdi:battery-minus-outline"
 ICON_MAX_CELL_VOLTAGE = "mdi:battery-plus-outline"
@@ -190,6 +205,55 @@ SENSOR_DEFS = {
     CONF_BALANCER_STATUS_CODE: {
         "unit_of_measurement": UNIT_EMPTY,
         "icon": ICON_BALANCER_STATUS_CODE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_STATE_OF_HEALTH: {
+        "unit_of_measurement": UNIT_PERCENT,
+        "icon": ICON_STATE_OF_HEALTH,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_BATTERY_STATUS_CODE: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_BATTERY_STATUS_CODE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_TOTAL_DISCHARGING_CAPACITY: {
+        "unit_of_measurement": UNIT_AMPERE_HOURS,
+        "icon": ICON_TOTAL_DISCHARGING_CAPACITY,
+        "accuracy_decimals": 3,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_TOTAL_CHARGING_CAPACITY: {
+        "unit_of_measurement": UNIT_AMPERE_HOURS,
+        "icon": ICON_TOTAL_CHARGING_CAPACITY,
+        "accuracy_decimals": 3,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_TOTAL_DISCHARGING_TIME: {
+        "unit_of_measurement": UNIT_SECONDS,
+        "icon": ICON_TOTAL_DISCHARGING_TIME,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_TOTAL_CHARGING_TIME: {
+        "unit_of_measurement": UNIT_SECONDS,
+        "icon": ICON_TOTAL_CHARGING_TIME,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_BALANCED_CELL_BITMASK: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_BALANCED_CELL_BITMASK,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_MEASUREMENT,

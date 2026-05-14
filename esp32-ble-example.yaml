@@ -179,6 +179,20 @@ sensor:
       name: "discharge mosfet status code"
     balancer_status_code:
       name: "balancer status code"
+    state_of_health:
+      name: "state of health"
+    battery_status_code:
+      name: "battery status code"
+    total_discharging_capacity:
+      name: "accumulated discharging capacity"
+    total_charging_capacity:
+      name: "accumulated charging capacity"
+    total_discharging_time:
+      name: "accumulated discharging time"
+    total_charging_time:
+      name: "accumulated charging time"
+    balanced_cell_bitmask:
+      name: "balanced cell bitmask"
 
 text_sensor:
   - platform: ant_bms_ble
@@ -191,6 +205,12 @@ text_sensor:
       name: "balancer status"
     total_runtime_formatted:
       name: "total runtime formatted"
+    battery_status:
+      name: "battery status"
+    total_discharging_time_formatted:
+      name: "accumulated discharging time formatted"
+    total_charging_time_formatted:
+      name: "accumulated charging time formatted"
     device_model:
       name: "device model"
     software_version:
