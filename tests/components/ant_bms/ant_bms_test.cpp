@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "common.h"
 #include "frames_16s_status.h"
+#include "frames_settings.h"
 
 namespace esphome::ant_bms::testing {
 
@@ -383,6 +384,60 @@ TEST(AntBmsFrameBuilderTest, SaveCustomerData) {
   auto frame = AntBms::build_frame(0x51, 0x2c, 0x0000);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x2c, 0x00, 0x00, 0x48, 0xec, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
+}
+
+// -- Settings register tests (all 57 registers) -------------------------------
+
+struct AntBmsSettingsTest : ::testing::TestWithParam<SettingsRegisterCase> {};
+
+TEST_P(AntBmsSettingsTest, RequestFrameIsCorrect) {
+  const auto &p = GetParam();
+  auto frame = AntBms::build_settings_frame(p.address, p.data_len);
+  EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()),
+            std::vector<uint8_t>(p.request_frame.begin(), p.request_frame.end()));
+}
+
+TEST_P(AntBmsSettingsTest, ResponseDoesNotCrash) {
+  const auto &p = GetParam();
+  TestableAntBms bms;
+  // on_ant_bms_data() skips CRC check, so placeholder bytes suffice
+  std::vector<uint8_t> frame = {0x7E, 0xA1, 0x12, uint8_t(p.address), uint8_t(p.address >> 8), p.data_len};
+  for (int i = 0; i < p.data_len; i++)
+    frame.push_back(0x00);
+  frame.insert(frame.end(), {0x00, 0x00, 0xAA, 0x55});
+  bms.on_ant_bms_data(frame);
+}
+
+INSTANTIATE_TEST_SUITE_P(AllRegisters, AntBmsSettingsTest, ::testing::ValuesIn(SETTINGS_REGISTER_CASES),
+                         [](const ::testing::TestParamInfo<SettingsRegisterCase> &info) {
+                           return std::string(info.param.name);
+                         });
+
+// -- Settings response decoding -----------------------------------------------
+
+TEST(AntBmsSettingsResponseTest, CellHighProtectResponseDoesNotCrash) {
+  TestableAntBms bms;
+  bms.on_ant_bms_data(SETTINGS_RESP_CELL_HIGH_PROTECT);
+}
+
+TEST(AntBmsSettingsResponseTest, SettingsResponseDoesNotAffectStatusSensors) {
+  TestableAntBms bms;
+  sensor::Sensor total_voltage;
+  bms.set_total_voltage_sensor(&total_voltage);
+
+  bms.on_ant_bms_data(SETTINGS_RESP_CELL_HIGH_PROTECT);
+
+  EXPECT_TRUE(std::isnan(total_voltage.state));
+}
+
+TEST(AntBmsSettingsResponseTest, DeviceInfoStillRoutedCorrectly) {
+  TestableAntBms bms;
+  text_sensor::TextSensor model;
+  bms.set_device_model_text_sensor(&model);
+
+  bms.on_ant_bms_data(DEVICE_INFO_FRAME);
+
+  EXPECT_EQ(model.state, "16ZM");
 }
 
 }  // namespace esphome::ant_bms::testing

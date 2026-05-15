@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "common.h"
 #include "frames_16s_status.h"
+#include "frames_settings.h"
 
 namespace esphome::ant_bms_ble::testing {
 
@@ -362,6 +363,69 @@ TEST(AntBmsBleFrameBuilderTest, ClearProtectTime) {
   auto frame = AntBmsBle::build_frame(0x51, 0x0025, 0x00);
   std::vector<uint8_t> expected = {0x7e, 0xa1, 0x51, 0x25, 0x00, 0x00, 0x98, 0xee, 0xaa, 0x55};
   EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()), expected);
+}
+
+// ── Settings register tests (all 57 registers) ───────────────────────────────
+
+struct AntBmsBleSettingsTest : ::testing::TestWithParam<SettingsRegisterCase> {};
+
+TEST_P(AntBmsBleSettingsTest, RequestFrameIsCorrect) {
+  const auto &p = GetParam();
+  auto frame = AntBmsBle::build_frame(0x02, p.address, p.data_len);
+  EXPECT_EQ(std::vector<uint8_t>(frame.begin(), frame.end()),
+            std::vector<uint8_t>(p.request_frame.begin(), p.request_frame.end()));
+}
+
+TEST_P(AntBmsBleSettingsTest, ResponseDoesNotCrash) {
+  const auto &p = GetParam();
+  TestableAntBmsBle bms;
+  // assemble() checks CRC, so we compute a valid one
+  std::vector<uint8_t> frame = {0x7E, 0xA1, 0x12, uint8_t(p.address), uint8_t(p.address >> 8), p.data_len};
+  for (int i = 0; i < p.data_len; i++)
+    frame.push_back(0x00);
+  uint16_t crc = 0xFFFF;
+  for (size_t i = 1; i < frame.size(); i++) {
+    crc ^= frame[i];
+    for (int j = 0; j < 8; j++)
+      crc = (crc & 1) ? (crc >> 1) ^ 0xA001 : crc >> 1;
+  }
+  frame.push_back(crc & 0xFF);
+  frame.push_back(crc >> 8);
+  frame.push_back(0xAA);
+  frame.push_back(0x55);
+  bms.assemble(frame.data(), frame.size());
+}
+
+INSTANTIATE_TEST_SUITE_P(AllRegisters, AntBmsBleSettingsTest, ::testing::ValuesIn(SETTINGS_REGISTER_CASES),
+                         [](const ::testing::TestParamInfo<SettingsRegisterCase> &info) {
+                           return std::string(info.param.name);
+                         });
+
+// ── Settings response decoding ────────────────────────────────────────────────
+
+TEST(AntBmsBleSettingsResponseTest, CellHighProtectResponseDoesNotCrash) {
+  TestableAntBmsBle bms;
+  bms.assemble(SETTINGS_RESP_CELL_HIGH_PROTECT.data(), SETTINGS_RESP_CELL_HIGH_PROTECT.size());
+}
+
+TEST(AntBmsBleSettingsResponseTest, SettingsResponseDoesNotAffectStatusSensors) {
+  TestableAntBmsBle bms;
+  sensor::Sensor total_voltage;
+  bms.set_total_voltage_sensor(&total_voltage);
+
+  bms.assemble(SETTINGS_RESP_CELL_HIGH_PROTECT.data(), SETTINGS_RESP_CELL_HIGH_PROTECT.size());
+
+  EXPECT_TRUE(std::isnan(total_voltage.state));
+}
+
+TEST(AntBmsBleSettingsResponseTest, DeviceInfoStillRoutedCorrectly) {
+  TestableAntBmsBle bms;
+  text_sensor::TextSensor model;
+  bms.set_device_model_text_sensor(&model);
+
+  bms.assemble(DEVICE_INFO_FRAME.data(), DEVICE_INFO_FRAME.size());
+
+  EXPECT_EQ(model.state, "16ZM");
 }
 
 }  // namespace esphome::ant_bms_ble::testing
