@@ -261,3 +261,9 @@ button:
       name: "reset hardware"
     save_customer_data:
       name: "save customer data"
+
+select:
+  - platform: ant_bms
+    ant_bms_id: bms0
+    read_settings_register:
+      name: "read settings register"

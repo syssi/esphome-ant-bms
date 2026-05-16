@@ -16,6 +16,7 @@ static const uint8_t ANT_FRAME_TYPE_STATUS = 0x11;
 static const uint8_t ANT_FRAME_TYPE_DEVICE_INFO = 0x12;
 
 static const uint8_t ANT_COMMAND_STATUS = 0x01;
+static const uint8_t ANT_COMMAND_DEVICE_INFO = 0x02;
 
 static const uint8_t CHARGE_MOSFET_STATUS_SIZE = 21;
 static constexpr const char *const CHARGE_MOSFET_STATUS[CHARGE_MOSFET_STATUS_SIZE] = {
@@ -89,6 +90,71 @@ static constexpr const char *const BALANCER_STATUS[BALANCER_STATUS_SIZE] = {
     "Unknown",                               // 0x08
     "Unknown",                               // 0x09
     "Motherboard over temperature",          // 0x0A
+};
+
+struct SettingsRegister {
+  uint16_t address;
+  const char *name;
+  float scale;
+  const char *unit;
+};
+static const SettingsRegister SETTINGS_REGISTERS[] = {
+    {0x0000, "CellOvervoltageProtection", 0.001f, "V"},
+    {0x0002, "CellOvervoltageRecovery", 0.001f, "V"},
+    {0x0004, "CellOvervoltageProtectionL2", 0.001f, "V"},
+    {0x0006, "CellOvervoltageRecoveryL2", 0.001f, "V"},
+    {0x0008, "PackOvervoltageProtection", 0.1f, "V"},
+    {0x000A, "PackOvervoltageRecovery", 0.1f, "V"},
+    {0x000C, "CellUndervoltageProtection", 0.001f, "V"},
+    {0x000E, "CellUndervoltageRecovery", 0.001f, "V"},
+    {0x0010, "CellUndervoltageProtectionL2", 0.001f, "V"},
+    {0x0012, "CellUndervoltageRecoveryL2", 0.001f, "V"},
+    {0x0014, "PackUndervoltageProtection", 0.1f, "V"},
+    {0x0016, "PackUndervoltageRecovery", 0.1f, "V"},
+    {0x0018, "CellVoltageDifferenceProtection", 0.001f, "V"},
+    {0x001A, "CellVoltageDifferenceRecovery", 0.001f, "V"},
+    {0x0020, "CellOvervoltageWarning", 0.001f, "V"},
+    {0x0022, "CellOvervoltageWarningRecovery", 0.001f, "V"},
+    {0x0024, "PackOvervoltageWarning", 0.1f, "V"},
+    {0x0026, "PackOvervoltageWarningRecovery", 0.1f, "V"},
+    {0x0028, "CellUndervoltageWarning", 0.001f, "V"},
+    {0x002A, "CellUndervoltageWarningRecovery", 0.001f, "V"},
+    {0x002C, "PackUndervoltageWarning", 0.1f, "V"},
+    {0x002E, "PackUndervoltageWarningRecovery", 0.1f, "V"},
+    {0x0030, "CellVoltageDifferenceWarning", 0.001f, "V"},
+    {0x0032, "CellVoltageDifferenceWarningRecovery", 0.001f, "V"},
+    {0x0068, "ChargeOvercurrentProtection", 0.1f, "A"},
+    {0x006A, "ChargeOvercurrentProtectionDelay", 1.0f, "s"},
+    {0x006C, "DischargeOvercurrentProtection", 0.1f, "A"},
+    {0x006E, "DischargeOvercurrentProtectionDelay", 1.0f, "s"},
+    {0x0070, "DischargeOvercurrentProtectionL2", 0.1f, "A"},
+    {0x0072, "DischargeOvercurrentProtectionDelayL2", 1.0f, "ms"},
+    {0x0074, "ShortCircuitProtection", 1.0f, "A"},
+    {0x0076, "ShortCircuitProtectionDelay", 1.0f, "us"},
+    {0x007C, "ChargeOvercurrentWarning", 0.1f, "A"},
+    {0x007E, "ChargeOvercurrentWarningRecovery", 0.1f, "A"},
+    {0x0080, "DischargeOvercurrentWarning", 0.1f, "A"},
+    {0x0082, "DischargeOvercurrentWarningRecovery", 0.1f, "A"},
+    {0x0084, "SOCLowLevel1Warning", 1.0f, "%"},
+    {0x0086, "SOCLowLevel2Warning", 1.0f, "%"},
+    {0x008C, "CellBalancingVoltage", 0.001f, "V"},
+    {0x008E, "CellBalancingStartVoltage", 0.001f, "V"},
+    {0x0090, "CellVoltageDifferenceBalancingOn", 0.001f, "V"},
+    {0x0092, "CellVoltageDifferenceBalancingOff", 0.001f, "V"},
+    {0x0094, "BalancingCurrent", 1.0f, "mA"},
+    {0x0096, "BalancingChargingCurrent", 0.1f, "A"},
+    {0x0098, "CellType", 1.0f, ""},
+    {0x009A, "CellNumber", 1.0f, "S"},
+    {0x009C, "CellInternalResistanceCalibration", 1.0f, "mOhm"},
+    {0x009E, "ShutdownVoltage", 0.001f, "V"},
+    {0x00A0, "RequestChargeCurrent", 0.1f, "A"},
+    {0x00A2, "NominalCapacity", 1.0f, "Ah"},
+    {0x00A6, "RemainingCapacity", 1.0f, "Ah"},
+    {0x00AA, "TotalCycleCapacity", 1.0f, "Ah"},
+    {0x00C4, "StateOfChargeMethod", 1.0f, ""},
+    {0x017A, "TireLength", 1.0f, "mm"},
+    {0x017C, "PulseValue", 1.0f, ""},
+    {0x017E, "SecondaryModuleNum", 1.0f, ""},
 };
 
 void AntBms::loop() {
@@ -175,9 +241,17 @@ void AntBms::on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t
     case ANT_FRAME_TYPE_STATUS:
       this->on_status_data_(data);
       break;
-    case ANT_FRAME_TYPE_DEVICE_INFO:
-      this->on_device_info_data_(data);
+    case ANT_FRAME_TYPE_DEVICE_INFO: {
+      if (data.size() < 5)
+        break;
+      uint16_t addr = data[3] | (uint16_t(data[4]) << 8);
+      if (addr == 0x026c) {
+        this->on_device_info_data_(data);
+      } else {
+        this->on_settings_data_(data);
+      }
       break;
+    }
     default:
       ESP_LOGW(TAG, "Unhandled response received (function 0x%02X): %s", function,
                format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
@@ -381,12 +455,63 @@ void AntBms::on_device_info_data_(const std::vector<uint8_t> &data) {
       std::string(software_version_begin, std::find(software_version_begin, data.begin() + 22 + 16, '\0')));
 }
 
+void AntBms::on_settings_data_(const std::vector<uint8_t> &data) {
+  auto ant_get_16bit = [&](size_t i) -> uint16_t {
+    return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
+  };
+  auto ant_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(ant_get_16bit(i + 2)) << 16) | (uint32_t(ant_get_16bit(i + 0)) << 0);
+  };
+
+  uint16_t address = ant_get_16bit(3);
+  uint8_t data_len = data[5];
+
+  for (const auto &p : SETTINGS_REGISTERS) {
+    if (p.address != address)
+      continue;
+    float value = (data_len == 4 ? ant_get_32bit(6) : ant_get_16bit(6)) * p.scale;
+    ESP_LOGI(TAG, "  %s: %.3f %s", p.name, value, p.unit);
+    return;
+  }
+  ESP_LOGW(TAG, "Unknown settings address: 0x%04X", address);
+}
+
 void AntBms::update() {
   this->track_online_status_();
   this->read_registers_();
 }
 
 void AntBms::write_register(uint8_t address, uint16_t value) { this->send_(0x51, address, value); }
+
+std::array<uint8_t, 10> AntBms::build_settings_frame(uint16_t address, uint8_t data_len) {
+  std::array<uint8_t, 10> frame{};
+  frame[0] = 0x7e;
+  frame[1] = 0xa1;
+  frame[2] = ANT_COMMAND_DEVICE_INFO;
+  frame[3] = address & 0xFF;
+  frame[4] = address >> 8;
+  frame[5] = data_len;
+  auto crc = crc16(frame.data() + 1, 5);
+  frame[6] = crc >> 0;
+  frame[7] = crc >> 8;
+  frame[8] = 0xaa;
+  frame[9] = 0x55;
+  return frame;
+}
+
+void AntBms::read_settings(uint16_t address) {
+  static const uint16_t UINT32_ADDRESSES[] = {0x00a2, 0x00a6, 0x00aa};
+  uint8_t data_len = 0x02;
+  for (auto a : UINT32_ADDRESSES) {
+    if (a == address) {
+      data_len = 0x04;
+      break;
+    }
+  }
+  auto frame = build_settings_frame(address, data_len);
+  this->write_array(frame.data(), frame.size());
+  this->flush();
+}
 
 void AntBms::track_online_status_() {
   if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT) {
