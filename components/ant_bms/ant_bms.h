@@ -133,7 +133,9 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
 
   void on_ant_bms_data(const std::vector<uint8_t> &data);
   static std::array<uint8_t, 10> build_frame(uint8_t function, uint8_t address, uint16_t value);
+  static std::array<uint8_t, 10> build_settings_frame(uint16_t address, uint8_t data_len);
   void write_register(uint8_t address, uint16_t value);
+  void read_settings(uint16_t address);
 
  protected:
   binary_sensor::BinarySensor *online_status_binary_sensor_{nullptr};
@@ -195,6 +197,7 @@ class AntBms : public uart::UARTDevice, public PollingComponent {
   void on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
   void on_device_info_data_(const std::vector<uint8_t> &data);
+  void on_settings_data_(const std::vector<uint8_t> &data);
   bool parse_ant_bms_byte_(uint8_t byte);
   void authenticate_();
   void authenticate_variable_(const uint8_t *data, uint8_t data_len);

@@ -13,6 +13,7 @@ from components.ant_bms import (  # noqa: E402  # noqa: E402
     switch,
     text_sensor,
 )
+import components.ant_bms.select as ant_select  # noqa: E402
 import components.ant_bms_ble as hub_ble  # noqa: E402
 from components.ant_bms_ble import (  # noqa: E402
     binary_sensor as ble_binary_sensor,
@@ -21,6 +22,7 @@ from components.ant_bms_ble import (  # noqa: E402
     switch as ble_switch,  # noqa: E402
     text_sensor as ble_text_sensor,
 )
+import components.ant_bms_ble.select as ble_select  # noqa: E402
 import components.ant_bms_old as hub_old  # noqa: E402
 import components.ant_bms_old_ble as hub_old_ble  # noqa: E402
 
@@ -156,3 +158,24 @@ class TestButtonConstants:
         assert ble_button.CONF_BLUETOOTH_ON in ble_button.BUTTONS
         assert ble_button.CONF_BLUETOOTH_OFF in ble_button.BUTTONS
         assert len(ble_button.BUTTONS) == 16
+
+
+class TestSelectConstants:
+    def test_settings_registers_count(self):
+        assert len(ant_select.SETTINGS_REGISTERS) == 56
+        assert len(ble_select.SETTINGS_REGISTERS) == 56
+
+    def test_settings_registers_addresses_are_unique(self):
+        addresses = list(ant_select.SETTINGS_REGISTERS.keys())
+        assert len(addresses) == len(set(addresses))
+        ble_addresses = list(ble_select.SETTINGS_REGISTERS.keys())
+        assert len(ble_addresses) == len(set(ble_addresses))
+
+    def test_settings_registers_match(self):
+        assert ant_select.SETTINGS_REGISTERS == ble_select.SETTINGS_REGISTERS
+
+    def test_cell_overvoltage_protection_address(self):
+        assert ant_select.SETTINGS_REGISTERS[0x0000] == "CellOvervoltageProtection"
+
+    def test_nominal_capacity_address(self):
+        assert ant_select.SETTINGS_REGISTERS[0x00A2] == "NominalCapacity"

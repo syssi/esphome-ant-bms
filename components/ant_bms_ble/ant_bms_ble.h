@@ -147,6 +147,7 @@ class AntBmsBle :
   void assemble(const uint8_t *data, uint16_t length);
   static std::array<uint8_t, 10> build_frame(uint8_t function, uint16_t address, uint8_t value);
   void write_register(uint16_t address, uint8_t value);
+  void read_settings(uint16_t address);
 
  protected:
   binary_sensor::BinarySensor *online_status_binary_sensor_{nullptr};
@@ -209,6 +210,7 @@ class AntBmsBle :
   void on_ant_bms_ble_data_(const uint8_t &function, const std::vector<uint8_t> &data);
   void on_status_data_(const std::vector<uint8_t> &data);
   void on_device_info_data_(const std::vector<uint8_t> &data);
+  void on_settings_data_(const std::vector<uint8_t> &data);
   bool send_(uint8_t function, uint16_t address, uint8_t value, bool authenticate);
   bool authenticate_();
   bool authenticate_variable_(const uint8_t *data, uint8_t data_len);
