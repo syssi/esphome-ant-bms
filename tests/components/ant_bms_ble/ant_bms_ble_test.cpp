@@ -403,7 +403,7 @@ INSTANTIATE_TEST_SUITE_P(AllRegisters, AntBmsBleSettingsTest, ::testing::ValuesI
 
 // ── Settings response decoding ────────────────────────────────────────────────
 
-TEST(AntBmsBleSettingsResponseTest, CellHighProtectResponseDoesNotCrash) {
+TEST(AntBmsBleSettingsResponseTest, CellOvervoltageProtectionResponseDoesNotCrash) {
   TestableAntBmsBle bms;
   bms.assemble(SETTINGS_RESP_CELL_HIGH_PROTECT.data(), SETTINGS_RESP_CELL_HIGH_PROTECT.size());
 }

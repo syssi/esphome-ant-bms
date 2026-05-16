@@ -174,8 +174,8 @@ class TestSelectConstants:
     def test_settings_registers_match(self):
         assert ant_select.SETTINGS_REGISTERS == ble_select.SETTINGS_REGISTERS
 
-    def test_cell_high_protect_address(self):
-        assert ant_select.SETTINGS_REGISTERS[0x0000] == "CellHighProtect"
+    def test_cell_overvoltage_protection_address(self):
+        assert ant_select.SETTINGS_REGISTERS[0x0000] == "CellOvervoltageProtection"
 
-    def test_physical_ah_address(self):
-        assert ant_select.SETTINGS_REGISTERS[0x00A2] == "PhysicalAH"
+    def test_nominal_capacity_address(self):
+        assert ant_select.SETTINGS_REGISTERS[0x00A2] == "NominalCapacity"
