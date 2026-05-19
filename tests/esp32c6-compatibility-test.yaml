@@ -39,9 +39,9 @@ esp32_ble_tracker:
 
 ble_client:
   - id: client0
-    mac_address: 16:aa:22:02:23:55
+    mac_address: !secret bms0_mac_address
   - id: client1
-    mac_address: 16:aa:22:02:23:66
+    mac_address: !secret bms1_mac_address
 
 ant_bms_ble:
   - id: bms0
