@@ -86,6 +86,10 @@ wifi_password: MY_WIFI_PASSWORD
 mqtt_host: MY_MQTT_HOST
 mqtt_username: MY_MQTT_USERNAME
 mqtt_password: MY_MQTT_PASSWORD
+
+bms0_mac_address: MY_BMS_MAC_ADDRESS
+# The esp32-ble-example-multiple-devices.yaml additionally expects a bms1_mac_address.
+bms1_mac_address: MY_BMS_MAC_ADDRESS_1
 EOF
 
 # Validate the configuration, create a binary, upload it, and start logs
