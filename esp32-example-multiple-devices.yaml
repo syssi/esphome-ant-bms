@@ -17,7 +17,7 @@ esphome:
   comment: ${device_description}
   project:
     name: "syssi.esphome-ant-bms"
-    version: 2.5.0
+    version: 2.6.0
   devices:
     - id: device0
       name: "${bms0}"
