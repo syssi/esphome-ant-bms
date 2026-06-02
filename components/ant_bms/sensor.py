@@ -18,6 +18,7 @@ from esphome.const import (
     UNIT_CELSIUS,
     UNIT_EMPTY,
     UNIT_PERCENT,
+    UNIT_SECOND,
     UNIT_VOLT,
     UNIT_WATT,
 )
@@ -76,7 +77,6 @@ ICON_MAX_CELL_VOLTAGE = "mdi:battery-plus-outline"
 ICON_MIN_VOLTAGE_CELL = "mdi:battery-minus-outline"
 ICON_MAX_VOLTAGE_CELL = "mdi:battery-plus-outline"
 
-UNIT_SECONDS = "s"
 UNIT_AMPERE_HOURS = "Ah"
 
 CELLS = [f"cell_voltage_{i}" for i in range(1, 33)]
@@ -133,7 +133,7 @@ SENSOR_DEFS = {
         "state_class": STATE_CLASS_MEASUREMENT,
     },
     CONF_TOTAL_RUNTIME: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TIMELAPSE,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
@@ -238,14 +238,14 @@ SENSOR_DEFS = {
         "state_class": STATE_CLASS_TOTAL_INCREASING,
     },
     CONF_TOTAL_DISCHARGING_TIME: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TOTAL_DISCHARGING_TIME,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
         "state_class": STATE_CLASS_TOTAL_INCREASING,
     },
     CONF_TOTAL_CHARGING_TIME: {
-        "unit_of_measurement": UNIT_SECONDS,
+        "unit_of_measurement": UNIT_SECOND,
         "icon": ICON_TOTAL_CHARGING_TIME,
         "accuracy_decimals": 0,
         "device_class": DEVICE_CLASS_EMPTY,
