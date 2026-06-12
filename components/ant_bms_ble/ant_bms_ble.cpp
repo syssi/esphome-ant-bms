@@ -20,6 +20,8 @@ static const uint16_t ANT_BMS_SERVICE_UUID = 0xFFE0;
 static const uint16_t ANT_BMS_CHARACTERISTIC_UUID = 0xFFE1;  // Handle 0x10
 
 static const uint16_t MAX_RESPONSE_SIZE = 192;
+// Smallest possible frame: 6 header bytes + 0 data bytes + 2 CRC + 2 end bytes
+static const uint16_t MIN_RESPONSE_SIZE = 10;
 
 static const uint8_t ANT_PKT_START_1 = 0x7E;
 static const uint8_t ANT_PKT_START_2 = 0xA1;
@@ -272,7 +274,14 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
 
   this->frame_buffer_.insert(this->frame_buffer_.end(), data, data + length);
 
-  if (this->frame_buffer_.back() == ANT_PKT_END_2) {
+  // The end of frame must be detected by the full two-byte terminal sequence
+  // (0xAA 0x55), not just the trailing 0x55. ASCII payload bytes such as the
+  // 'U' (0x55) inside the software version string would otherwise be mistaken
+  // for the end of frame when a BLE notification chunk happens to end on them,
+  // leading to a truncated buffer being parsed as a complete frame.
+  if (this->frame_buffer_.size() >= MIN_RESPONSE_SIZE &&
+      this->frame_buffer_[this->frame_buffer_.size() - 2] == ANT_PKT_END_1 &&
+      this->frame_buffer_.back() == ANT_PKT_END_2) {
     const uint8_t *raw = &this->frame_buffer_[0];
 
     uint8_t function = raw[2];
@@ -544,6 +553,13 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
 void AntBmsBle::on_device_info_data_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Device info frame (%zu bytes):", data.size());
   ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+
+  // The hardware version (16 bytes) and software version (16 bytes) span bytes
+  // 6...37, so a shorter frame would read past the buffer.
+  if (data.size() < 38) {
+    ESP_LOGW(TAG, "Skipping device info frame because of invalid length");
+    return;
+  }
 
   // Status request
   // -> 0x7e 0xa1 0x02 0x6c 0x02 0x20 0x58 0xc4 0xaa 0x55

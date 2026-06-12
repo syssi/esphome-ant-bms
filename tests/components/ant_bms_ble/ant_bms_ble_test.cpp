@@ -259,6 +259,38 @@ TEST(AntBmsBleDeviceInfoTest, DeviceModel) {
   EXPECT_EQ(version.state, "16ZMUB00-211026A");
 }
 
+TEST(AntBmsBleDeviceInfoTest, DeviceModelIssue172) {
+  TestableAntBmsBle bms;
+  text_sensor::TextSensor model, version;
+  bms.set_device_model_text_sensor(&model);
+  bms.set_software_version_text_sensor(&version);
+
+  bms.assemble(DEVICE_INFO_FRAME_ISSUE_172.data(), DEVICE_INFO_FRAME_ISSUE_172.size());
+
+  EXPECT_EQ(model.state, "22PHB8TB130A");
+  EXPECT_EQ(version.state, "22AAUB00-241008A");
+}
+
+// ── Fragmented frame ending on an embedded end byte (issue #172) ──────────────
+//
+// The software version "22AAUB00-241008A" contains 'U' (0x55 == ANT_PKT_END_2)
+// at offset 26. A BLE notification chunk that ends right on that byte must not
+// be parsed as a complete frame; doing so reads past the truncated buffer and
+// crashes the device (Guru Meditation LoadProhibited).
+TEST(AntBmsBleDeviceInfoTest, FragmentedFrameEndingOnEmbeddedEndByte) {
+  TestableAntBmsBle bms;
+  text_sensor::TextSensor model, version;
+  bms.set_device_model_text_sensor(&model);
+  bms.set_software_version_text_sensor(&version);
+
+  ASSERT_EQ(DEVICE_INFO_FRAME_ISSUE_172[26], 0x55);
+  bms.assemble(DEVICE_INFO_FRAME_ISSUE_172.data(), 27);
+  bms.assemble(DEVICE_INFO_FRAME_ISSUE_172.data() + 27, DEVICE_INFO_FRAME_ISSUE_172.size() - 27);
+
+  EXPECT_EQ(model.state, "22PHB8TB130A");
+  EXPECT_EQ(version.state, "22AAUB00-241008A");
+}
+
 // ── Null sensors do not crash ─────────────────────────────────────────────────
 
 TEST(AntBmsBleStatusDataTest, NullSensorsDoNotCrash) {
