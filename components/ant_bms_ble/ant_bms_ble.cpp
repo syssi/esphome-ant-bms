@@ -262,9 +262,14 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
 #endif  // USE_ESP32
 
 void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
+  // ESP-IDF may pass a null value pointer for zero-length GATTC notifications.
+  if (data == nullptr || length == 0)
+    return;
+
   if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Maximum response size (%zu bytes) exceeded", this->frame_buffer_.size());
     this->frame_buffer_.clear();
+    return;
   }
 
   // Flush buffer on every preamble
