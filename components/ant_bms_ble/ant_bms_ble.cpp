@@ -277,7 +277,6 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
   if (this->frame_buffer_.size() > MAX_RESPONSE_SIZE) {
     ESP_LOGW(TAG, "Maximum response size (%zu bytes) exceeded", this->frame_buffer_.size());
     this->frame_buffer_.clear();
-    return;
   }
 
   // Flush buffer on every preamble
