@@ -218,7 +218,10 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
     return false;
   }
 
-  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());  // NOLINT
+  for (size_t i = 0; i <= (size_t) at; i += 100) {
+    size_t len = std::min<size_t>(100, at + 1 - i);
+    ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw + i, len).c_str());  // NOLINT
+  }
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
@@ -253,8 +256,11 @@ void AntBms::on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t
       break;
     }
     default:
-      ESP_LOGW(TAG, "Unhandled response received (function 0x%02X): %s", function,
-               format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+      ESP_LOGW(TAG, "Unhandled response received (function 0x%02X):", function);
+      for (size_t i = 0; i < data.size(); i += 100) {
+        size_t len = std::min<size_t>(100, data.size() - i);
+        ESP_LOGW(TAG, "  %s", format_hex_pretty(data.data() + i, len).c_str());  // NOLINT
+      }
   }
 }
 
@@ -267,7 +273,10 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  for (size_t i = 0; i < data.size(); i += 100) {
+    size_t len = std::min<size_t>(100, data.size() - i);
+    ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data() + i, len).c_str());  // NOLINT
+  }
 
   if (data.size() < 6 || data.size() != (6 + data[5] + 4)) {
     ESP_LOGW(TAG, "Skipping status frame because of invalid length");
@@ -438,7 +447,10 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
 
 void AntBms::on_device_info_data_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Device info frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  for (size_t i = 0; i < data.size(); i += 100) {
+    size_t len = std::min<size_t>(100, data.size() - i);
+    ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data() + i, len).c_str());  // NOLINT
+  }
 
   if (data.size() < 38) {
     ESP_LOGW(TAG, "Skipping device info frame because of invalid length");

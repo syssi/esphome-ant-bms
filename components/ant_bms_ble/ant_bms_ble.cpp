@@ -370,7 +370,10 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  for (size_t i = 0; i < data.size(); i += 100) {
+    size_t len = std::min<size_t>(100, data.size() - i);
+    ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data() + i, len).c_str());  // NOLINT
+  }
 
   if (data.size() != (6 + data[5] + 4)) {
     ESP_LOGW(TAG, "Skipping status frame because of invalid length");
