@@ -7,6 +7,14 @@ namespace esphome::ant_bms {
 
 static const char *const TAG = "ant_bms";
 
+static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
+  char buf[format_hex_pretty_size(100)];
+  for (size_t i = 0; i < size; i += 100) {
+    size_t len = std::min<size_t>(100, size - i);
+    ESP_LOGD(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
+  }
+}
+
 static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 
 static const uint8_t ANT_PKT_START_1 = 0x7E;
@@ -218,7 +226,10 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
     return false;
   }
 
-  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());  // NOLINT
+  for (size_t i = 0; i <= (size_t) at; i += 100) {
+    size_t len = std::min<size_t>(100, at + 1 - i);
+    ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw + i, len).c_str());  // NOLINT
+  }
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
@@ -253,8 +264,8 @@ void AntBms::on_ant_bms_data_(const uint8_t &function, const std::vector<uint8_t
       break;
     }
     default:
-      ESP_LOGW(TAG, "Unhandled response received (function 0x%02X): %s", function,
-               format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+      ESP_LOGW(TAG, "Unhandled response received (function 0x%02X):", function);
+      log_hex_chunked(TAG, data.data(), data.size());
   }
 }
 
@@ -267,7 +278,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  log_hex_chunked(TAG, data.data(), data.size());
 
   if (data.size() < 6 || data.size() != (6 + data[5] + 4)) {
     ESP_LOGW(TAG, "Skipping status frame because of invalid length");
@@ -438,7 +449,7 @@ void AntBms::on_status_data_(const std::vector<uint8_t> &data) {
 
 void AntBms::on_device_info_data_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Device info frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  log_hex_chunked(TAG, data.data(), data.size());
 
   if (data.size() < 38) {
     ESP_LOGW(TAG, "Skipping device info frame because of invalid length");
