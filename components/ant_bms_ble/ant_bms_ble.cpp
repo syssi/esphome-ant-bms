@@ -14,6 +14,14 @@ namespace esphome::ant_bms_ble {
 
 static const char *const TAG = "ant_bms_ble";
 
+static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
+  char buf[format_hex_pretty_size(100)];
+  for (size_t i = 0; i < size; i += 100) {
+    size_t len = std::min<size_t>(100, size - i);
+    ESP_LOGD(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
+  }
+}
+
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
 static const uint16_t ANT_BMS_SERVICE_UUID = 0xFFE0;
@@ -370,10 +378,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
-  for (size_t i = 0; i < data.size(); i += 100) {
-    size_t len = std::min<size_t>(100, data.size() - i);
-    ESP_LOGD(TAG, "  %s", format_hex_pretty(data.data() + i, len).c_str());  // NOLINT
-  }
+  log_hex_chunked(TAG, data.data(), data.size());
 
   if (data.size() != (6 + data[5] + 4)) {
     ESP_LOGW(TAG, "Skipping status frame because of invalid length");
