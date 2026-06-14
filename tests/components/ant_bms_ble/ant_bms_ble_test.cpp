@@ -291,6 +291,33 @@ TEST(AntBmsBleDeviceInfoTest, FragmentedFrameEndingOnEmbeddedEndByte) {
   EXPECT_EQ(version.state, "22AAUB00-241008A");
 }
 
+// ── assemble() guard tests (issue #174) ──────────────────────────────────────
+
+TEST(AntBmsBleAssembleGuardTest, ZeroLengthNotificationDoesNotCrash) {
+  TestableAntBmsBle bms;
+  bms.assemble(STATUS_FRAME_16S.data(), 0);
+}
+
+TEST(AntBmsBleAssembleGuardTest, OneBytePreambleFragmentDoesNotCrash) {
+  TestableAntBmsBle bms;
+  // A BLE notification with only the first preamble byte (0x7E, length=1) must
+  // not access data[1] out-of-bounds and must not flush the buffer prematurely,
+  // so the frame can be completed by the subsequent notification.
+  const uint8_t first_byte = STATUS_FRAME_16S[0];
+  bms.assemble(&first_byte, 1);
+  bms.assemble(STATUS_FRAME_16S.data() + 1, STATUS_FRAME_16S.size() - 1);
+}
+
+TEST(AntBmsBleAssembleGuardTest, DeviceInfoFrameWithInflatedDataLenDoesNotCrash) {
+  TestableAntBmsBle bms;
+  // Corrupt raw[5] (data_len) so that frame_len > frame_buffer_.size().
+  // Without the bounds guard this causes an out-of-bounds read in the CRC
+  // extraction (raw[frame_len - 3]).
+  std::vector<uint8_t> frame(DEVICE_INFO_FRAME);
+  frame[5] = 0xFF;  // frame_len = 6 + 255 + 4 = 265, far beyond actual 48 bytes
+  bms.assemble(frame.data(), frame.size());
+}
+
 // ── Null sensors do not crash ─────────────────────────────────────────────────
 
 TEST(AntBmsBleStatusDataTest, NullSensorsDoNotCrash) {
