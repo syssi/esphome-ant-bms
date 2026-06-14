@@ -301,8 +301,7 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
 
     // Guard against a wrong data_len causing out-of-bounds access into frame_buffer_.
     if (frame_len > this->frame_buffer_.size()) {
-      ESP_LOGW(TAG, "Computed frame_len (%u) exceeds buffer (%zu), discarding", frame_len,
-               this->frame_buffer_.size());
+      ESP_LOGW(TAG, "Computed frame_len (%u) exceeds buffer (%zu), discarding", frame_len, this->frame_buffer_.size());
       this->frame_buffer_.clear();
       return;
     }
