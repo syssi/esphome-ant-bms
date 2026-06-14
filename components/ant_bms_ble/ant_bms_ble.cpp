@@ -273,7 +273,7 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
   }
 
   // Flush buffer on every preamble
-  if (data[0] == ANT_PKT_START_1 && data[1] == ANT_PKT_START_2) {
+  if (length >= 2 && data[0] == ANT_PKT_START_1 && data[1] == ANT_PKT_START_2) {
     this->frame_buffer_.clear();
   }
 
@@ -295,6 +295,14 @@ void AntBmsBle::assemble(const uint8_t *data, uint16_t length) {
     // It looks like the data_len value of the device info frame is wrong
     if (frame_len != this->frame_buffer_.size() && function != ANT_FRAME_TYPE_DEVICE_INFO) {
       ESP_LOGW(TAG, "Invalid frame length");
+      this->frame_buffer_.clear();
+      return;
+    }
+
+    // Guard against a wrong data_len causing out-of-bounds access into frame_buffer_.
+    if (frame_len > this->frame_buffer_.size()) {
+      ESP_LOGW(TAG, "Computed frame_len (%u) exceeds buffer (%zu), discarding", frame_len,
+               this->frame_buffer_.size());
       this->frame_buffer_.clear();
       return;
     }
