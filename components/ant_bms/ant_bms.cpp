@@ -1,11 +1,38 @@
 #include "ant_bms.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
+#include "esphome/core/version.h"
 #include <array>
 
 namespace esphome::ant_bms {
 
 static const char *const TAG = "ant_bms";
+
+// Compatibility shim for ESPHome < 2026.1.0, which lacks format_hex_pretty_to/format_hex_pretty_size.
+// Remove once the minimum supported ESPHome version reaches 2026.1.0.
+#if ESPHOME_VERSION_CODE < VERSION_CODE(2026, 1, 0)
+constexpr size_t format_hex_pretty_size(size_t byte_count) { return byte_count * 3; }
+
+static char *format_hex_pretty_to(char *buffer, size_t buffer_size, const uint8_t *data, size_t length,
+                                  char separator = ':') {
+  if (length == 0) {
+    buffer[0] = '\0';
+    return buffer;
+  }
+  size_t max_bytes = buffer_size / 3;
+  if (length > max_bytes)
+    length = max_bytes;
+  for (size_t i = 0; i < length; i++) {
+    uint8_t hi = data[i] >> 4, lo = data[i] & 0x0F;
+    buffer[3 * i] = hi >= 10 ? 'A' + (hi - 10) : '0' + hi;
+    buffer[3 * i + 1] = lo >= 10 ? 'A' + (lo - 10) : '0' + lo;
+    if (i != length - 1)
+      buffer[3 * i + 2] = separator;
+  }
+  buffer[3 * length - 1] = '\0';
+  return buffer;
+}
+#endif
 
 static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
   char buf[format_hex_pretty_size(100)];
