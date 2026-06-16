@@ -4,6 +4,7 @@ logger:
   level: VERY_VERBOSE
   logs:
     ant_bms_old_ble: VERY_VERBOSE
+    sensor: VERBOSE
     ble_client: DEBUG
     esp32_ble: DEBUG
     esp32_ble_tracker: DEBUG
@@ -11,7 +12,6 @@ logger:
     wifi: INFO
     scheduler: DEBUG
     component: DEBUG
-    sensor: DEBUG
     mqtt: INFO
     mqtt.idf: INFO
     mqtt.component: INFO
