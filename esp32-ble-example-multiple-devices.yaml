@@ -67,10 +67,12 @@ ant_bms_ble:
   - id: bms0
     ble_client_id: client0
     update_interval: 5s
-    # throttle: 5s  # Drop status frames arriving faster than every 5 s (useful for models that send a continuous stream of notifications)
+    # Recommended for models that send a continuous stream of notifications instead of a single response per request.
+    # throttle: 5s
   - id: bms1
     ble_client_id: client1
     update_interval: 5s
+    # Recommended for models that send a continuous stream of notifications instead of a single response per request.
     # throttle: 5s
 
 binary_sensor:

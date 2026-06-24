@@ -1,4 +1,5 @@
 ant_bms_ble:
   id: test_bms
   update_interval: 20s
-  throttle: 5s
+  # Recommended for models that send a continuous stream of notifications instead of a single response per request.
+  # throttle: 5s
