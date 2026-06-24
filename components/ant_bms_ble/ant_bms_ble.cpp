@@ -395,6 +395,12 @@ void AntBmsBle::on_ant_bms_ble_data_(const uint8_t &function, const std::vector<
 }
 
 void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
+  const uint32_t now = millis();
+  if (this->throttle_ > 0 && now - this->last_status_data_ < this->throttle_) {
+    return;
+  }
+  this->last_status_data_ = now;
+
   auto ant_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
   };
