@@ -47,6 +47,7 @@ ant_bms_ble:
   - id: bms0
     ble_client_id: client0
     update_interval: 5s
+    throttle: 5s
 
 ant_bms_old_ble:
   - id: bms3
