@@ -67,9 +67,13 @@ ant_bms_ble:
   - id: bms0
     ble_client_id: client0
     update_interval: 5s
+    # Recommended for models that send a continuous stream of notifications instead of a single response per request.
+    # throttle: 5s
   - id: bms1
     ble_client_id: client1
     update_interval: 5s
+    # Recommended for models that send a continuous stream of notifications instead of a single response per request.
+    # throttle: 5s
 
 binary_sensor:
   - platform: ant_bms_ble
