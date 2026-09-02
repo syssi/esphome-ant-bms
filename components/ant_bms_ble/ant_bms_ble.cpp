@@ -895,8 +895,9 @@ bool AntBmsBle::authenticate_() {
                                          this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
                                          ESP_GATT_AUTH_REQ_NONE);
 
-  if (status)
+  if (status) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
 
   return (status == 0);
 }
@@ -918,8 +919,9 @@ bool AntBmsBle::authenticate_variable_(const uint8_t *data, uint8_t data_len) {
                                          this->characteristic_handle_, frame.size(), &frame.front(),
                                          ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
-  if (status)
+  if (status) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
 
   return (status == 0);
 }
@@ -936,8 +938,9 @@ bool AntBmsBle::send_(uint8_t function, uint16_t address, uint8_t value, bool au
                                          this->characteristic_handle_, frame.size(), frame.data(),
                                          ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
 
-  if (status)
+  if (status) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
 
   return (status == 0);
 }
