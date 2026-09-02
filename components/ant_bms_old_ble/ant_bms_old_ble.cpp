@@ -517,8 +517,9 @@ bool AntBmsOldBle::send_(uint8_t function, uint8_t address, uint16_t value) {
                                          this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
                                          ESP_GATT_AUTH_REQ_NONE);
 
-  if (status)
+  if (status) {
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
 
   return (status == 0);
 }
