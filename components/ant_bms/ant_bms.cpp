@@ -687,8 +687,6 @@ void AntBms::dump_config() {  // NOLINT(google-readability-function-size,readabi
   LOG_TEXT_SENSOR("", "Total Charging Time Formatted", this->total_charging_time_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
-
-  this->check_uart_settings(19200);
 }
 
 float AntBms::get_setup_priority() const {
