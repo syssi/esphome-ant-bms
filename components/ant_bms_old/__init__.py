@@ -4,6 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_PASSWORD
 
 CODEOWNERS = ["@syssi"]
+DOMAIN = "ant_bms_old"
 
 DEPENDENCIES = ["uart"]
 AUTO_LOAD = ["binary_sensor", "button", "sensor", "switch", "text_sensor"]
