@@ -42,7 +42,7 @@ CONFIG_SCHEMA = cv.All(
 )
 
 FINAL_VALIDATE_SCHEMA = uart.final_validate_device_schema(
-    "ant_bms_old",
+    DOMAIN,
     baud_rate=19200,
     data_bits=8,
     parity="NONE",
