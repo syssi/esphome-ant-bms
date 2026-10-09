@@ -10,9 +10,14 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::ant_bms_ble {
 
-static const char *const TAG = "ant_bms_ble";
+ESPHOME_LOG_TAG(TAG, "ant_bms_ble");
 
 // Compatibility shim for ESPHome < 2026.1.0, which lacks format_hex_pretty_to/format_hex_pretty_size.
 // Remove once the minimum supported ESPHome version reaches 2026.1.0.

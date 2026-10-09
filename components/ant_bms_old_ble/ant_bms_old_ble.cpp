@@ -9,9 +9,14 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::ant_bms_old_ble {
 
-static const char *const TAG = "ant_bms_old_ble";
+ESPHOME_LOG_TAG(TAG, "ant_bms_old_ble");
 
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
