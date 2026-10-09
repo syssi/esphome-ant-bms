@@ -1,9 +1,14 @@
 #include "ant_select.h"
 #include "esphome/core/log.h"
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::ant_bms {
 
-static const char *const TAG = "ant_bms.select";
+ESPHOME_LOG_TAG(TAG, "ant_bms.select");
 
 void AntSelect::dump_config() {
   LOG_SELECT("", "AntBms Select", this);
