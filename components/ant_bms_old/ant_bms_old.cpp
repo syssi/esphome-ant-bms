@@ -11,6 +11,16 @@ namespace esphome::ant_bms_old {
 
 ESPHOME_LOG_TAG(TAG, "ant_bms_old");
 
+static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
+
+static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
+  char buf[format_hex_pretty_size(100)];
+  for (size_t i = 0; i < size; i += 100) {
+    size_t len = std::min<size_t>(100, size - i);
+    ESP_LOGD(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
+  }
+}
+
 static const uint8_t MAX_NO_RESPONSE_COUNT = 5;
 
 static const uint16_t STATUS_FRAME_LENGTH = 140;
@@ -140,7 +150,8 @@ bool AntBmsOld::parse_ant_bms_old_byte_(uint8_t byte) {
     return false;
   }
 
-  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw, at + 1).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty_to(hex_buf, raw, at + 1, '.'));
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
 
@@ -163,8 +174,8 @@ void AntBmsOld::on_ant_bms_old_data(const std::vector<uint8_t> &data) {
     return;
   }
 
-  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(), format_hex_pretty_to(hex_buf, data, '.'));
 }
 
 void AntBmsOld::on_status_data_(const std::vector<uint8_t> &data) {
@@ -176,7 +187,7 @@ void AntBmsOld::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  log_hex_chunked(TAG, data.data(), data.size());
 
   // Status request
   // -> 0x5A 0x5A 0x00 0x00 0x01 0x01
