@@ -19,31 +19,7 @@ namespace esphome::ant_bms_ble {
 
 ESPHOME_LOG_TAG(TAG, "ant_bms_ble");
 
-// Compatibility shim for ESPHome < 2026.1.0, which lacks format_hex_pretty_to/format_hex_pretty_size.
-// Remove once the minimum supported ESPHome version reaches 2026.1.0.
-#if ESPHOME_VERSION_CODE < VERSION_CODE(2026, 1, 0)
-constexpr size_t format_hex_pretty_size(size_t byte_count) { return byte_count * 3; }
-
-static char *format_hex_pretty_to(char *buffer, size_t buffer_size, const uint8_t *data, size_t length,
-                                  char separator = ':') {
-  if (length == 0) {
-    buffer[0] = '\0';
-    return buffer;
-  }
-  size_t max_bytes = buffer_size / 3;
-  if (length > max_bytes)
-    length = max_bytes;
-  for (size_t i = 0; i < length; i++) {
-    uint8_t hi = data[i] >> 4, lo = data[i] & 0x0F;
-    buffer[3 * i] = hi >= 10 ? 'A' + (hi - 10) : '0' + hi;
-    buffer[3 * i + 1] = lo >= 10 ? 'A' + (lo - 10) : '0' + lo;
-    if (i != length - 1)
-      buffer[3 * i + 2] = separator;
-  }
-  buffer[3 * length - 1] = '\0';
-  return buffer;
-}
-#endif
+static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
 
 static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
   char buf[format_hex_pretty_size(100)];
@@ -286,8 +262,9 @@ void AntBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
       if (param->notify.handle != this->characteristic_handle_)
         break;
 
+      char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
       ESP_LOGVV(TAG, "Notification received: %s",
-                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());  // NOLINT
+                format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
       this->assemble(param->notify.value, param->notify.value_len);
 
@@ -394,8 +371,9 @@ void AntBmsBle::on_ant_bms_ble_data_(const uint8_t &function, const std::vector<
       break;
     }
     default:
+      char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
       ESP_LOGW(TAG, "Unhandled response received (function 0x%02X): %s", function,
-               format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+               format_hex_pretty_to(hex_buf, data, '.'));
   }
 }
 
@@ -608,7 +586,7 @@ void AntBmsBle::on_status_data_(const std::vector<uint8_t> &data) {
 
 void AntBmsBle::on_device_info_data_(const std::vector<uint8_t> &data) {
   ESP_LOGI(TAG, "Device info frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  log_hex_chunked(TAG, data.data(), data.size());
 
   // The hardware version (16 bytes) and software version (16 bytes) span bytes
   // 6...37, so a shorter frame would read past the buffer.
@@ -895,7 +873,8 @@ bool AntBmsBle::authenticate_() {
   frame[20] = 0xaa;
   frame[21] = 0x55;
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty_to(hex_buf, frame, sizeof(frame), '.'));
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
                                          ESP_GATT_AUTH_REQ_NONE);
@@ -919,7 +898,8 @@ bool AntBmsBle::authenticate_variable_(const uint8_t *data, uint8_t data_len) {
   frame.push_back(0xAA);
   frame.push_back(0x55);
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(&frame.front(), frame.size()).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty_to(hex_buf, frame, '.'));
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, frame.size(), &frame.front(),
                                          ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
@@ -938,7 +918,8 @@ bool AntBmsBle::send_(uint8_t function, uint16_t address, uint8_t value, bool au
 
   auto frame = build_frame(function, address, value);
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame.data(), frame.size()).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty_to(hex_buf, frame, '.'));
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, frame.size(), frame.data(),
                                          ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
