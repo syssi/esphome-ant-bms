@@ -18,6 +18,16 @@ namespace esphome::ant_bms_old_ble {
 
 ESPHOME_LOG_TAG(TAG, "ant_bms_old_ble");
 
+static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
+
+static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
+  char buf[format_hex_pretty_size(100)];
+  for (size_t i = 0; i < size; i += 100) {
+    size_t len = std::min<size_t>(100, size - i);
+    ESP_LOGD(tag, "  %s", format_hex_pretty_to(buf, sizeof(buf), data + i, len, '.'));
+  }
+}
+
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
 static const uint16_t ANT_BMS_OLD_SERVICE_UUID = 0xFFE0;
@@ -148,8 +158,9 @@ void AntBmsOldBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t
       if (param->notify.handle != this->characteristic_handle_)
         break;
 
+      char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
       ESP_LOGVV(TAG, "Notification received: %s",
-                format_hex_pretty(param->notify.value, param->notify.value_len).c_str());  // NOLINT
+                format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
       this->assemble(param->notify.value, param->notify.value_len);
 
@@ -218,8 +229,8 @@ void AntBmsOldBle::on_ant_bms_old_ble_data_(const uint8_t &function, const std::
     return;
   }
 
-  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(),
-           format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGW(TAG, "Unhandled response (%zu bytes) received: %s", data.size(), format_hex_pretty_to(hex_buf, data, '.'));
 }
 
 void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
@@ -231,7 +242,7 @@ void AntBmsOldBle::on_status_data_(const std::vector<uint8_t> &data) {
   };
 
   ESP_LOGI(TAG, "Status frame (%zu bytes):", data.size());
-  ESP_LOGD(TAG, "  %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  log_hex_chunked(TAG, data.data(), data.size());
 
   // Status request
   // -> 0xDB 0xDB 0x00 0x00 0x00 0x00
@@ -517,7 +528,8 @@ bool AntBmsOldBle::send_(uint8_t function, uint8_t address, uint16_t value) {
   frame[4] = value >> 0;  // 0x01 (On)
   frame[5] = frame[2] + frame[3] + frame[4];
 
-  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGVV(TAG, "Send command: %s", format_hex_pretty_to(hex_buf, frame, sizeof(frame), '.'));
   auto status = esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(),
                                          this->characteristic_handle_, sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP,
                                          ESP_GATT_AUTH_REQ_NONE);
