@@ -1,7 +1,12 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_FACTORY_RESET, CONF_RESTART, DEVICE_CLASS_RESTART
+from esphome.const import (
+    CONF_FACTORY_RESET,
+    CONF_RESTART,
+    DEVICE_CLASS_RESTART,
+    ICON_RESTART,
+)
 
 from .. import ANT_BMS_COMPONENT_SCHEMA, CONF_ANT_BMS_ID, ant_bms_ns
 
@@ -26,7 +31,6 @@ CONF_CLEAR_PROTECT_TIME = "clear_protect_time"
 CONF_BLUETOOTH_ON = "bluetooth_on"
 CONF_BLUETOOTH_OFF = "bluetooth_off"
 
-ICON_RESTART = "mdi:restart"
 ICON_SHUTDOWN = "mdi:power"
 ICON_FACTORY_RESET = "mdi:factory"
 ICON_CLEAR_SYSTEM_LOG = "mdi:delete-clock"
