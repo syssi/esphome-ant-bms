@@ -1,7 +1,12 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_FACTORY_RESET, CONF_RESTART, DEVICE_CLASS_RESTART
+from esphome.const import (
+    CONF_FACTORY_RESET,
+    CONF_RESTART,
+    DEVICE_CLASS_RESTART,
+    ICON_RESTART,
+)
 
 from .. import (
     ANT_BMS_OLD_BLE_COMPONENT_SCHEMA,
@@ -24,7 +29,6 @@ ICON_SHUTDOWN = "mdi:power"
 ICON_CLEAR_COUNTER = "mdi:delete-clock"
 ICON_BALANCER = "mdi:seesaw"
 ICON_FACTORY_RESET = "mdi:factory"
-ICON_RESTART = "mdi:restart"
 
 # 0xEF 0x1A 0x01    Request upgrade command
 # 0xF0 0x00 0x00    Apply LTO settings
