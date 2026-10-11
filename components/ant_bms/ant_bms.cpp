@@ -13,31 +13,7 @@ namespace esphome::ant_bms {
 
 ESPHOME_LOG_TAG(TAG, "ant_bms");
 
-// Compatibility shim for ESPHome < 2026.1.0, which lacks format_hex_pretty_to/format_hex_pretty_size.
-// Remove once the minimum supported ESPHome version reaches 2026.1.0.
-#if ESPHOME_VERSION_CODE < VERSION_CODE(2026, 1, 0)
-constexpr size_t format_hex_pretty_size(size_t byte_count) { return byte_count * 3; }
-
-static char *format_hex_pretty_to(char *buffer, size_t buffer_size, const uint8_t *data, size_t length,
-                                  char separator = ':') {
-  if (length == 0) {
-    buffer[0] = '\0';
-    return buffer;
-  }
-  size_t max_bytes = buffer_size / 3;
-  if (length > max_bytes)
-    length = max_bytes;
-  for (size_t i = 0; i < length; i++) {
-    uint8_t hi = data[i] >> 4, lo = data[i] & 0x0F;
-    buffer[3 * i] = hi >= 10 ? 'A' + (hi - 10) : '0' + hi;
-    buffer[3 * i + 1] = lo >= 10 ? 'A' + (lo - 10) : '0' + lo;
-    if (i != length - 1)
-      buffer[3 * i + 2] = separator;
-  }
-  buffer[3 * length - 1] = '\0';
-  return buffer;
-}
-#endif
+static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
 
 static void log_hex_chunked(const char *tag, const uint8_t *data, size_t size) {
   char buf[format_hex_pretty_size(100)];
@@ -260,7 +236,8 @@ bool AntBms::parse_ant_bms_byte_(uint8_t byte) {
 
   for (size_t i = 0; i <= (size_t) at; i += 100) {
     size_t len = std::min<size_t>(100, at + 1 - i);
-    ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty(raw + i, len).c_str());  // NOLINT
+    char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+    ESP_LOGVV(TAG, "RX <- %s", format_hex_pretty_to(hex_buf, raw + i, len, '.'));
   }
 
   std::vector<uint8_t> data(this->rx_buffer_.begin(), this->rx_buffer_.begin() + frame_len);
