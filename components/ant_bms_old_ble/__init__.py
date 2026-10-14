@@ -21,13 +21,15 @@ ANT_BMS_OLD_BLE_COMPONENT_SCHEMA = cv.Schema(
 )
 
 CONFIG_SCHEMA = cv.All(
-    cv.require_esphome_version(2026, 1, 0),
+    cv.require_esphome_version(2026, 6, 0),
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(AntBmsOldBle),
-            cv.Optional(CONF_PASSWORD, default="12345678"): cv.Any(
-                cv.All(cv.string_strict, cv.Length(min=8, max=8)),
-                cv.All(cv.string_strict, cv.Length(min=0, max=0)),
+            cv.Optional(CONF_PASSWORD, default="12345678"): cv.sensitive(
+                cv.Any(
+                    cv.All(cv.string_strict, cv.Length(min=8, max=8)),
+                    cv.All(cv.string_strict, cv.Length(min=0, max=0)),
+                )
             ),
         }
     )
