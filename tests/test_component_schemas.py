@@ -1,18 +1,12 @@
 """Schema structure tests for ant_bms ESPHome component modules."""
 
-import os
+from pathlib import Path
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import components.ant_bms as hub  # noqa: E402
-from components.ant_bms import (  # noqa: E402  # noqa: E402
-    binary_sensor,
-    button,
-    sensor,
-    switch,
-    text_sensor,
-)
+from components.ant_bms import binary_sensor, button, sensor, switch, text_sensor  # noqa: E402
 import components.ant_bms.select as ant_select  # noqa: E402
 import components.ant_bms_ble as hub_ble  # noqa: E402
 from components.ant_bms_ble import (  # noqa: E402
