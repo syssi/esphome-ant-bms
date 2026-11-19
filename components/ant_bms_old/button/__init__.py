@@ -40,7 +40,7 @@ BUTTONS = {
     CONF_RESTART: 0xFE,
 }
 
-AntButton = ant_bms_old_ns.class_("AntButton", button.Button, cg.Component)
+AntButton = ant_bms_old_ns.class_("AntButton", button.Button)
 
 CONFIG_SCHEMA = ANT_BMS_OLD_COMPONENT_SCHEMA.extend(
     {
@@ -65,6 +65,5 @@ async def to_code(config):
         if key in config:
             conf = config[key]
             var = await button.new_button(conf)
-            await cg.register_component(var, conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))

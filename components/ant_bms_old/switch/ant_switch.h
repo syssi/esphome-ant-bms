@@ -1,18 +1,15 @@
 #pragma once
 
 #include "../ant_bms_old.h"
-#include "esphome/core/component.h"
 #include "esphome/components/switch/switch.h"
 
 namespace esphome::ant_bms_old {
 
 class AntBmsOld;
-class AntSwitch : public switch_::Switch, public Component {
+class AntSwitch : public switch_::Switch {
  public:
   void set_parent(AntBmsOld *parent) { this->parent_ = parent; };
   void set_holding_register(uint8_t holding_register) { this->holding_register_ = holding_register; };
-  void dump_config() override;
-  float get_setup_priority() const override { return setup_priority::DATA; }
 
  protected:
   AntBmsOld *parent_;

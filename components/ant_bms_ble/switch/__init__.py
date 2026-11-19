@@ -39,7 +39,7 @@ SWITCHES = {
 #
 # https://github.com/syssi/esphome-ant-bms/issues/20
 
-AntSwitch = ant_bms_ble_ns.class_("AntSwitch", switch.Switch, cg.Component)
+AntSwitch = ant_bms_ble_ns.class_("AntSwitch", switch.Switch)
 
 CONFIG_SCHEMA = ANT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
@@ -63,7 +63,6 @@ async def to_code(config):
         if key in config:
             conf = config[key]
             var = await switch.new_switch(conf)
-            await cg.register_component(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
             cg.add(var.set_turn_on_register(address[0]))
