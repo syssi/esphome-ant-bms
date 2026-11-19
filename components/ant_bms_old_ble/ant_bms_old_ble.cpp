@@ -461,6 +461,12 @@ void AntBmsOldBle::dump_config() {  // NOLINT(google-readability-function-size,r
   LOG_TEXT_SENSOR("", "Charge Mosfet Status", this->charge_mosfet_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Balancer Status", this->balancer_status_text_sensor_);
   LOG_TEXT_SENSOR("", "Total Runtime Formatted", this->total_runtime_formatted_text_sensor_);
+
+  LOG_SWITCH("", "Charging", this->charging_switch_);
+  LOG_SWITCH("", "Discharging", this->discharging_switch_);
+  LOG_SWITCH("", "Balancer", this->balancer_switch_);
+  LOG_SWITCH("", "Bluetooth", this->bluetooth_switch_);
+  LOG_SWITCH("", "Buzzer", this->buzzer_switch_);
 }
 
 void AntBmsOldBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {

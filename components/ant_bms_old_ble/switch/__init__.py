@@ -25,7 +25,7 @@ SWITCHES = {
     CONF_CHARGING: 0xFA,
 }
 
-AntSwitch = ant_bms_old_ble_ns.class_("AntSwitch", switch.Switch, cg.Component)
+AntSwitch = ant_bms_old_ble_ns.class_("AntSwitch", switch.Switch)
 
 CONFIG_SCHEMA = ANT_BMS_OLD_BLE_COMPONENT_SCHEMA.extend(
     {
@@ -47,7 +47,6 @@ async def to_code(config):
         if key in config:
             conf = config[key]
             var = await switch.new_switch(conf)
-            await cg.register_component(var, conf)
             cg.add(getattr(hub, f"set_{key}_switch")(var))
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(holding_register))

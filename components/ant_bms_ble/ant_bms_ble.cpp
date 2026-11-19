@@ -773,6 +773,11 @@ void AntBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_TEXT_SENSOR("", "Total Charging Time Formatted", this->total_charging_time_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Device Model", this->device_model_text_sensor_);
   LOG_TEXT_SENSOR("", "Software Version", this->software_version_text_sensor_);
+
+  LOG_SWITCH("", "Charging", this->charging_switch_);
+  LOG_SWITCH("", "Discharging", this->discharging_switch_);
+  LOG_SWITCH("", "Balancer", this->balancer_switch_);
+  LOG_SWITCH("", "Buzzer", this->buzzer_switch_);
 }
 
 void AntBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
