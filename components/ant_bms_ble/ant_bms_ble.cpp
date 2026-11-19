@@ -1,7 +1,6 @@
 #include "ant_bms_ble.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
-#include "esphome/core/version.h"
 #include <array>
 
 // Fallback for ESPHome < 2026.10.0
